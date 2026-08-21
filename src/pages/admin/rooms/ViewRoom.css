@@ -1,0 +1,1216 @@
+/* =====================================================
+   VIEW ROOM PAGE
+===================================================== */
+
+.view-room-page {
+    min-height: 100vh;
+
+    display: flex;
+
+    background: #f1f5f9;
+
+    color: #0f172a;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+}
+
+
+/* =====================================================
+   SIDEBAR
+===================================================== */
+
+.view-room-sidebar {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 255px;
+    height: 100vh;
+
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 22px 15px;
+
+    background: #0f172a;
+
+    color: white;
+
+    z-index: 100;
+}
+
+
+/* =====================================================
+   BRAND
+===================================================== */
+
+.view-room-brand {
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 5px 10px 25px;
+
+    border-bottom: 1px solid #1e293b;
+}
+
+.view-room-brand-icon {
+    width: 43px;
+    height: 43px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    background: #0f766e;
+
+    font-size: 21px;
+}
+
+.view-room-brand strong {
+    display: block;
+
+    font-size: 17px;
+}
+
+.view-room-brand span {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #94a3b8;
+
+    font-size: 11px;
+}
+
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+.view-room-nav {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+
+    margin-top: 25px;
+}
+
+.view-room-nav button {
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 12px 13px;
+
+    border: none;
+
+    border-radius: 9px;
+
+    background: transparent;
+
+    color: #94a3b8;
+
+    text-align: left;
+
+    font-size: 13px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.view-room-nav button:hover {
+    background: #1e293b;
+
+    color: white;
+
+    transform: translateX(2px);
+}
+
+.view-room-nav button.active {
+    background: #134e4a;
+
+    color: white;
+
+    box-shadow:
+        inset 3px 0 0 #2dd4bf;
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+.view-room-logout {
+    width: 100%;
+
+    margin-top: auto;
+
+    padding: 12px 13px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    border: 1px solid #334155;
+
+    border-radius: 9px;
+
+    background: transparent;
+
+    color: #fca5a5;
+
+    font-size: 13px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+.view-room-logout:hover {
+    background: #7f1d1d;
+
+    color: white;
+}
+
+
+/* =====================================================
+   MAIN
+===================================================== */
+
+.view-room-main {
+    width: calc(100% - 255px);
+
+    margin-left: 255px;
+
+    min-height: 100vh;
+
+    box-sizing: border-box;
+
+    padding: 30px 35px;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.view-room-header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 25px;
+}
+
+.view-room-header > div:first-child span {
+    color: #0f766e;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+}
+
+.view-room-header h1 {
+    margin: 6px 0 5px;
+
+    font-size: 29px;
+
+    line-height: 1.2;
+}
+
+.view-room-header p {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+
+/* =====================================================
+   HEADER BUTTONS
+===================================================== */
+
+.view-room-header-actions {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+.view-room-back-btn,
+.view-room-edit-btn {
+    padding: 10px 16px;
+
+    border-radius: 9px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.view-room-back-btn {
+    border: 1px solid #cbd5e1;
+
+    background: white;
+
+    color: #475569;
+}
+
+.view-room-back-btn:hover {
+    border-color: #0f766e;
+
+    color: #0f766e;
+
+    transform: translateY(-1px);
+}
+
+.view-room-edit-btn {
+    border: none;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0f766e,
+            #115e59
+        );
+
+    color: white;
+
+    box-shadow:
+        0 6px 15px
+        rgba(15, 118, 110, 0.18);
+}
+
+.view-room-edit-btn:hover {
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 9px 20px
+        rgba(15, 118, 110, 0.25);
+}
+
+
+/* =====================================================
+   ROOM HERO
+===================================================== */
+
+.room-detail-hero {
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+    padding: 27px 30px;
+
+    margin-bottom: 20px;
+
+    overflow: hidden;
+
+    border-radius: 17px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0f172a,
+            #134e4a
+        );
+
+    color: white;
+
+    box-shadow:
+        0 12px 30px
+        rgba(15, 23, 42, 0.12);
+}
+
+.room-detail-hero::after {
+    content: "";
+
+    position: absolute;
+
+    width: 220px;
+    height: 220px;
+
+    right: -70px;
+    top: -100px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(45, 212, 191, 0.09);
+}
+
+.room-detail-icon {
+    width: 68px;
+    height: 68px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 17px;
+
+    background:
+        rgba(255, 255, 255, 0.11);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.16);
+
+    font-size: 31px;
+
+    position: relative;
+
+    z-index: 1;
+}
+
+.room-detail-title {
+    position: relative;
+
+    z-index: 1;
+}
+
+.room-detail-title span {
+    color: #99f6e4;
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.3px;
+}
+
+.room-detail-title h2 {
+    margin: 4px 0 4px;
+
+    font-size: 28px;
+}
+
+.room-detail-title p {
+    margin: 0;
+
+    color: #cbd5e1;
+
+    font-size: 12px;
+}
+
+.room-detail-status {
+    position: relative;
+
+    z-index: 1;
+
+    margin-left: auto;
+
+    padding: 7px 11px;
+
+    border-radius: 8px;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+.room-detail-status.available {
+    background: #dcfce7;
+
+    color: #166534;
+}
+
+.room-detail-status.maintenance {
+    background: #fef3c7;
+
+    color: #92400e;
+}
+
+.room-detail-status.inactive {
+    background: #fee2e2;
+
+    color: #991b1b;
+}
+
+.room-detail-status.occupied {
+    background: #dbeafe;
+
+    color: #1d4ed8;
+}
+
+.room-detail-status.unknown {
+    background: #e2e8f0;
+
+    color: #475569;
+}
+
+
+/* =====================================================
+   INFORMATION CARD
+===================================================== */
+
+.room-info-card {
+    overflow: hidden;
+
+    margin-bottom: 20px;
+
+    background: white;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 17px;
+
+    box-shadow:
+        0 8px 25px
+        rgba(15, 23, 42, 0.04);
+}
+
+.room-info-card-header {
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 21px 25px;
+
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.room-info-card-icon {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: #ecfdf5;
+
+    font-size: 18px;
+}
+
+.room-info-card-header h2 {
+    margin: 0;
+
+    font-size: 16px;
+}
+
+.room-info-card-header p {
+    margin: 4px 0 0;
+
+    color: #94a3b8;
+
+    font-size: 11px;
+}
+
+.room-info-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+}
+
+.room-info-item {
+    min-height: 82px;
+
+    box-sizing: border-box;
+
+    padding: 18px 22px;
+
+    border-right: 1px solid #f1f5f9;
+
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.room-info-item:nth-child(4n) {
+    border-right: none;
+}
+
+.room-info-item:nth-last-child(-n + 4) {
+    border-bottom: none;
+}
+
+.room-info-item span:first-child {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #94a3b8;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.6px;
+}
+
+.room-info-item strong {
+    display: block;
+
+    color: #1e293b;
+
+    font-size: 13px;
+}
+
+.room-fee-value {
+    color: #047857 !important;
+}
+
+.room-status-badge {
+    display: inline-block;
+
+    padding: 5px 8px;
+
+    border-radius: 6px;
+
+    font-size: 9px;
+
+    font-weight: 700;
+}
+
+.room-status-badge.available {
+    background: #dcfce7;
+
+    color: #166534;
+}
+
+.room-status-badge.maintenance {
+    background: #fef3c7;
+
+    color: #92400e;
+}
+
+.room-status-badge.inactive {
+    background: #fee2e2;
+
+    color: #991b1b;
+}
+
+.room-status-badge.occupied {
+    background: #dbeafe;
+
+    color: #1d4ed8;
+}
+
+.room-status-badge.unknown {
+    background: #f1f5f9;
+
+    color: #64748b;
+}
+
+
+/* =====================================================
+   CAPACITY CARD
+===================================================== */
+
+.room-capacity-card {
+    padding: 23px 25px;
+
+    margin-bottom: 20px;
+
+    background: white;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 17px;
+
+    box-shadow:
+        0 8px 25px
+        rgba(15, 23, 42, 0.04);
+}
+
+.room-capacity-top {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+}
+
+.room-capacity-top span {
+    color: #0f766e;
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+}
+
+.room-capacity-top h2 {
+    margin: 5px 0 2px;
+
+    font-size: 29px;
+}
+
+.room-capacity-top p {
+    margin: 0;
+
+    color: #94a3b8;
+
+    font-size: 11px;
+}
+
+.room-capacity-icon {
+    width: 54px;
+    height: 54px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background: #ecfdf5;
+
+    font-size: 24px;
+}
+
+.room-capacity-bar {
+    height: 8px;
+
+    margin-top: 20px;
+
+    overflow: hidden;
+
+    border-radius: 20px;
+
+    background: #e2e8f0;
+}
+
+.room-capacity-progress {
+    height: 100%;
+
+    border-radius: inherit;
+
+    background:
+        linear-gradient(
+            90deg,
+            #0f766e,
+            #2dd4bf
+        );
+
+    transition: width 0.3s ease;
+}
+
+.room-capacity-note {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    margin-top: 15px;
+
+    padding: 10px 12px;
+
+    border-radius: 8px;
+
+    background: #f8fafc;
+}
+
+.room-capacity-note span {
+    font-size: 13px;
+}
+
+.room-capacity-note p {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 10px;
+}
+
+
+/* =====================================================
+   ADMIN ACTIONS
+===================================================== */
+
+.room-admin-actions {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 21px 25px;
+
+    background: white;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 17px;
+
+    box-shadow:
+        0 8px 25px
+        rgba(15, 23, 42, 0.04);
+}
+
+.room-admin-actions h2 {
+    margin: 0 0 5px;
+
+    font-size: 15px;
+}
+
+.room-admin-actions p {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 11px;
+}
+
+.room-admin-action-buttons {
+    display: flex;
+
+    gap: 9px;
+}
+
+.room-action-edit,
+.room-action-status {
+    padding: 10px 14px;
+
+    border-radius: 8px;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease;
+}
+
+.room-action-edit {
+    border: none;
+
+    background: #0f766e;
+
+    color: white;
+}
+
+.room-action-edit:hover {
+    background: #115e59;
+
+    transform: translateY(-1px);
+}
+
+.room-action-status {
+    border: 1px solid #cbd5e1;
+
+    background: white;
+
+    color: #475569;
+}
+
+.room-action-status:hover {
+    border-color: #0f766e;
+
+    color: #0f766e;
+
+    transform: translateY(-1px);
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.view-room-footer {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-top: 35px;
+
+    padding: 25px 0;
+
+    border-top: 1px solid #e2e8f0;
+
+    color: #94a3b8;
+
+    font-size: 11px;
+}
+
+
+/* =====================================================
+   LOADING
+===================================================== */
+
+.view-room-loading {
+    min-height: 100vh;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #f1f5f9;
+
+    color: #64748b;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+}
+
+.view-room-spinner {
+    margin-bottom: 10px;
+
+    font-size: 38px;
+
+    animation:
+        view-room-spin 1.2s linear infinite;
+}
+
+.view-room-loading p {
+    margin: 0;
+
+    font-size: 13px;
+}
+
+@keyframes view-room-spin {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+/* =====================================================
+   ERROR PAGE
+===================================================== */
+
+.view-room-error-page {
+    min-height: 100vh;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 25px;
+
+    box-sizing: border-box;
+
+    background: #f1f5f9;
+
+    text-align: center;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+}
+
+.view-room-error-icon {
+    width: 70px;
+    height: 70px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 18px;
+
+    background: #fef2f2;
+
+    font-size: 30px;
+}
+
+.view-room-error-page h2 {
+    margin: 17px 0 6px;
+
+    color: #0f172a;
+
+    font-size: 19px;
+}
+
+.view-room-error-page p {
+    margin: 0 0 18px;
+
+    color: #64748b;
+
+    font-size: 12px;
+}
+
+.view-room-error-page button {
+    padding: 10px 16px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #0f766e;
+
+    color: white;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.view-room-error-page button:hover {
+    background: #115e59;
+}
+
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media (max-width: 1100px) {
+
+    .room-info-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .room-info-item:nth-child(4n) {
+        border-right: 1px solid #f1f5f9;
+    }
+
+    .room-info-item:nth-child(2n) {
+        border-right: none;
+    }
+
+    .room-info-item:nth-last-child(-n + 4) {
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .room-info-item:nth-last-child(-n + 2) {
+        border-bottom: none;
+    }
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 700px) {
+
+    .view-room-page {
+        display: block;
+    }
+
+    .view-room-sidebar {
+        position: relative;
+
+        width: 100%;
+        height: auto;
+
+        padding: 15px;
+    }
+
+    .view-room-nav {
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+        margin-top: 15px;
+    }
+
+    .view-room-logout {
+        margin-top: 15px;
+    }
+
+    .view-room-main {
+        width: 100%;
+
+        margin-left: 0;
+
+        padding: 20px 15px;
+    }
+
+    .view-room-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .view-room-header-actions {
+        width: 100%;
+    }
+
+    .view-room-back-btn,
+    .view-room-edit-btn {
+        flex: 1;
+    }
+
+    .room-detail-hero {
+        align-items: flex-start;
+
+        flex-wrap: wrap;
+
+        padding: 22px;
+    }
+
+    .room-detail-status {
+        margin-left: 0;
+
+        width: 100%;
+
+        box-sizing: border-box;
+
+        text-align: center;
+    }
+
+    .room-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .room-info-item,
+    .room-info-item:nth-child(2n),
+    .room-info-item:nth-child(4n) {
+        border-right: none;
+
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .room-info-item:last-child {
+        border-bottom: none;
+    }
+
+    .room-admin-actions {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .room-admin-action-buttons {
+        width: 100%;
+    }
+
+    .room-action-edit,
+    .room-action-status {
+        flex: 1;
+    }
+
+    .view-room-footer {
+        flex-direction: column;
+
+        gap: 8px;
+
+        text-align: center;
+    }
+
+}
+
+
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
+
+@media (max-width: 420px) {
+
+    .view-room-nav {
+        grid-template-columns: 1fr;
+    }
+
+    .view-room-header h1 {
+        font-size: 25px;
+    }
+
+    .view-room-header-actions {
+        flex-direction: column;
+    }
+
+    .view-room-back-btn,
+    .view-room-edit-btn {
+        width: 100%;
+    }
+
+    .room-detail-icon {
+        width: 58px;
+        height: 58px;
+
+        font-size: 26px;
+    }
+
+    .room-detail-title h2 {
+        font-size: 24px;
+    }
+
+    .room-admin-action-buttons {
+        flex-direction: column;
+    }
+
+    .room-action-edit,
+    .room-action-status {
+        width: 100%;
+    }
+
+}

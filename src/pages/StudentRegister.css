@@ -1,0 +1,365 @@
+/* =====================================================
+   STUDENT REGISTRATION
+   ===================================================== */
+
+.register-page {
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 45px 20px;
+
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(20, 184, 166, 0.16),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at bottom left,
+            rgba(245, 158, 11, 0.10),
+            transparent 32%
+        ),
+        #f1f5f9;
+
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* =====================================================
+   MAIN CARD
+   ===================================================== */
+
+.register-card {
+    width: 100%;
+    max-width: 920px;
+
+    background: #ffffff;
+
+    border-radius: 22px;
+
+    overflow: hidden;
+
+    border: 1px solid #e2e8f0;
+
+    box-shadow:
+        0 25px 60px rgba(15, 23, 42, 0.14);
+}
+
+
+/* =====================================================
+   HEADER
+   ===================================================== */
+
+.register-header {
+    position: relative;
+
+    padding: 34px 40px;
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0f172a 0%,
+            #134e4a 55%,
+            #0f766e 100%
+        );
+}
+
+
+/* Gold accent line */
+
+.register-header::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 4px;
+
+    background: #f59e0b;
+}
+
+
+/* =====================================================
+   HEADER TEXT
+   ===================================================== */
+
+.register-header h1 {
+    margin: 0;
+
+    font-size: 30px;
+
+    font-weight: 700;
+
+    letter-spacing: -0.5px;
+}
+
+.register-header p {
+    margin: 8px 0 0;
+
+    font-size: 14px;
+
+    color: #ccfbf1;
+}
+
+
+/* =====================================================
+   FORM
+   ===================================================== */
+
+.register-form {
+    padding: 38px 40px;
+}
+
+
+/* =====================================================
+   FORM GRID
+   ===================================================== */
+
+.form-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 22px;
+}
+
+
+/* =====================================================
+   FORM GROUP
+   ===================================================== */
+
+.form-group {
+    display: flex;
+
+    flex-direction: column;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+
+.form-group label {
+    margin-bottom: 8px;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    color: #334155;
+}
+
+
+/* =====================================================
+   INPUT
+   ===================================================== */
+
+.form-group input {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 13px 15px;
+
+    border: 1px solid #cbd5e1;
+
+    border-radius: 10px;
+
+    outline: none;
+
+    font-size: 14px;
+
+    color: #0f172a;
+
+    background: #f8fafc;
+
+    transition: all 0.2s ease;
+}
+
+.form-group input:hover {
+    border-color: #94a3b8;
+}
+
+.form-group input:focus {
+    border-color: #0f766e;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 0 0 4px rgba(20, 184, 166, 0.12);
+}
+
+.form-group input::placeholder {
+    color: #94a3b8;
+}
+
+
+/* =====================================================
+   REGISTER BUTTON
+   ===================================================== */
+
+.register-button {
+    width: 100%;
+
+    margin-top: 28px;
+
+    padding: 15px;
+
+    border: none;
+
+    border-radius: 11px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0f766e,
+            #115e59
+        );
+
+    color: #ffffff;
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 8px 20px rgba(15, 118, 110, 0.22);
+
+    transition: all 0.2s ease;
+}
+
+.register-button:hover {
+    transform: translateY(-2px);
+
+    background:
+        linear-gradient(
+            135deg,
+            #0d9488,
+            #0f766e
+        );
+
+    box-shadow:
+        0 12px 25px rgba(15, 118, 110, 0.28);
+}
+
+.register-button:active {
+    transform: translateY(0);
+}
+
+.register-button:disabled {
+    opacity: 0.65;
+
+    cursor: not-allowed;
+
+    transform: none;
+}
+
+
+/* =====================================================
+   SUCCESS / MESSAGE
+   ===================================================== */
+
+.register-message {
+    margin-top: 18px;
+
+    padding: 12px 15px;
+
+    border-radius: 9px;
+
+    text-align: center;
+
+    font-size: 14px;
+
+    background: #ecfdf5;
+
+    color: #047857;
+
+    border: 1px solid #a7f3d0;
+}
+
+
+/* =====================================================
+   LOGIN SECTION
+   ===================================================== */
+
+.login-section {
+    margin-top: 26px;
+
+    padding-top: 20px;
+
+    border-top: 1px solid #e2e8f0;
+
+    text-align: center;
+
+    color: #64748b;
+
+    font-size: 14px;
+}
+
+.login-button {
+    margin-left: 5px;
+
+    padding: 0;
+
+    border: none;
+
+    background: transparent;
+
+    color: #0f766e;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.login-button:hover {
+    color: #0d9488;
+
+    text-decoration: underline;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 700px) {
+
+    .register-page {
+        padding: 20px 12px;
+    }
+
+    .register-header {
+        padding: 30px 25px;
+    }
+
+    .register-header h1 {
+        font-size: 25px;
+    }
+
+    .register-form {
+        padding: 28px 25px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+
+        gap: 18px;
+    }
+
+    .form-group.full-width {
+        grid-column: auto;
+    }
+
+}
