@@ -5,7 +5,7 @@ import {
     Navigate
 } from "react-router-dom";
 
-import Index from "./pages/Index";
+import Index from "./pages/index";
 import StudentLogin from "./pages/StudentLogin";
 import StudentRegister from "./pages/StudentRegister";
 import StudentProfile from "./pages/StudentProfile";
