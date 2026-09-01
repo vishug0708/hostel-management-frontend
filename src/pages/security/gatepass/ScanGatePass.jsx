@@ -91,15 +91,27 @@ const ScanGatePass = () => {
                         height: 250
                     }
                 },
+                // async (decodedText) => {
+                //     playBeep();
+
+                //     await stopScanner();
+
+                //     await verifyGatePass(
+                //         decodedText
+                //     );
+                // }
                 async (decodedText) => {
-                    playBeep();
+    console.log("========== QR SCANNED ==========");
+    console.log("QR VALUE:", decodedText);
+    console.log("QR VALUE TYPE:", typeof decodedText);
 
-                    await stopScanner();
+    playBeep();
 
-                    await verifyGatePass(
-                        decodedText
-                    );
-                },
+    await stopScanner();
+
+    await verifyGatePass(decodedText);
+}
+                ,
                 () => { }
             );
         } catch (error) {
