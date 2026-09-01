@@ -2,182 +2,139 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./ViewRoom.css";
 
-function ViewRoom() {
-
+const ViewRoom = () => {
     const navigate = useNavigate();
     const { id } = useParams();
 
     const [room, setRoom] = useState(null);
-
+    const [allocations, setAllocations] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-
-    // =====================================================
-    // FETCH ROOM
-    // =====================================================
-
     useEffect(() => {
+        fetchRoomDetails();
+    }, [id]);
 
-        const fetchRoom = async () => {
+    const fetchRoomDetails = async () => {
+        try {
+            setLoading(true);
+            setError("");
 
             const token =
                 localStorage.getItem("adminToken");
 
-
-            if (!token) {
-
-                navigate("/admin/login", {
-                    replace: true
-                });
-
-                return;
-
-            }
-
-
-            if (!id) {
-
-                setError(
-                    "Room ID is missing."
-                );
-
-                setLoading(false);
-
-                return;
-
-            }
-
-
-            try {
-
-                const response = await fetch(
-                    `http://localhost:5000/api/admin/rooms/${id}`,
-                    {
-                        method: "GET",
-
-                        headers: {
-                            Authorization:
-                                `Bearer ${token}`
-                        }
+            const response = await fetch(
+                `http://localhost:5000/api/admin/rooms/${id}`,
+                {
+                    method: "GET",
+                    headers: {
+                        Authorization:
+                            `Bearer ${token}`
                     }
-                );
-
-
-                const data =
-                    await response.json();
-
-
-                if (
-                    !response.ok ||
-                    !data.success
-                ) {
-
-                    setError(
-                        data.message ||
-                        "Unable to load room."
-                    );
-
-                    return;
-
                 }
+            );
 
+            const data = await response.json();
 
-                setRoom(data.room);
-
-
-            } catch (err) {
-
-                console.error(
-                    "View Room Error:",
-                    err
+            if (!response.ok || !data.success) {
+                throw new Error(
+                    data.message ||
+                    "Failed to load room details."
                 );
-
-                setError(
-                    "Cannot connect to backend server."
-                );
-
-            } finally {
-
-                setLoading(false);
-
             }
 
-        };
+            setRoom(data.room);
 
+            /*
+             * If backend later returns allocations
+             * with the room response, this will use them.
+             */
+            setAllocations(
+                Array.isArray(data.allocations)
+                    ? data.allocations
+                    : []
+            );
 
-        fetchRoom();
+        } catch (err) {
+            console.error(
+                "View Room Error:",
+                err
+            );
 
-    }, [id, navigate]);
-
-
-    // =====================================================
-    // LOGOUT
-    // =====================================================
-
-    const handleLogout = () => {
-
-        localStorage.removeItem(
-            "adminToken"
-        );
-
-        localStorage.removeItem(
-            "admin"
-        );
-
-        navigate("/admin/login", {
-            replace: true
-        });
-
+            setError(
+                err.message ||
+                "Unable to load room details."
+            );
+        } finally {
+            setLoading(false);
+        }
     };
 
+    const getRoomStatus = () => {
+        if (!room) {
+            return "Available";
+        }
 
-    // =====================================================
-    // STATUS CLASS
-    // =====================================================
+        if (room.status === "Reserved") {
+            return "Reserved";
+        }
 
-    const getStatusClass = (status) => {
+        if (room.status === "Not In Use") {
+            return "Not In Use";
+        }
 
-        return String(status || "unknown")
-            .toLowerCase()
-            .replace(/\s+/g, "-");
+        const totalBeds =
+            Number(room.total_beds || 0);
 
+        const allocatedBeds =
+            Number(
+                room.allocated_beds || 0
+            );
+
+        if (
+            totalBeds > 0 &&
+            allocatedBeds >= totalBeds
+        ) {
+            return "Occupied";
+        }
+
+        return "Available";
     };
 
-
-    // =====================================================
-    // LOADING
-    // =====================================================
+    const getStudentForBed = (bedNo) => {
+        return allocations.find(
+            (allocation) =>
+                Number(
+                    allocation.bed_no
+                ) === bedNo &&
+                allocation.status ===
+                    "Allocated"
+        );
+    };
 
     if (loading) {
-
         return (
-
             <div className="view-room-loading">
 
-                <div className="view-room-spinner">
+                <div className="view-room-loading-icon">
                     ⏳
                 </div>
 
+                <h2>
+                    Loading Room...
+                </h2>
+
                 <p>
-                    Loading room details...
+                    Please wait while room
+                    information is being loaded.
                 </p>
 
             </div>
-
         );
-
     }
 
-
-    // =====================================================
-    // ERROR
-    // =====================================================
-
     if (error || !room) {
-
         return (
-
             <div className="view-room-error-page">
 
                 <div className="view-room-error-icon">
@@ -189,7 +146,8 @@ function ViewRoom() {
                 </h2>
 
                 <p>
-                    {error || "Room not found."}
+                    {error ||
+                        "Room information was not found."}
                 </p>
 
                 <button
@@ -203,137 +161,40 @@ function ViewRoom() {
                 </button>
 
             </div>
-
         );
-
     }
 
+    const totalBeds =
+        Number(room.total_beds || 0);
 
-    // =====================================================
-    // PAGE
-    // =====================================================
+    const allocatedBeds =
+        Number(
+            room.allocated_beds || 0
+        );
+
+    const vacantBeds =
+        Math.max(
+            totalBeds -
+            allocatedBeds,
+            0
+        );
+
+    const status =
+        getRoomStatus();
 
     return (
-
         <div className="view-room-page">
 
+            <div className="view-room-container">
 
-            {/* =================================================
-                SIDEBAR
-            ================================================= */}
+                {/* HEADER */}
 
-            <aside className="view-room-sidebar">
-
-
-                <div className="view-room-brand">
-
-                    <div className="view-room-brand-icon">
-                        🏠
-                    </div>
+                <div className="view-room-header">
 
                     <div>
 
-                        <strong>
-                            Hostel
-                        </strong>
-
-                        <span>
-                            Admin Panel
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <nav className="view-room-nav">
-
-
-                    <button
-                        onClick={() =>
-                            navigate(
-                                "/admin/dashboard"
-                            )
-                        }
-                    >
-                        📊 Dashboard
-                    </button>
-
-
-                    <button
-                        onClick={() =>
-                            navigate(
-                                "/admin/students"
-                            )
-                        }
-                    >
-                        🎓 Students
-                    </button>
-
-
-                    <button
-                        className="active"
-                        onClick={() =>
-                            navigate(
-                                "/admin/rooms"
-                            )
-                        }
-                    >
-                        🛏️ Rooms
-                    </button>
-
-
-                    <button
-                        onClick={() =>
-                            navigate(
-                                "/admin/rooms/add"
-                            )
-                        }
-                    >
-                        ➕ Add Room
-                    </button>
-
-
-                    <button
-                        onClick={() =>
-                            navigate(
-                                "/admin/profile"
-                            )
-                        }
-                    >
-                        👤 Profile
-                    </button>
-
-                </nav>
-
-
-                <button
-                    className="view-room-logout"
-                    onClick={handleLogout}
-                >
-                    🚪 Logout
-                </button>
-
-            </aside>
-
-
-            {/* =================================================
-                MAIN
-            ================================================= */}
-
-            <main className="view-room-main">
-
-
-                {/* =================================================
-                    HEADER
-                ================================================= */}
-
-                <header className="view-room-header">
-
-                    <div>
-
-                        <span>
-                            ROOM MANAGEMENT
+                        <span className="view-room-label">
+                            ADMIN PANEL
                         </span>
 
                         <h1>
@@ -341,14 +202,24 @@ function ViewRoom() {
                         </h1>
 
                         <p>
-                            View complete information
+                            Complete information
                             about this hostel room.
                         </p>
 
                     </div>
 
-
                     <div className="view-room-header-actions">
+
+                        <button
+                            className="view-room-edit-btn"
+                            onClick={() =>
+                                navigate(
+                                    `/admin/rooms/edit/${room.id}`
+                                )
+                            }
+                        >
+                            ✏ Edit Room
+                        </button>
 
                         <button
                             className="view-room-back-btn"
@@ -361,87 +232,148 @@ function ViewRoom() {
                             ← Back
                         </button>
 
-
-                        <button
-                            className="view-room-edit-btn"
-                            onClick={() =>
-                                navigate(
-                                    `/admin/rooms/edit/${room.id}`
-                                )
-                            }
-                        >
-                            ✏️ Edit Room
-                        </button>
-
                     </div>
 
-                </header>
+                </div>
 
+                {/* ROOM HERO */}
 
-                {/* =================================================
-                    ROOM HERO
-                ================================================= */}
+                <div className="view-room-hero">
 
-                <section className="room-detail-hero">
+                    <div className="view-room-hero-main">
 
+                        <div className="view-room-hero-icon">
+                            🏢
+                        </div>
 
-                    <div className="room-detail-icon">
-                        🛏️
+                        <div>
+
+                            <span>
+                                BLOCK{" "}
+                                {room.block}
+                            </span>
+
+                            <h2>
+                                Room{" "}
+                                {room.room_no}
+                            </h2>
+
+                            <p>
+                                {room.room_type ||
+                                    "Room"}
+                            </p>
+
+                        </div>
+
                     </div>
-
-
-                    <div className="room-detail-title">
-
-                        <span>
-                            ROOM NUMBER
-                        </span>
-
-                        <h2>
-                            {room.room_no}
-                        </h2>
-
-                        <p>
-                            {room.hostel || "Hostel"}
-                            {room.floor
-                                ? ` • Floor ${room.floor}`
-                                : ""}
-                        </p>
-
-                    </div>
-
 
                     <div
-                        className={
-                            `room-detail-status ${
-                                getStatusClass(
-                                    room.status
-                                )
-                            }`
-                        }
+                        className={`view-room-status ${status
+                            .toLowerCase()
+                            .replace(
+                                /\s+/g,
+                                "-"
+                            )}`}
                     >
+                        {status}
+                    </div>
 
-                        <span>
-                            ●
-                        </span>
+                </div>
 
-                        {room.status ||
-                            "Unknown"}
+                {/* STATISTICS */}
+
+                <div className="view-room-stats">
+
+                    <div className="view-room-stat-card">
+
+                        <div className="view-room-stat-icon">
+                            🛏️
+                        </div>
+
+                        <div>
+
+                            <span>
+                                TOTAL BEDS
+                            </span>
+
+                            <strong>
+                                {totalBeds}
+                            </strong>
+
+                        </div>
 
                     </div>
 
-                </section>
+                    <div className="view-room-stat-card">
 
+                        <div className="view-room-stat-icon allocated">
+                            🔴
+                        </div>
 
-                {/* =================================================
-                    BASIC INFORMATION
-                ================================================= */}
+                        <div>
 
-                <section className="room-info-card">
+                            <span>
+                                ALLOCATED
+                            </span>
 
+                            <strong>
+                                {allocatedBeds}
+                            </strong>
 
-                    <div className="room-info-card-header">
+                        </div>
 
-                        <div className="room-info-card-icon">
+                    </div>
+
+                    <div className="view-room-stat-card">
+
+                        <div className="view-room-stat-icon vacant">
+                            🟢
+                        </div>
+
+                        <div>
+
+                            <span>
+                                VACANT
+                            </span>
+
+                            <strong>
+                                {vacantBeds}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                    <div className="view-room-stat-card">
+
+                        <div className="view-room-stat-icon hostel">
+                            🏠
+                        </div>
+
+                        <div>
+
+                            <span>
+                                HOSTEL
+                            </span>
+
+                            <strong>
+                                {room.hostel ||
+                                    "—"}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {/* ROOM INFORMATION */}
+
+                <div className="view-room-card">
+
+                    <div className="view-room-card-header">
+
+                        <div className="view-room-card-icon">
                             ℹ️
                         </div>
 
@@ -452,63 +384,45 @@ function ViewRoom() {
                             </h2>
 
                             <p>
-                                Basic details of the room.
+                                Basic information
+                                about this room.
                             </p>
 
                         </div>
 
                     </div>
 
+                    <div className="view-room-information">
 
-                    <div className="room-info-grid">
-
-
-                        <div className="room-info-item">
+                        <div className="view-room-information-item">
 
                             <span>
-                                Room Number
+                                BLOCK
                             </span>
 
                             <strong>
-                                {room.room_no ||
-                                    "—"}
+                                Block{" "}
+                                {room.block}
                             </strong>
 
                         </div>
 
-
-                        <div className="room-info-item">
+                        <div className="view-room-information-item">
 
                             <span>
-                                Floor
+                                ROOM NUMBER
                             </span>
 
                             <strong>
-                                {room.floor ||
-                                    "—"}
+                                {room.room_no}
                             </strong>
 
                         </div>
 
-
-                        <div className="room-info-item">
-
-                            <span>
-                                Hostel
-                            </span>
-
-                            <strong>
-                                {room.hostel ||
-                                    "—"}
-                            </strong>
-
-                        </div>
-
-
-                        <div className="room-info-item">
+                        <div className="view-room-information-item">
 
                             <span>
-                                Room Type
+                                ROOM TYPE
                             </span>
 
                             <strong>
@@ -518,223 +432,369 @@ function ViewRoom() {
 
                         </div>
 
-
-                        <div className="room-info-item">
+                        <div className="view-room-information-item">
 
                             <span>
-                                Capacity
+                                TOTAL BEDS
                             </span>
 
                             <strong>
-                                {room.capacity
-                                    ? `${room.capacity} Students`
-                                    : "—"}
+                                {totalBeds}
                             </strong>
 
                         </div>
 
-
-                        <div className="room-info-item">
+                        <div className="view-room-information-item">
 
                             <span>
-                                Hostel Fee
+                                ROOM FEES
                             </span>
 
-                            <strong className="room-fee-value">
-
-                                ₹
+                            <strong>
+                                ₹{" "}
                                 {Number(
-                                    room.fees || 0
+                                    room.fees ||
+                                    0
                                 ).toLocaleString(
                                     "en-IN"
                                 )}
-
                             </strong>
 
                         </div>
 
-
-                        <div className="room-info-item">
+                        <div className="view-room-information-item">
 
                             <span>
-                                Room Status
+                                STATUS
                             </span>
 
                             <strong>
-
-                                <span
-                                    className={
-                                        `room-status-badge ${
-                                            getStatusClass(
-                                                room.status
-                                            )
-                                        }`
-                                    }
-                                >
-
-                                    ●{" "}
-                                    {room.status ||
-                                        "Unknown"}
-
-                                </span>
-
+                                {status}
                             </strong>
 
                         </div>
 
-
-                        <div className="room-info-item">
+                        <div className="view-room-information-item full">
 
                             <span>
-                                Room ID
+                                HOSTEL
                             </span>
 
                             <strong>
-                                #{room.id}
+                                {room.hostel ||
+                                    "—"}
                             </strong>
 
                         </div>
 
                     </div>
 
-                </section>
+                </div>
 
+                {/* BED STATUS */}
 
-                {/* =================================================
-                    CAPACITY INFORMATION
-                ================================================= */}
+                <div className="view-room-card">
 
-                <section className="room-capacity-card">
+                    <div className="view-room-card-header">
 
-
-                    <div className="room-capacity-top">
+                        <div className="view-room-card-icon bed">
+                            🛏️
+                        </div>
 
                         <div>
 
-                            <span>
-                                ROOM CAPACITY
-                            </span>
-
                             <h2>
-                                {room.capacity || 0}
+                                Bed Status
                             </h2>
 
                             <p>
-                                Maximum students
-                                allowed
+                                Bed-wise occupancy
+                                of Room{" "}
+                                {room.room_no}.
                             </p>
 
                         </div>
 
+                    </div>
 
-                        <div className="room-capacity-icon">
-                            👥
+                    <div className="view-room-bed-legend">
+
+                        <div>
+                            <span className="legend-dot allocated">
+                                ●
+                            </span>
+
+                            Allocated
+                        </div>
+
+                        <div>
+                            <span className="legend-dot vacant">
+                                ●
+                            </span>
+
+                            Vacant
                         </div>
 
                     </div>
 
+                    <div className="view-room-beds">
 
-                    <div className="room-capacity-bar">
+                        {Array.from({
+                            length: totalBeds
+                        }).map(
+                            (_, index) => {
 
-                        <div
-                            className="room-capacity-progress"
-                            style={{
-                                width: "0%"
-                            }}
-                        />
+                                const bedNo =
+                                    index + 1;
 
-                    </div>
+                                const student =
+                                    getStudentForBed(
+                                        bedNo
+                                    );
 
+                                const isAllocated =
+                                    index <
+                                    allocatedBeds;
 
-                    <div className="room-capacity-note">
+                                return (
+                                    <div
+                                        key={
+                                            bedNo
+                                        }
+                                        className={`view-room-bed ${
+                                            isAllocated
+                                                ? "allocated"
+                                                : "vacant"
+                                        }`}
+                                    >
 
-                        <span>
-                            ℹ️
-                        </span>
+                                        <div className="view-room-bed-number">
+                                            Bed{" "}
+                                            {
+                                                bedNo
+                                            }
+                                        </div>
 
-                        <p>
-                            Student allocation is managed
-                            by the Rector.
-                        </p>
+                                        <div className="view-room-bed-status">
 
-                    </div>
+                                            {isAllocated
+                                                ? "Allocated"
+                                                : "Vacant"}
 
-                </section>
+                                        </div>
 
+                                        {student && (
+                                            <div className="view-room-bed-student">
 
-                {/* =================================================
-                    ADMIN ACTIONS
-                ================================================= */}
+                                                <strong>
+                                                    {
+                                                        student.student_name ||
+                                                        student.name ||
+                                                        "Student"
+                                                    }
+                                                </strong>
 
-                <section className="room-admin-actions">
+                                                {student.student_id && (
+                                                    <span>
+                                                        ID:{" "}
+                                                        {
+                                                            student.student_id
+                                                        }
+                                                    </span>
+                                                )}
 
+                                            </div>
+                                        )}
 
-                    <div>
-
-                        <h2>
-                            Room Management
-                        </h2>
-
-                        <p>
-                            You can edit room information
-                            or check its current status.
-                        </p>
-
-                    </div>
-
-
-                    <div className="room-admin-action-buttons">
-
-                        <button
-                            className="room-action-edit"
-                            onClick={() =>
-                                navigate(
-                                    `/admin/rooms/edit/${room.id}`
-                                )
+                                    </div>
+                                );
                             }
-                        >
-                            ✏️ Edit Room
-                        </button>
-
-
-                        <button
-                            className="room-action-status"
-                            onClick={() =>
-                                navigate(
-                                    `/admin/rooms/status/${room.id}`
-                                )
-                            }
-                        >
-                            📊 Room Status
-                        </button>
+                        )}
 
                     </div>
 
-                </section>
+                </div>
 
+                {/* ALLOCATION TABLE */}
 
-                {/* =================================================
-                    FOOTER
-                ================================================= */}
+                <div className="view-room-card">
 
-                <footer className="view-room-footer">
+                    <div className="view-room-card-header">
 
-                    <span>
-                        © 2026 Hostel Management System
-                    </span>
+                        <div className="view-room-card-icon">
+                            👨‍🎓
+                        </div>
 
-                    <span>
-                        Admin Panel
-                    </span>
+                        <div>
 
-                </footer>
+                            <h2>
+                                Current Allocations
+                            </h2>
 
-            </main>
+                            <p>
+                                Students currently
+                                allocated to this room.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    {allocations.filter(
+                        (allocation) =>
+                            allocation.status ===
+                            "Allocated"
+                    ).length === 0 ? (
+
+                        <div className="view-room-empty">
+
+                            <div>
+                                🛏️
+                            </div>
+
+                            <h3>
+                                No Students Allocated
+                            </h3>
+
+                            <p>
+                                This room currently
+                                has no active
+                                allocations.
+                            </p>
+
+                        </div>
+
+                    ) : (
+
+                        <div className="view-room-table-wrapper">
+
+                            <table className="view-room-table">
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>
+                                            BED
+                                        </th>
+
+                                        <th>
+                                            STUDENT
+                                        </th>
+
+                                        <th>
+                                            STUDENT ID
+                                        </th>
+
+                                        <th>
+                                            ALLOCATION DATE
+                                        </th>
+
+                                        <th>
+                                            STATUS
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                    {allocations
+                                        .filter(
+                                            (
+                                                allocation
+                                            ) =>
+                                                allocation.status ===
+                                                "Allocated"
+                                        )
+                                        .sort(
+                                            (
+                                                a,
+                                                b
+                                            ) =>
+                                                Number(
+                                                    a.bed_no
+                                                ) -
+                                                Number(
+                                                    b.bed_no
+                                                )
+                                        )
+                                        .map(
+                                            (
+                                                allocation
+                                            ) => (
+
+                                                <tr
+                                                    key={
+                                                        allocation.id
+                                                    }
+                                                >
+
+                                                    <td>
+
+                                                        <span className="view-room-table-bed">
+                                                            Bed{" "}
+                                                            {
+                                                                allocation.bed_no
+                                                            }
+                                                        </span>
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        <strong>
+                                                            {
+                                                                allocation.student_name ||
+                                                                allocation.name ||
+                                                                "—"
+                                                            }
+                                                        </strong>
+
+                                                    </td>
+
+                                                    <td>
+                                                        {
+                                                            allocation.student_id ||
+                                                            "—"
+                                                        }
+                                                    </td>
+
+                                                    <td>
+                                                        {
+                                                            allocation.allocation_date ||
+                                                            "—"
+                                                        }
+                                                    </td>
+
+                                                    <td>
+
+                                                        <span className="view-room-table-status">
+                                                            Allocated
+                                                        </span>
+
+                                                    </td>
+
+                                                </tr>
+
+                                            )
+                                        )}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    )}
+
+                </div>
+
+            </div>
 
         </div>
-
     );
-
-}
+};
 
 export default ViewRoom;

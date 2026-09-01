@@ -1,0 +1,779 @@
+/* =====================================================
+   FEE RECORDS PAGE
+===================================================== */
+
+.fee-records-page {
+    min-height: 100vh;
+    display: flex;
+    background: #f1f5f9;
+    color: #0f172a;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* =====================================================
+   SIDEBAR
+===================================================== */
+
+.fee-records-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 255px;
+    height: 100vh;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    padding: 22px 15px;
+    background: #0f172a;
+    color: white;
+    z-index: 100;
+}
+
+.fee-records-brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 5px 10px 25px;
+    border-bottom: 1px solid #1e293b;
+}
+
+.fee-records-brand-icon {
+    width: 43px;
+    height: 43px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    background: #0f766e;
+    font-size: 21px;
+}
+
+.fee-records-brand strong {
+    display: block;
+    font-size: 17px;
+}
+
+.fee-records-brand span {
+    display: block;
+    margin-top: 3px;
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+.fee-records-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 25px;
+}
+
+.fee-records-nav button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 13px;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    color: #94a3b8;
+    text-align: left;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.fee-records-nav button:hover {
+    background: #1e293b;
+    color: white;
+    transform: translateX(2px);
+}
+
+.fee-records-nav button.active {
+    background: #134e4a;
+    color: white;
+    box-shadow: inset 3px 0 0 #2dd4bf;
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+.fee-records-logout {
+    width: 100%;
+    margin-top: auto;
+    padding: 12px 13px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid #334155;
+    border-radius: 9px;
+    background: transparent;
+    color: #fca5a5;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.fee-records-logout:hover {
+    background: #7f1d1d;
+    color: white;
+}
+
+
+/* =====================================================
+   MAIN
+===================================================== */
+
+.fee-records-main {
+    width: calc(100% - 255px);
+    margin-left: 255px;
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 30px 35px;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.fee-records-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.fee-records-header > div:first-child span {
+    color: #0f766e;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.fee-records-header h1 {
+    margin: 6px 0 5px;
+    font-size: 29px;
+    line-height: 1.2;
+}
+
+.fee-records-header p {
+    margin: 0;
+    color: #64748b;
+    font-size: 13px;
+}
+
+.fee-records-back-btn {
+    padding: 10px 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    background: white;
+    color: #475569;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.fee-records-back-btn:hover {
+    border-color: #0f766e;
+    color: #0f766e;
+    transform: translateY(-1px);
+}
+
+
+/* =====================================================
+   SUMMARY
+===================================================== */
+
+.fee-records-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.fee-records-summary-card {
+    padding: 18px 20px;
+    border: 1px solid #e2e8f0;
+    border-radius: 13px;
+    background: white;
+    box-shadow: 0 7px 22px rgba(15, 23, 42, 0.04);
+}
+
+.fee-records-summary-card span {
+    display: block;
+    color: #94a3b8;
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+}
+
+.fee-records-summary-card strong {
+    display: block;
+    margin-top: 7px;
+    color: #0f766e;
+    font-size: 22px;
+}
+
+
+/* =====================================================
+   FILTER CARD
+===================================================== */
+
+.fee-records-filter-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #e2e8f0;
+    border-radius: 13px;
+    background: white;
+    box-shadow: 0 7px 22px rgba(15, 23, 42, 0.04);
+}
+
+.fee-records-search {
+    position: relative;
+    flex: 1;
+}
+
+.fee-records-search > span {
+    position: absolute;
+    top: 50%;
+    left: 13px;
+    transform: translateY(-50%);
+    font-size: 13px;
+}
+
+.fee-records-search input {
+    width: 100%;
+    height: 42px;
+    box-sizing: border-box;
+    padding: 0 13px 0 37px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    outline: none;
+    color: #1e293b;
+    font-size: 11px;
+}
+
+.fee-records-search input::placeholder {
+    color: #94a3b8;
+}
+
+.fee-records-search input:focus {
+    border-color: #0f766e;
+    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.08);
+}
+
+.fee-records-filter-card select {
+    width: 150px;
+    height: 42px;
+    padding: 0 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    outline: none;
+    background: white;
+    color: #475569;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.fee-records-filter-card select:focus {
+    border-color: #0f766e;
+}
+
+.fee-records-refresh-btn {
+    height: 42px;
+    padding: 0 15px;
+    border: 1px solid #ccfbf1;
+    border-radius: 9px;
+    background: #f0fdfa;
+    color: #0f766e;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.fee-records-refresh-btn:hover {
+    background: #ccfbf1;
+}
+
+
+/* =====================================================
+   RECORDS CARD
+===================================================== */
+
+.fee-records-card {
+    overflow: hidden;
+    margin-bottom: 20px;
+    border: 1px solid #e2e8f0;
+    border-radius: 17px;
+    background: white;
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.04);
+}
+
+.fee-records-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 23px 25px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.fee-records-card-header span {
+    color: #0f766e;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.fee-records-card-header h2 {
+    margin: 5px 0 0;
+    font-size: 17px;
+}
+
+.fee-records-count {
+    padding: 7px 10px;
+    border-radius: 7px;
+    background: #f0fdfa;
+    color: #0f766e;
+    font-size: 9px;
+    font-weight: 700;
+}
+
+
+/* =====================================================
+   TABLE
+===================================================== */
+
+.fee-records-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.fee-records-table {
+    width: 100%;
+    min-width: 850px;
+    border-collapse: collapse;
+}
+
+.fee-records-table th {
+    padding: 13px 18px;
+    background: #f8fafc;
+    color: #64748b;
+    font-size: 8px;
+    font-weight: 800;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.fee-records-table td {
+    padding: 14px 18px;
+    border-top: 1px solid #f1f5f9;
+    color: #475569;
+    font-size: 10px;
+    vertical-align: middle;
+}
+
+.fee-records-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+
+/* =====================================================
+   STUDENT
+===================================================== */
+
+.fee-record-student {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 175px;
+}
+
+.fee-record-student-avatar {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    background: #0f766e;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.fee-record-student strong {
+    display: block;
+    color: #1e293b;
+    font-size: 10px;
+}
+
+.fee-record-student small {
+    display: block;
+    margin-top: 3px;
+    color: #94a3b8;
+    font-size: 8px;
+}
+
+
+/* =====================================================
+   AMOUNT
+===================================================== */
+
+.fee-record-amount {
+    color: #047857;
+    font-size: 11px;
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+.fee-record-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 55px;
+    padding: 5px 8px;
+    border-radius: 6px;
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+.fee-record-status.paid,
+.fee-record-status.success,
+.fee-record-status.completed {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.fee-record-status.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.fee-record-status.failed,
+.fee-record-status.cancelled,
+.fee-record-status.rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+
+/* =====================================================
+   EMPTY STATE
+===================================================== */
+
+.fee-records-empty {
+    padding: 55px 20px;
+    text-align: center;
+}
+
+.fee-records-empty-icon {
+    width: 65px;
+    height: 65px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 17px;
+    background: #f0fdfa;
+    font-size: 28px;
+}
+
+.fee-records-empty h3 {
+    margin: 15px 0 6px;
+    color: #1e293b;
+    font-size: 15px;
+}
+
+.fee-records-empty p {
+    margin: 0;
+    color: #94a3b8;
+    font-size: 10px;
+}
+
+
+/* =====================================================
+   INFO NOTE
+===================================================== */
+
+.fee-records-note {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 15px 17px;
+    border: 1px solid #bae6fd;
+    border-radius: 11px;
+    background: #f0f9ff;
+}
+
+.fee-records-note > span {
+    width: 35px;
+    height: 35px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    background: #e0f2fe;
+    font-size: 16px;
+}
+
+.fee-records-note strong {
+    display: block;
+    margin-bottom: 3px;
+    color: #075985;
+    font-size: 11px;
+}
+
+.fee-records-note p {
+    margin: 0;
+    color: #0369a1;
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.fee-records-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 35px;
+    padding: 25px 0;
+    border-top: 1px solid #e2e8f0;
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+
+/* =====================================================
+   LOADING
+===================================================== */
+
+.fee-records-loading {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5f9;
+    color: #64748b;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.fee-records-spinner {
+    margin-bottom: 10px;
+    font-size: 38px;
+    animation: fee-records-spin 1.2s linear infinite;
+}
+
+.fee-records-loading p {
+    margin: 0;
+    font-size: 13px;
+}
+
+@keyframes fee-records-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* =====================================================
+   ERROR PAGE
+===================================================== */
+
+.fee-records-error-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 25px;
+    box-sizing: border-box;
+    background: #f1f5f9;
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.fee-records-error-icon {
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 18px;
+    background: #fef2f2;
+    font-size: 30px;
+}
+
+.fee-records-error-page h2 {
+    margin: 17px 0 6px;
+    font-size: 19px;
+}
+
+.fee-records-error-page p {
+    margin: 0 0 18px;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.fee-records-error-page button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #0f766e;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.fee-records-error-page button:hover {
+    background: #115e59;
+}
+
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media (max-width: 950px) {
+    .fee-records-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .fee-records-filter-card {
+        flex-wrap: wrap;
+    }
+
+    .fee-records-search {
+        flex-basis: 100%;
+    }
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 700px) {
+    .fee-records-page {
+        display: block;
+    }
+
+    .fee-records-sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        padding: 15px;
+    }
+
+    .fee-records-nav {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        margin-top: 15px;
+    }
+
+    .fee-records-logout {
+        margin-top: 15px;
+    }
+
+    .fee-records-main {
+        width: 100%;
+        margin-left: 0;
+        padding: 20px 15px;
+    }
+
+    .fee-records-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .fee-records-back-btn {
+        width: 100%;
+    }
+
+    .fee-records-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .fee-records-filter-card {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .fee-records-filter-card select,
+    .fee-records-refresh-btn {
+        width: 100%;
+    }
+
+    .fee-records-card-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .fee-records-count {
+        align-self: flex-start;
+    }
+
+    .fee-records-footer {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+    }
+}
+
+
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
+
+@media (max-width: 420px) {
+    .fee-records-nav {
+        grid-template-columns: 1fr;
+    }
+
+    .fee-records-header h1 {
+        font-size: 25px;
+    }
+
+    .fee-records-summary-card {
+        padding: 15px;
+    }
+
+    .fee-records-card-header {
+        padding: 18px;
+    }
+
+    .fee-records-note {
+        align-items: flex-start;
+    }
+}

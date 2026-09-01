@@ -1,50 +1,33 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ManageRooms.css";
 
-function ManageRooms() {
-
+const ManageRooms = () => {
     const navigate = useNavigate();
 
     const [rooms, setRooms] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-
     const [search, setSearch] = useState("");
-    const [statusFilter, setStatusFilter] = useState("All");
+    const [selectedBlock, setSelectedBlock] = useState("All");
+    const [deletingId, setDeletingId] = useState(null);
 
-
-    // =====================================================
-    // FETCH ROOMS
-    // =====================================================
+    useEffect(() => {
+        fetchRooms();
+    }, []);
 
     const fetchRooms = async () => {
-
-        const token =
-            localStorage.getItem("adminToken");
-
-
-        if (!token) {
-
-            navigate("/admin/login", {
-                replace: true
-            });
-
-            return;
-        }
-
-
         try {
-
             setLoading(true);
             setError("");
 
+            const token =
+                localStorage.getItem("adminToken");
 
             const response = await fetch(
                 "http://localhost:5000/api/admin/rooms",
                 {
                     method: "GET",
-
                     headers: {
                         Authorization:
                             `Bearer ${token}`
@@ -52,791 +35,865 @@ function ManageRooms() {
                 }
             );
 
-
-            const data =
-                await response.json();
-
+            const data = await response.json();
 
             if (!response.ok || !data.success) {
-
-                setError(
+                throw new Error(
                     data.message ||
-                    "Unable to load rooms."
+                    "Failed to load rooms."
                 );
-
-                return;
             }
-
 
             setRooms(
                 Array.isArray(data.rooms)
                     ? data.rooms
                     : []
             );
-
-
         } catch (err) {
-
             console.error(
-                "Manage Rooms Error:",
+                "Fetch Rooms Error:",
                 err
             );
 
             setError(
-                "Cannot connect to backend server."
+                err.message ||
+                "Unable to load rooms."
+            );
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const blocks = useMemo(() => {
+        const uniqueBlocks = [
+            ...new Set(
+                rooms
+                    .map(
+                        (room) =>
+                            room.block
+                    )
+                    .filter(Boolean)
+            )
+        ];
+
+        return uniqueBlocks.sort();
+    }, [rooms]);
+
+    const filteredRooms = useMemo(() => {
+        return rooms.filter((room) => {
+
+            const matchesBlock =
+                selectedBlock === "All" ||
+                String(room.block)
+                    .toUpperCase() ===
+                    String(selectedBlock)
+                        .toUpperCase();
+
+            const searchText =
+                search
+                    .trim()
+                    .toLowerCase();
+
+            const matchesSearch =
+                !searchText ||
+                String(
+                    room.room_no || ""
+                )
+                    .toLowerCase()
+                    .includes(searchText) ||
+                String(
+                    room.block || ""
+                )
+                    .toLowerCase()
+                    .includes(searchText) ||
+                String(
+                    room.room_type || ""
+                )
+                    .toLowerCase()
+                    .includes(searchText) ||
+                String(
+                    room.hostel || ""
+                )
+                    .toLowerCase()
+                    .includes(searchText);
+
+            return (
+                matchesBlock &&
+                matchesSearch
+            );
+        });
+    }, [
+        rooms,
+        selectedBlock,
+        search
+    ]);
+
+    const overallStats = useMemo(() => {
+
+        const totalRooms =
+            filteredRooms.length;
+
+        const totalBeds =
+            filteredRooms.reduce(
+                (sum, room) =>
+                    sum +
+                    Number(
+                        room.total_beds || 0
+                    ),
+                0
             );
 
-        } finally {
+        const allocatedBeds =
+            filteredRooms.reduce(
+                (sum, room) =>
+                    sum +
+                    Number(
+                        room.allocated_beds ||
+                        0
+                    ),
+                0
+            );
 
-            setLoading(false);
+        const vacantBeds =
+            Math.max(
+                totalBeds -
+                allocatedBeds,
+                0
+            );
 
+        const occupiedRooms =
+            filteredRooms.filter(
+                (room) =>
+                    Number(
+                        room.allocated_beds ||
+                        0
+                    ) >=
+                    Number(
+                        room.total_beds ||
+                        0
+                    ) &&
+                    Number(
+                        room.total_beds ||
+                        0
+                    ) > 0
+            ).length;
+
+        return {
+            totalRooms,
+            totalBeds,
+            allocatedBeds,
+            vacantBeds,
+            occupiedRooms
+        };
+    }, [filteredRooms]);
+
+    const getRoomStatus = (room) => {
+
+        const allocated =
+            Number(
+                room.allocated_beds || 0
+            );
+
+        const total =
+            Number(
+                room.total_beds || 0
+            );
+
+        if (
+            room.status === "Reserved"
+        ) {
+            return "Reserved";
         }
 
+        if (
+            room.status === "Not In Use"
+        ) {
+            return "Not In Use";
+        }
+
+        if (
+            total > 0 &&
+            allocated >= total
+        ) {
+            return "Occupied";
+        }
+
+        return "Available";
     };
 
+    const handleDelete = async (room) => {
 
-    useEffect(() => {
+        const confirmed =
+            window.confirm(
+                `Are you sure you want to delete Room ${room.room_no}?`
+            );
 
-        fetchRooms();
+        if (!confirmed) {
+            return;
+        }
 
-    }, []);
+        try {
+            setDeletingId(room.id);
+            setError("");
 
+            const token =
+                localStorage.getItem(
+                    "adminToken"
+                );
 
-    // =====================================================
-    // LOGOUT
-    // =====================================================
+            const response = await fetch(
+                `http://localhost:5000/api/admin/rooms/${room.id}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        Authorization:
+                            `Bearer ${token}`
+                    }
+                }
+            );
 
-    const handleLogout = () => {
+            const data =
+                await response.json();
 
-        localStorage.removeItem(
-            "adminToken"
-        );
+            if (
+                !response.ok ||
+                !data.success
+            ) {
+                throw new Error(
+                    data.message ||
+                    "Failed to delete room."
+                );
+            }
 
-        localStorage.removeItem(
-            "admin"
-        );
+            setRooms((prev) =>
+                prev.filter(
+                    (item) =>
+                        item.id !==
+                        room.id
+                )
+            );
 
-        navigate("/admin/login", {
-            replace: true
-        });
+        } catch (err) {
+            console.error(
+                "Delete Room Error:",
+                err
+            );
 
+            setError(
+                err.message ||
+                "Unable to delete room."
+            );
+        } finally {
+            setDeletingId(null);
+        }
     };
 
+    const renderBeds = (room) => {
 
-    // =====================================================
-    // FILTER ROOMS
-    // =====================================================
+        const totalBeds =
+            Number(
+                room.total_beds || 0
+            );
 
-    const filteredRooms = rooms.filter((room) => {
-
-        const searchText =
-            search.toLowerCase().trim();
-
-
-        const matchesSearch =
-            String(room.room_no || "")
-                .toLowerCase()
-                .includes(searchText) ||
-
-            String(room.floor || "")
-                .toLowerCase()
-                .includes(searchText) ||
-
-            String(room.hostel || "")
-                .toLowerCase()
-                .includes(searchText) ||
-
-            String(room.room_type || "")
-                .toLowerCase()
-                .includes(searchText);
-
-
-        const matchesStatus =
-            statusFilter === "All" ||
-            String(room.status || "")
-                .toLowerCase() ===
-            statusFilter.toLowerCase();
-
+        const allocatedBeds =
+            Number(
+                room.allocated_beds || 0
+            );
 
         return (
-            matchesSearch &&
-            matchesStatus
+            <div className="manage-room-beds">
+
+                {Array.from({
+                    length: totalBeds
+                }).map(
+                    (_, index) => {
+
+                        const isAllocated =
+                            index <
+                            allocatedBeds;
+
+                        return (
+                            <div
+                                key={
+                                    index
+                                }
+                                className={`manage-room-bed ${
+                                    isAllocated
+                                        ? "allocated"
+                                        : "vacant"
+                                }`}
+                                title={
+                                    isAllocated
+                                        ? `Bed ${index + 1} - Allocated`
+                                        : `Bed ${index + 1} - Vacant`
+                                }
+                            >
+                                <span>
+                                    {index + 1}
+                                </span>
+                            </div>
+                        );
+                    }
+                )}
+
+            </div>
         );
-
-    });
-
-
-    // =====================================================
-    // ROOM COUNTS
-    // =====================================================
-
-    const totalRooms =
-        rooms.length;
-
-    const availableRooms =
-        rooms.filter(
-            room =>
-                String(room.status)
-                    .toLowerCase() ===
-                "available"
-        ).length;
-
-    const maintenanceRooms =
-        rooms.filter(
-            room =>
-                String(room.status)
-                    .toLowerCase() ===
-                "maintenance"
-        ).length;
-
-    const inactiveRooms =
-        rooms.filter(
-            room =>
-                String(room.status)
-                    .toLowerCase() ===
-                "inactive"
-        ).length;
-
-
-    // =====================================================
-    // PAGE
-    // =====================================================
+    };
 
     return (
-
         <div className="manage-rooms-page">
 
+            {/* HEADER */}
 
-            {/* =================================================
-                SIDEBAR
-            ================================================= */}
+            <div className="manage-rooms-header">
 
-            <aside className="manage-rooms-sidebar">
+                <div>
 
+                    <span className="manage-rooms-label">
+                        ADMIN PANEL
+                    </span>
 
-                <div className="manage-rooms-brand">
+                    <h1>
+                        Manage Rooms
+                    </h1>
 
-                    <div className="manage-room-brand-icon">
-                        🏠
+                    <p>
+                        Manage hostel rooms,
+                        blocks and bed allocation.
+                    </p>
+
+                </div>
+
+                <button
+                    className="manage-rooms-add-btn"
+                    onClick={() =>
+                        navigate(
+                            "/admin/rooms/add"
+                        )
+                    }
+                >
+                    + Add Room
+                </button>
+
+            </div>
+
+            {/* ERROR */}
+
+            {error && (
+                <div className="manage-rooms-alert">
+
+                    <span>
+                        ⚠️
+                    </span>
+
+                    <p>
+                        {error}
+                    </p>
+
+                    <button
+                        onClick={() =>
+                            setError("")
+                        }
+                    >
+                        ×
+                    </button>
+
+                </div>
+            )}
+
+            {/* STATISTICS */}
+
+            <div className="manage-rooms-stats">
+
+                <div className="manage-room-stat-card">
+
+                    <div className="manage-room-stat-icon">
+                        🏢
                     </div>
 
                     <div>
-
-                        <strong>
-                            Hostel
-                        </strong>
-
                         <span>
-                            Admin Panel
+                            TOTAL ROOMS
                         </span>
 
+                        <strong>
+                            {
+                                overallStats.totalRooms
+                            }
+                        </strong>
                     </div>
 
                 </div>
 
+                <div className="manage-room-stat-card">
 
-                <nav className="manage-rooms-nav">
+                    <div className="manage-room-stat-icon">
+                        🛏️
+                    </div>
 
+                    <div>
+                        <span>
+                            TOTAL BEDS
+                        </span>
+
+                        <strong>
+                            {
+                                overallStats.totalBeds
+                            }
+                        </strong>
+                    </div>
+
+                </div>
+
+                <div className="manage-room-stat-card">
+
+                    <div className="manage-room-stat-icon allocated">
+                        🔴
+                    </div>
+
+                    <div>
+                        <span>
+                            ALLOCATED
+                        </span>
+
+                        <strong>
+                            {
+                                overallStats.allocatedBeds
+                            }
+                        </strong>
+                    </div>
+
+                </div>
+
+                <div className="manage-room-stat-card">
+
+                    <div className="manage-room-stat-icon vacant">
+                        🟢
+                    </div>
+
+                    <div>
+                        <span>
+                            VACANT
+                        </span>
+
+                        <strong>
+                            {
+                                overallStats.vacantBeds
+                            }
+                        </strong>
+                    </div>
+
+                </div>
+
+                <div className="manage-room-stat-card">
+
+                    <div className="manage-room-stat-icon occupied">
+                        🔒
+                    </div>
+
+                    <div>
+                        <span>
+                            FULL ROOMS
+                        </span>
+
+                        <strong>
+                            {
+                                overallStats.occupiedRooms
+                            }
+                        </strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+            {/* FILTERS */}
+
+            <div className="manage-rooms-filter-card">
+
+                <div className="manage-rooms-search">
+
+                    <span>
+                        🔍
+                    </span>
+
+                    <input
+                        type="text"
+                        placeholder="Search room, block, type or hostel..."
+                        value={search}
+                        onChange={(e) =>
+                            setSearch(
+                                e.target.value
+                            )
+                        }
+                    />
+
+                </div>
+
+                <div className="manage-rooms-block-filter">
+
+                    <span>
+                        BLOCK
+                    </span>
 
                     <button
+                        className={
+                            selectedBlock ===
+                            "All"
+                                ? "active"
+                                : ""
+                        }
                         onClick={() =>
-                            navigate(
-                                "/admin/dashboard"
+                            setSelectedBlock(
+                                "All"
                             )
                         }
                     >
-                        📊 Dashboard
+                        All
                     </button>
 
+                    {blocks.map(
+                        (block) => (
+                            <button
+                                key={
+                                    block
+                                }
+                                className={
+                                    selectedBlock ===
+                                    block
+                                        ? "active"
+                                        : ""
+                                }
+                                onClick={() =>
+                                    setSelectedBlock(
+                                        block
+                                    )
+                                }
+                            >
+                                {block}
+                            </button>
+                        )
+                    )}
 
-                    <button
-                        onClick={() =>
-                            navigate(
-                                "/admin/students"
-                            )
-                        }
-                    >
-                        🎓 Students
-                    </button>
-
-
-                    <button
-                        className="active"
-                    >
-                        🛏️ Rooms
-                    </button>
-
-
-                    <button
-                        onClick={() =>
-                            navigate(
-                                "/admin/rooms/add"
-                            )
-                        }
-                    >
-                        ➕ Add Room
-                    </button>
-
-
-                    <button
-                        onClick={() =>
-                            navigate(
-                                "/admin/profile"
-                            )
-                        }
-                    >
-                        👤 Profile
-                    </button>
-
-                </nav>
-
+                </div>
 
                 <button
-                    className="manage-rooms-logout"
-                    onClick={handleLogout}
+                    className="manage-rooms-refresh-btn"
+                    onClick={fetchRooms}
                 >
-                    🚪 Logout
+                    ↻ Refresh
                 </button>
 
-            </aside>
+            </div>
 
+            {/* ROOM LIST */}
 
-            {/* =================================================
-                MAIN
-            ================================================= */}
+            <div className="manage-rooms-content">
 
-            <main className="manage-rooms-main">
-
-
-                {/* =================================================
-                    HEADER
-                ================================================= */}
-
-                <header className="manage-rooms-header">
+                <div className="manage-rooms-content-header">
 
                     <div>
 
                         <span>
-                            ROOM MANAGEMENT
+                            ROOM DIRECTORY
                         </span>
 
-                        <h1>
-                            Manage Rooms
-                        </h1>
+                        <h2>
+                            {selectedBlock ===
+                            "All"
+                                ? "All Blocks"
+                                : `Block ${selectedBlock}`}
+                        </h2>
+
+                    </div>
+
+                    <strong>
+                        {
+                            filteredRooms.length
+                        } Rooms
+                    </strong>
+
+                </div>
+
+                {loading ? (
+
+                    <div className="manage-rooms-state">
+
+                        <div>
+                            ⏳
+                        </div>
+
+                        <h3>
+                            Loading Rooms...
+                        </h3>
 
                         <p>
-                            View and manage all hostel
-                            rooms from one place.
+                            Please wait while
+                            room information
+                            is being loaded.
                         </p>
 
                     </div>
 
+                ) : filteredRooms.length ===
+                  0 ? (
 
-                    <button
-                        className="manage-add-room-btn"
-                        onClick={() =>
-                            navigate(
-                                "/admin/rooms/add"
-                            )
-                        }
-                    >
-                        + Add Room
-                    </button>
+                    <div className="manage-rooms-state">
 
-                </header>
-
-
-                {/* =================================================
-                    STAT CARDS
-                ================================================= */}
-
-                <section className="room-stat-grid">
-
-
-                    <div className="room-stat-card">
-
-                        <div className="room-stat-icon total">
+                        <div>
                             🛏️
                         </div>
 
-                        <div>
+                        <h3>
+                            No Rooms Found
+                        </h3>
 
-                            <span>
-                                Total Rooms
-                            </span>
+                        <p>
+                            No rooms match your
+                            current search or
+                            block filter.
+                        </p>
 
-                            <strong>
-                                {totalRooms}
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-
-                    <div className="room-stat-card">
-
-                        <div className="room-stat-icon available">
-                            ✓
-                        </div>
-
-                        <div>
-
-                            <span>
-                                Available
-                            </span>
-
-                            <strong>
-                                {availableRooms}
-                            </strong>
-
-                        </div>
+                        <button
+                            onClick={() => {
+                                setSearch("");
+                                setSelectedBlock(
+                                    "All"
+                                );
+                            }}
+                        >
+                            Clear Filters
+                        </button>
 
                     </div>
 
-
-                    <div className="room-stat-card">
-
-                        <div className="room-stat-icon maintenance">
-                            🔧
-                        </div>
-
-                        <div>
-
-                            <span>
-                                Maintenance
-                            </span>
-
-                            <strong>
-                                {maintenanceRooms}
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-
-                    <div className="room-stat-card">
-
-                        <div className="room-stat-icon inactive">
-                            ⛔
-                        </div>
-
-                        <div>
-
-                            <span>
-                                Inactive
-                            </span>
-
-                            <strong>
-                                {inactiveRooms}
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-                </section>
-
-
-                {/* =================================================
-                    TABLE CARD
-                ================================================= */}
-
-                <section className="manage-rooms-card">
-
-
-                    {/* TOOLBAR */}
-
-                    <div className="rooms-toolbar">
-
-
-                        <div>
-
-                            <h2>
-                                All Rooms
-                            </h2>
-
-                            <p>
-                                {filteredRooms.length}
-                                {" "}
-                                room
-                                {filteredRooms.length !== 1
-                                    ? "s"
-                                    : ""}
-                                {" "}found
-                            </p>
-
-                        </div>
-
-
-                        <div className="rooms-filters">
-
-
-                            <div className="room-search">
-
-                                <span>
-                                    🔍
-                                </span>
-
-                                <input
-                                    type="text"
-                                    placeholder="Search room..."
-                                    value={search}
-                                    onChange={(e) =>
-                                        setSearch(
-                                            e.target.value
-                                        )
-                                    }
-                                />
-
-                            </div>
-
-
-                            <select
-                                value={statusFilter}
-                                onChange={(e) =>
-                                    setStatusFilter(
-                                        e.target.value
-                                    )
-                                }
-                            >
-
-                                <option value="All">
-                                    All Status
-                                </option>
-
-                                <option value="Available">
-                                    Available
-                                </option>
-
-                                <option value="Maintenance">
-                                    Maintenance
-                                </option>
-
-                                <option value="Inactive">
-                                    Inactive
-                                </option>
-
-                            </select>
-
-                        </div>
-
-                    </div>
-
-
-                    {/* =================================================
-                        ERROR
-                    ================================================= */}
-
-                    {error && (
-
-                        <div className="manage-rooms-error">
-
-                            ⚠️ {error}
-
-                            <button
-                                onClick={fetchRooms}
-                            >
-                                Retry
-                            </button>
-
-                        </div>
-
-                    )}
-
-
-                    {/* =================================================
-                        LOADING
-                    ================================================= */}
-
-                    {loading ? (
-
-                        <div className="rooms-loading">
-
-                            <div>
-                                ⏳
-                            </div>
-
-                            <p>
-                                Loading rooms...
-                            </p>
-
-                        </div>
-
-                    ) : filteredRooms.length === 0 ? (
-
-                        /* =================================================
-                            EMPTY
-                        ================================================= */
-
-                        <div className="rooms-empty">
-
-                            <div className="rooms-empty-icon">
-                                🛏️
-                            </div>
-
-                            <h3>
-                                No Rooms Found
-                            </h3>
-
-                            <p>
-                                {rooms.length === 0
-                                    ? "No rooms have been added yet."
-                                    : "No rooms match your search or filter."}
-                            </p>
-
-
-                            {rooms.length === 0 && (
-
-                                <button
-                                    onClick={() =>
-                                        navigate(
-                                            "/admin/rooms/add"
-                                        )
-                                    }
-                                >
-                                    + Add First Room
-                                </button>
-
-                            )}
-
-                        </div>
-
-                    ) : (
-
-                        /* =================================================
-                            TABLE
-                        ================================================= */
-
-                        <div className="rooms-table-wrapper">
-
-                            <table className="rooms-table">
-
-                                <thead>
-
-                                    <tr>
-
-                                        <th>
-                                            Room
-                                        </th>
-
-                                        <th>
-                                            Floor
-                                        </th>
-
-                                        <th>
-                                            Hostel
-                                        </th>
-
-                                        <th>
-                                            Type
-                                        </th>
-
-                                        <th>
-                                            Capacity
-                                        </th>
-
-                                        <th>
-                                            Fees
-                                        </th>
-
-                                        <th>
-                                            Status
-                                        </th>
-
-                                        <th>
-                                            Actions
-                                        </th>
-
-                                    </tr>
-
-                                </thead>
-
-
-                                <tbody>
-
-                                    {filteredRooms.map(
-                                        (room) => (
-
-                                            <tr
-                                                key={
+                ) : (
+
+                    <div className="manage-rooms-grid">
+
+                        {filteredRooms.map(
+                            (room) => {
+
+                                const status =
+                                    getRoomStatus(
+                                        room
+                                    );
+
+                                const totalBeds =
+                                    Number(
+                                        room.total_beds ||
+                                        0
+                                    );
+
+                                const allocatedBeds =
+                                    Number(
+                                        room.allocated_beds ||
+                                        0
+                                    );
+
+                                const vacantBeds =
+                                    Math.max(
+                                        totalBeds -
+                                        allocatedBeds,
+                                        0
+                                    );
+
+                                return (
+                                    <div
+                                        className="manage-room-card"
+                                        key={
+                                            room.id
+                                        }
+                                    >
+
+                                        {/* CARD HEADER */}
+
+                                        <div className="manage-room-card-header">
+
+                                            <div>
+
+                                                <span className="manage-room-block">
+                                                    BLOCK{" "}
+                                                    {
+                                                        room.block
+                                                    }
+                                                </span>
+
+                                                <h3>
+                                                    Room{" "}
+                                                    {
+                                                        room.room_no
+                                                    }
+                                                </h3>
+
+                                                <p>
+                                                    {
+                                                        room.room_type ||
+                                                        "Room"
+                                                    }
+                                                </p>
+
+                                            </div>
+
+                                            <span
+                                                className={`manage-room-status ${status
+                                                    .toLowerCase()
+                                                    .replace(
+                                                        /\s+/g,
+                                                        "-"
+                                                    )}`}
+                                            >
+                                                {status}
+                                            </span>
+
+                                        </div>
+
+                                        {/* BED STATUS */}
+
+                                        <div className="manage-room-bed-section">
+
+                                            <div className="manage-room-bed-section-header">
+
+                                                <span>
+                                                    BED STATUS
+                                                </span>
+
+                                                <strong>
+                                                    {
+                                                        allocatedBeds
+                                                    }
+                                                    /
+                                                    {
+                                                        totalBeds
+                                                    }
+                                                </strong>
+
+                                            </div>
+
+                                            {renderBeds(
+                                                room
+                                            )}
+
+                                            <div className="manage-room-bed-summary">
+
+                                                <span>
+                                                    🔴{" "}
+                                                    {
+                                                        allocatedBeds
+                                                    }{" "}
+                                                    Allocated
+                                                </span>
+
+                                                <span>
+                                                    🟢{" "}
+                                                    {
+                                                        vacantBeds
+                                                    }{" "}
+                                                    Vacant
+                                                </span>
+
+                                            </div>
+
+                                        </div>
+
+                                        {/* ROOM INFO */}
+
+                                        <div className="manage-room-info">
+
+                                            <div>
+
+                                                <span>
+                                                    HOSTEL
+                                                </span>
+
+                                                <strong>
+                                                    {
+                                                        room.hostel ||
+                                                        "—"
+                                                    }
+                                                </strong>
+
+                                            </div>
+
+                                            <div>
+
+                                                <span>
+                                                    FEES
+                                                </span>
+
+                                                <strong>
+                                                    ₹{" "}
+                                                    {Number(
+                                                        room.fees ||
+                                                        0
+                                                    ).toLocaleString(
+                                                        "en-IN"
+                                                    )}
+                                                </strong>
+
+                                            </div>
+
+                                        </div>
+
+                                        {/* ACTIONS */}
+
+                                        <div className="manage-room-actions">
+
+                                            <button
+                                                className="manage-room-view-btn"
+                                                onClick={() =>
+                                                    navigate(
+                                                        `/admin/rooms/view/${room.id}`
+                                                    )
+                                                }
+                                            >
+                                                👁 View
+                                            </button>
+
+                                            <button
+                                                className="manage-room-edit-btn"
+                                                onClick={() =>
+                                                    navigate(
+                                                        `/admin/rooms/edit/${room.id}`
+                                                    )
+                                                }
+                                            >
+                                                ✏ Edit
+                                            </button>
+
+                                            <button
+                                                className="manage-room-delete-btn"
+                                                onClick={() =>
+                                                    handleDelete(
+                                                        room
+                                                    )
+                                                }
+                                                disabled={
+                                                    deletingId ===
                                                     room.id
                                                 }
                                             >
+                                                {deletingId ===
+                                                room.id
+                                                    ? "..."
+                                                    : "🗑 Delete"}
+                                            </button>
 
+                                        </div>
 
-                                                <td>
+                                    </div>
+                                );
+                            }
+                        )}
 
-                                                    <div className="room-number-cell">
+                    </div>
 
-                                                        <div className="room-mini-icon">
-                                                            🛏️
-                                                        </div>
+                )}
 
-                                                        <strong>
-                                                            {
-                                                                room.room_no ||
-                                                                "—"
-                                                            }
-                                                        </strong>
-
-                                                    </div>
-
-                                                </td>
-
-
-                                                <td>
-
-                                                    {room.floor ||
-                                                        "—"}
-
-                                                </td>
-
-
-                                                <td>
-
-                                                    {room.hostel ||
-                                                        "—"}
-
-                                                </td>
-
-
-                                                <td>
-
-                                                    {room.room_type ||
-                                                        "—"}
-
-                                                </td>
-
-
-                                                <td>
-
-                                                    <span className="capacity-badge">
-
-                                                        👥{" "}
-                                                        {
-                                                            room.capacity ||
-                                                            0
-                                                        }
-
-                                                    </span>
-
-                                                </td>
-
-
-                                                <td>
-
-                                                    <strong className="room-fee">
-
-                                                        ₹
-                                                        {Number(
-                                                            room.fees ||
-                                                            0
-                                                        ).toLocaleString(
-                                                            "en-IN"
-                                                        )}
-
-                                                    </strong>
-
-                                                </td>
-
-
-                                                <td>
-
-                                                    <span
-                                                        className={`room-status ${String(
-                                                            room.status ||
-                                                            ""
-                                                        )
-                                                            .toLowerCase()
-                                                            .replace(
-                                                                /\s+/g,
-                                                                "-"
-                                                            )}`}
-                                                    >
-
-                                                        ●{" "}
-                                                        {
-                                                            room.status ||
-                                                            "Unknown"
-                                                        }
-
-                                                    </span>
-
-                                                </td>
-
-
-                                                <td>
-
-                                                    <div className="room-actions">
-
-
-                                                        <button
-                                                            title="View Room"
-                                                            onClick={() =>
-                                                                navigate(
-                                                                    `/admin/rooms/view/${room.id}`
-                                                                )
-                                                            }
-                                                        >
-                                                            👁️
-                                                        </button>
-
-
-                                                        <button
-                                                            title="Edit Room"
-                                                            onClick={() =>
-                                                                navigate(
-                                                                    `/admin/rooms/edit/${room.id}`
-                                                                )
-                                                            }
-                                                        >
-                                                            ✏️
-                                                        </button>
-
-                                                    </div>
-
-                                                </td>
-
-                                            </tr>
-
-                                        )
-                                    )}
-
-                                </tbody>
-
-                            </table>
-
-                        </div>
-
-                    )}
-
-                </section>
-
-
-                {/* =================================================
-                    FOOTER
-                ================================================= */}
-
-                <footer className="manage-rooms-footer">
-
-                    <span>
-                        © 2026 Hostel Management System
-                    </span>
-
-                    <span>
-                        Admin Panel
-                    </span>
-
-                </footer>
-
-            </main>
+            </div>
 
         </div>
-
     );
-
-}
+};
 
 export default ManageRooms;

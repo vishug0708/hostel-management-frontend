@@ -1,7 +1,7 @@
 /* =====================================================
    GLOBAL
 ===================================================== */
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -53,8 +53,7 @@ html {
         rgba(15, 23, 42, 0.96);
 
     border-bottom:
-        1px solid
-        rgba(255, 255, 255, 0.08);
+        1px solid rgba(255, 255, 255, 0.08);
 
     backdrop-filter: blur(12px);
 }
@@ -99,11 +98,9 @@ html {
     border-radius: 11px;
 
     background:
-        linear-gradient(
-            135deg,
+        linear-gradient(135deg,
             #0f766e,
-            #14b8a6
-        );
+            #14b8a6);
 
     font-size: 21px;
 }
@@ -144,7 +141,7 @@ html {
     margin-right: 35px;
 }
 
-.navbar-links > a {
+.navbar-links>a {
     position: relative;
 
     color: #cbd5e1;
@@ -156,11 +153,11 @@ html {
     font-weight: 500;
 }
 
-.navbar-links > a:hover {
+.navbar-links>a:hover {
     color: white;
 }
 
-.navbar-links > a::after {
+.navbar-links>a::after {
     content: "";
 
     position: absolute;
@@ -176,7 +173,7 @@ html {
     transition: width 0.2s;
 }
 
-.navbar-links > a:hover::after {
+.navbar-links>a:hover::after {
     width: 100%;
 }
 
@@ -274,11 +271,9 @@ html {
     overflow: hidden;
 
     background:
-        linear-gradient(
-            135deg,
+        linear-gradient(135deg,
             #0f172a,
-            #134e4a
-        );
+            #134e4a);
 
     background-image:
         url("https://images.unsplash.com/photo-1564981797816-1043664bf78d?auto=format&fit=crop&w=2000&q=85");
@@ -294,12 +289,10 @@ html {
     inset: 0;
 
     background:
-        linear-gradient(
-            90deg,
+        linear-gradient(90deg,
             rgba(15, 23, 42, 0.96),
             rgba(15, 23, 42, 0.72),
-            rgba(15, 23, 42, 0.35)
-        );
+            rgba(15, 23, 42, 0.35));
 }
 
 .hero-container {
@@ -332,8 +325,7 @@ html {
     margin-bottom: 24px;
 
     border:
-        1px solid
-        rgba(45, 212, 191, 0.28);
+        1px solid rgba(45, 212, 191, 0.28);
 
     border-radius: 50px;
 
@@ -379,7 +371,7 @@ html {
     color: #2dd4bf;
 }
 
-.hero-content > p {
+.hero-content>p {
     max-width: 650px;
 
     margin: 25px 0 0;
@@ -426,19 +418,16 @@ html {
     color: white;
 
     background:
-        linear-gradient(
-            135deg,
+        linear-gradient(135deg,
             #0f766e,
-            #0d9488
-        );
+            #0d9488);
 }
 
 .hero-secondary-btn {
     color: #e2e8f0;
 
     border:
-        1px solid
-        rgba(255, 255, 255, 0.25);
+        1px solid rgba(255, 255, 255, 0.25);
 
     background:
         rgba(255, 255, 255, 0.06);
@@ -545,10 +534,7 @@ html {
 
 .portal-grid {
     display: grid;
-
-    grid-template-columns:
-        repeat(4, 1fr);
-
+    grid-template-columns: repeat(5, 1fr);
     gap: 20px;
 }
 
@@ -573,8 +559,7 @@ html {
     overflow: hidden;
 
     box-shadow:
-        0 10px 30px
-        rgba(15, 23, 42, 0.06);
+        0 10px 30px rgba(15, 23, 42, 0.06);
 
     transition:
         transform 0.25s,
@@ -585,16 +570,14 @@ html {
     transform: translateY(-8px);
 
     box-shadow:
-        0 20px 40px
-        rgba(15, 23, 42, 0.12);
+        0 20px 40px rgba(15, 23, 42, 0.12);
 }
 
 .featured-portal {
     border-color: #14b8a6;
 
     box-shadow:
-        0 12px 35px
-        rgba(15, 118, 110, 0.12);
+        0 12px 35px rgba(15, 118, 110, 0.12);
 }
 
 .portal-icon {
@@ -726,10 +709,8 @@ html {
     border-radius: 22px;
 
     background:
-        linear-gradient(
-            rgba(15, 23, 42, 0.1),
-            rgba(15, 23, 42, 0.4)
-        ),
+        linear-gradient(rgba(15, 23, 42, 0.1),
+            rgba(15, 23, 42, 0.4)),
         url("https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=1000&q=85");
 
     background-size: cover;
@@ -853,11 +834,10 @@ html {
     transform: translateY(-5px);
 
     box-shadow:
-        0 15px 30px
-        rgba(15, 23, 42, 0.08);
+        0 15px 30px rgba(15, 23, 42, 0.08);
 }
 
-.feature-card > div {
+.feature-card>div {
     width: 52px;
     height: 52px;
 
@@ -949,10 +929,8 @@ html {
     inset: 0;
 
     background:
-        linear-gradient(
-            transparent 50%,
-            rgba(15, 23, 42, 0.7)
-        );
+        linear-gradient(transparent 50%,
+            rgba(15, 23, 42, 0.7));
 }
 
 .gallery-item span {
@@ -994,11 +972,9 @@ html {
     border-radius: 22px;
 
     background:
-        linear-gradient(
-            135deg,
+        linear-gradient(135deg,
             #0f172a,
-            #134e4a
-        );
+            #134e4a);
 
     color: white;
 }
@@ -1035,7 +1011,7 @@ html {
     gap: 16px;
 }
 
-.contact-item > span {
+.contact-item>span {
     width: 45px;
     height: 45px;
 
@@ -1128,7 +1104,7 @@ html {
     font-size: 11px;
 }
 
-.footer-about > p {
+.footer-about>p {
     max-width: 330px;
 
     margin: 20px 0;
@@ -1340,12 +1316,11 @@ html {
         pointer-events: auto;
     }
 
-    .navbar-links > a {
+    .navbar-links>a {
         padding: 13px 5px;
 
         border-bottom:
-            1px solid
-            rgba(255, 255, 255, 0.06);
+            1px solid rgba(255, 255, 255, 0.06);
     }
 
     .mobile-nav-buttons {
@@ -1393,7 +1368,7 @@ html {
         letter-spacing: -1.5px;
     }
 
-    .hero-content > p {
+    .hero-content>p {
         font-size: 14px;
     }
 

@@ -1,0 +1,683 @@
+/* =====================================================
+   MANAGE GROUND PAGE
+===================================================== */
+
+.manage-ground-page {
+    min-height: 100vh;
+    display: flex;
+    background: #f1f5f9;
+    color: #0f172a;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* =====================================================
+   SIDEBAR
+===================================================== */
+
+.manage-ground-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 255px;
+    height: 100vh;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    padding: 22px 15px;
+    background: #0f172a;
+    color: white;
+    z-index: 100;
+}
+
+.manage-ground-brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 5px 10px 25px;
+    border-bottom: 1px solid #1e293b;
+}
+
+.manage-ground-brand-icon {
+    width: 43px;
+    height: 43px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    background: #0f766e;
+    font-size: 21px;
+}
+
+.manage-ground-brand strong {
+    display: block;
+    font-size: 17px;
+}
+
+.manage-ground-brand span {
+    display: block;
+    margin-top: 3px;
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+.manage-ground-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 25px;
+}
+
+.manage-ground-nav button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 13px;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    color: #94a3b8;
+    text-align: left;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.manage-ground-nav button:hover {
+    background: #1e293b;
+    color: white;
+    transform: translateX(2px);
+}
+
+.manage-ground-nav button.active {
+    background: #134e4a;
+    color: white;
+    box-shadow: inset 3px 0 0 #2dd4bf;
+}
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+.manage-ground-logout {
+    width: 100%;
+    margin-top: auto;
+    padding: 12px 13px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid #334155;
+    border-radius: 9px;
+    background: transparent;
+    color: #fca5a5;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.manage-ground-logout:hover {
+    background: #7f1d1d;
+    color: white;
+}
+
+/* =====================================================
+   MAIN
+===================================================== */
+
+.manage-ground-main {
+    width: calc(100% - 255px);
+    margin-left: 255px;
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 30px 35px;
+}
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.manage-ground-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.manage-ground-header > div:first-child span {
+    color: #0f766e;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.manage-ground-header h1 {
+    margin: 6px 0 5px;
+    font-size: 29px;
+    line-height: 1.2;
+}
+
+.manage-ground-header p {
+    margin: 0;
+    color: #64748b;
+    font-size: 13px;
+}
+
+.manage-ground-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.manage-ground-refresh,
+.manage-ground-add {
+    padding: 11px 16px;
+    border-radius: 9px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.manage-ground-refresh {
+    border: 1px solid #cbd5e1;
+    background: white;
+    color: #475569;
+}
+
+.manage-ground-refresh:hover {
+    border-color: #0f766e;
+    color: #0f766e;
+}
+
+.manage-ground-add {
+    border: 1px solid #0f766e;
+    background: #0f766e;
+    color: white;
+}
+
+.manage-ground-add:hover {
+    background: #115e59;
+}
+
+/* =====================================================
+   TOOLBAR
+===================================================== */
+
+.manage-ground-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #e2e8f0;
+    border-radius: 13px;
+    background: white;
+    box-shadow: 0 7px 22px rgba(15, 23, 42, 0.04);
+}
+
+.manage-ground-search {
+    position: relative;
+    flex: 1;
+}
+
+.manage-ground-search span {
+    position: absolute;
+    top: 50%;
+    left: 13px;
+    transform: translateY(-50%);
+    font-size: 12px;
+}
+
+.manage-ground-search input {
+    width: 100%;
+    height: 40px;
+    box-sizing: border-box;
+    padding: 0 12px 0 36px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    outline: none;
+    color: #334155;
+    font-size: 10px;
+}
+
+.manage-ground-search input:focus {
+    border-color: #0f766e;
+    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.08);
+}
+
+.manage-ground-search input::placeholder {
+    color: #94a3b8;
+}
+
+.manage-ground-total {
+    min-width: 90px;
+    padding: 8px 11px;
+    border-radius: 7px;
+    background: #f0fdfa;
+    color: #0f766e;
+    font-size: 9px;
+    font-weight: 700;
+    text-align: center;
+}
+
+/* =====================================================
+   GROUND GRID
+===================================================== */
+
+.manage-ground-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+/* =====================================================
+   GROUND CARD
+===================================================== */
+
+.manage-ground-card {
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    background: white;
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.manage-ground-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+}
+
+.manage-ground-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 20px 0;
+}
+
+.manage-ground-card-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 13px;
+    background: #f0fdfa;
+    font-size: 23px;
+}
+
+.manage-ground-status {
+    padding: 6px 9px;
+    border-radius: 7px;
+    font-size: 8px;
+    font-weight: 700;
+}
+
+.manage-ground-status.active {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.manage-ground-status.inactive {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.manage-ground-card-content {
+    padding: 17px 20px;
+}
+
+.manage-ground-card-content h2 {
+    margin: 0 0 6px;
+    color: #1e293b;
+    font-size: 17px;
+}
+
+.manage-ground-location {
+    margin: 0 0 9px;
+    color: #64748b;
+    font-size: 9px;
+}
+
+.manage-ground-description {
+    min-height: 31px;
+    margin: 0;
+    color: #94a3b8;
+    font-size: 9px;
+    line-height: 1.5;
+}
+
+/* =====================================================
+   GROUND DETAILS
+===================================================== */
+
+.manage-ground-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin: 0 20px;
+    border-top: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.manage-ground-details > div {
+    padding: 13px 5px;
+}
+
+.manage-ground-details > div + div {
+    border-left: 1px solid #f1f5f9;
+    padding-left: 15px;
+}
+
+.manage-ground-details span {
+    display: block;
+    margin-bottom: 5px;
+    color: #94a3b8;
+    font-size: 7px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.manage-ground-details strong {
+    color: #0f766e;
+    font-size: 13px;
+}
+
+/* =====================================================
+   TIMING
+===================================================== */
+
+.manage-ground-timing {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 14px 20px;
+    padding: 9px 11px;
+    border-radius: 8px;
+    background: #f8fafc;
+}
+
+.manage-ground-timing span {
+    font-size: 13px;
+}
+
+.manage-ground-timing p {
+    margin: 0;
+    color: #475569;
+    font-size: 9px;
+    font-weight: 600;
+}
+
+/* =====================================================
+   ACTIONS
+===================================================== */
+
+.manage-ground-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+    padding: 0 20px 20px;
+}
+
+.manage-ground-actions button {
+    height: 36px;
+    border-radius: 8px;
+    font-size: 9px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.manage-ground-edit {
+    border: 1px solid #99f6e4;
+    background: #f0fdfa;
+    color: #0f766e;
+}
+
+.manage-ground-edit:hover {
+    background: #ccfbf1;
+}
+
+.manage-ground-delete {
+    border: 1px solid #fecaca;
+    background: #fff1f2;
+    color: #dc2626;
+}
+
+.manage-ground-delete:hover {
+    background: #fee2e2;
+}
+
+/* =====================================================
+   STATE
+===================================================== */
+
+.manage-ground-state {
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    box-sizing: border-box;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    background: white;
+    text-align: center;
+}
+
+.manage-ground-state > div {
+    width: 62px;
+    height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    border-radius: 16px;
+    background: #f0fdfa;
+    font-size: 27px;
+}
+
+.manage-ground-state h3 {
+    margin: 2px 0 6px;
+    color: #1e293b;
+    font-size: 16px;
+}
+
+.manage-ground-state p {
+    margin: 0;
+    color: #94a3b8;
+    font-size: 10px;
+}
+
+.manage-ground-state button {
+    margin-top: 16px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    background: #0f766e;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.manage-ground-state button:hover {
+    background: #115e59;
+}
+
+.manage-ground-state.error > div {
+    background: #fef2f2;
+}
+
+.manage-ground-state.error button {
+    background: #0f766e;
+}
+
+.manage-ground-slot-duration {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 9px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: #f0fdfa;
+    color: #0f766e;
+}
+
+.manage-ground-slot-duration span {
+    font-size: 12px;
+}
+
+.manage-ground-slot-duration p {
+    margin: 0;
+    font-size: 9px;
+    font-weight: 700;
+}
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.manage-ground-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 35px;
+    padding: 25px 0;
+    border-top: 1px solid #e2e8f0;
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media (max-width: 1150px) {
+    .manage-ground-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* =====================================================
+   SMALL TABLET
+===================================================== */
+
+@media (max-width: 900px) {
+    .manage-ground-sidebar {
+        width: 220px;
+    }
+
+    .manage-ground-main {
+        width: calc(100% - 220px);
+        margin-left: 220px;
+        padding: 25px;
+    }
+
+    .manage-ground-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 700px) {
+    .manage-ground-page {
+        display: block;
+    }
+
+    .manage-ground-sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        padding: 15px;
+    }
+
+    .manage-ground-nav {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        margin-top: 15px;
+    }
+
+    .manage-ground-logout {
+        margin-top: 15px;
+    }
+
+    .manage-ground-main {
+        width: 100%;
+        margin-left: 0;
+        padding: 20px 15px;
+    }
+
+    .manage-ground-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .manage-ground-header-actions {
+        width: 100%;
+    }
+
+    .manage-ground-refresh,
+    .manage-ground-add {
+        flex: 1;
+    }
+
+    .manage-ground-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .manage-ground-search {
+        width: 100%;
+    }
+
+    .manage-ground-total {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .manage-ground-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .manage-ground-footer {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+    }
+}
+
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
+
+@media (max-width: 420px) {
+    .manage-ground-nav {
+        grid-template-columns: 1fr;
+    }
+
+    .manage-ground-header h1 {
+        font-size: 25px;
+    }
+
+    .manage-ground-header-actions {
+        flex-direction: column;
+    }
+
+    .manage-ground-refresh,
+    .manage-ground-add {
+        width: 100%;
+        flex: none;
+    }
+
+    .manage-ground-actions {
+        grid-template-columns: 1fr;
+    }
+}

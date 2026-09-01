@@ -1,0 +1,580 @@
+.student-layout {
+    min-height: 100vh;
+    display: flex;
+    background: #f3f7fa;
+    color: #102a43;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.student-sidebar {
+    width: 275px;
+    min-height: 100vh;
+    background: #0d172b;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 100;
+}
+
+.student-brand {
+    height: 105px;
+    padding: 0 25px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.student-brand-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: #0d8b84;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.student-brand h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #ffffff;
+}
+
+.student-brand p {
+    margin: 4px 0 0;
+    color: #9fb0c7;
+    font-size: 12px;
+}
+
+.student-nav {
+    padding: 25px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.student-nav-item {
+    min-height: 48px;
+    padding: 0 17px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-radius: 10px;
+    color: #c2cede;
+    text-decoration: none;
+    font-size: 15px;
+    transition: 0.2s ease;
+}
+
+.student-nav-item:hover {
+    background: rgba(255,255,255,0.07);
+    color: #ffffff;
+}
+
+.student-nav-item.active {
+    background: #145f5b;
+    color: #ffffff;
+    box-shadow: inset 3px 0 0 #2ce0d2;
+}
+
+.student-logout {
+    margin: auto 16px 22px;
+    min-height: 48px;
+    border: 1px solid #2c3a52;
+    border-radius: 10px;
+    background: transparent;
+    color: #ff9999;
+    font-size: 15px;
+    cursor: pointer;
+    text-align: left;
+    padding: 0 17px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.student-logout:hover {
+    background: rgba(255,255,255,0.06);
+}
+
+.student-main {
+    width: calc(100% - 275px);
+    margin-left: 275px;
+    padding: 45px 38px;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.my-room-header {
+    max-width: 1100px;
+    margin: 0 auto 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.section-label {
+    margin: 0 0 7px;
+    color: #087f7b;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.my-room-header h1 {
+    margin: 0;
+    color: #102a43;
+    font-size: 42px;
+    line-height: 1.1;
+}
+
+.page-description {
+    margin: 10px 0 0;
+    color: #607d98;
+    font-size: 16px;
+}
+
+.refresh-btn {
+    padding: 13px 22px;
+    border: 1px solid #c7d8e6;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #102a43;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.refresh-btn:hover {
+    border-color: #0d8b84;
+    color: #0d8b84;
+}
+
+.refresh-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.room-alert {
+    max-width: 1100px;
+    margin: 0 auto 25px;
+    min-height: 55px;
+    padding: 0 18px;
+    box-sizing: border-box;
+    border: 1px solid #ffb8b8;
+    border-radius: 12px;
+    background: #fff2f2;
+    color: #c62828;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.room-alert button {
+    margin-left: auto;
+    border: 0;
+    background: transparent;
+    color: #c62828;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.room-loading {
+    max-width: 1100px;
+    min-height: 300px;
+    margin: 0 auto;
+    border: 1px solid #dbe6ee;
+    border-radius: 18px;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #607d98;
+}
+
+.loading-spinner {
+    width: 38px;
+    height: 38px;
+    border: 4px solid #dce9ed;
+    border-top-color: #0d8b84;
+    border-radius: 50%;
+    animation: roomSpin 0.8s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes roomSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.no-room-card {
+    max-width: 1100px;
+    min-height: 350px;
+    margin: 0 auto;
+    border: 1px solid #dbe6ee;
+    border-radius: 18px;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.no-room-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+}
+
+.no-room-card h2 {
+    margin: 0 0 8px;
+    font-size: 25px;
+}
+
+.no-room-card p {
+    margin: 0;
+    color: #71879d;
+}
+
+.room-summary-card,
+.roommates-card {
+    max-width: 1100px;
+    margin: 0 auto 28px;
+    background: #ffffff;
+    border: 1px solid #dbe6ee;
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+.room-card-header {
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    gap: 17px;
+    background: linear-gradient(135deg, #103047, #0d817b);
+    color: #ffffff;
+}
+
+.room-icon {
+    width: 65px;
+    height: 65px;
+    border-radius: 15px;
+    background: rgba(255,255,255,0.14);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 31px;
+}
+
+.small-label {
+    margin: 0 0 5px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #bce8e4;
+}
+
+.room-card-header h2 {
+    margin: 0;
+    font-size: 29px;
+}
+
+.room-card-header p {
+    margin: 5px 0 0;
+    color: #d1eeee;
+    font-size: 14px;
+}
+
+.allocated-badge {
+    margin-left: auto;
+    padding: 9px 15px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 30px;
+    background: rgba(255,255,255,0.12);
+    color: #d7ffe9;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.room-info-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.room-info-item {
+    padding: 25px 28px;
+    border-right: 1px solid #dbe6ee;
+}
+
+.room-info-item:last-child {
+    border-right: 0;
+}
+
+.room-info-item span {
+    display: block;
+    margin-bottom: 8px;
+    color: #71879d;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.room-info-item strong {
+    color: #102a43;
+    font-size: 19px;
+}
+
+.roommates-header {
+    padding: 28px 30px;
+    border-bottom: 1px solid #dbe6ee;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.roommates-header h2 {
+    margin: 0;
+    font-size: 28px;
+    color: #102a43;
+}
+
+.roommates-header p:not(.section-label) {
+    margin: 7px 0 0;
+    color: #71879d;
+    font-size: 14px;
+}
+
+.roommate-count {
+    padding: 11px 17px;
+    border-radius: 10px;
+    background: #edf7f8;
+    color: #087f7b;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.roommates-list {
+    padding: 25px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+.roommate-card {
+    padding: 20px;
+    border: 1px solid #dbe6ee;
+    border-radius: 14px;
+    display: flex;
+    gap: 18px;
+    background: #fbfdfe;
+    transition: 0.2s ease;
+}
+
+.roommate-card:hover {
+    border-color: #8adbd5;
+    box-shadow: 0 7px 20px rgba(16,42,67,0.07);
+}
+
+.roommate-photo {
+    width: 78px;
+    height: 78px;
+    flex: 0 0 78px;
+    border-radius: 50%;
+    background: #dff4f1;
+    color: #087f7b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-size: 28px;
+    font-weight: 800;
+}
+
+.roommate-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.roommate-details {
+    min-width: 0;
+    flex: 1;
+}
+
+.roommate-details h3 {
+    margin: 0 0 12px;
+    color: #102a43;
+    font-size: 19px;
+}
+
+.student-detail-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 7px;
+    font-size: 13px;
+}
+
+.student-detail-row span {
+    width: 55px;
+    flex-shrink: 0;
+    color: #71879d;
+    font-weight: 700;
+}
+
+.student-detail-row strong {
+    color: #334e68;
+    overflow-wrap: anywhere;
+    font-weight: 600;
+}
+
+.no-roommates {
+    min-height: 260px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.no-roommates-icon {
+    font-size: 45px;
+    margin-bottom: 12px;
+}
+
+.no-roommates h3 {
+    margin: 0 0 8px;
+    font-size: 22px;
+    color: #102a43;
+}
+
+.no-roommates p {
+    margin: 0;
+    color: #71879d;
+}
+
+@media (max-width: 1100px) {
+    .student-sidebar {
+        width: 235px;
+    }
+
+    .student-main {
+        width: calc(100% - 235px);
+        margin-left: 235px;
+        padding: 35px 25px;
+    }
+
+    .room-info-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .room-info-item:nth-child(2) {
+        border-right: 0;
+    }
+
+    .room-info-item:nth-child(-n+2) {
+        border-bottom: 1px solid #dbe6ee;
+    }
+
+    .roommates-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 800px) {
+    .student-sidebar {
+        position: relative;
+        width: 100%;
+        min-height: auto;
+    }
+
+    .student-layout {
+        flex-direction: column;
+    }
+
+    .student-nav {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .student-logout {
+        margin-top: 10px;
+    }
+
+    .student-main {
+        width: 100%;
+        margin-left: 0;
+        padding: 28px 18px;
+    }
+
+    .my-room-header {
+        flex-direction: column;
+    }
+
+    .my-room-header h1 {
+        font-size: 34px;
+    }
+
+    .refresh-btn {
+        width: 100%;
+    }
+
+    .room-card-header {
+        flex-wrap: wrap;
+    }
+
+    .allocated-badge {
+        margin-left: 0;
+    }
+
+    .room-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .room-info-item {
+        border-right: 0;
+        border-bottom: 1px solid #dbe6ee;
+    }
+
+    .room-info-item:last-child {
+        border-bottom: 0;
+    }
+
+    .roommates-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 500px) {
+    .student-nav {
+        grid-template-columns: 1fr;
+    }
+
+    .roommates-list {
+        padding: 15px;
+    }
+
+    .roommate-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .student-detail-row {
+        justify-content: center;
+    }
+}

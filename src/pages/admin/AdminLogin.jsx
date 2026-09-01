@@ -120,11 +120,7 @@ function AdminLogin() {
             // REDIRECT TO ADMIN DASHBOARD
             // =================================================
 
-            setTimeout(() => {
-
-                navigate("/admin/dashboard");
-
-            }, 800);
+            navigate("/admin/dashboard");
 
 
         } catch (error) {

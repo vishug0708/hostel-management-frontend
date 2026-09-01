@@ -1,430 +1,444 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AddRoom.css";
 
-function AddRoom() {
+const API_URL =
+    import.meta.env.VITE_API_URL ||
+    "http://localhost:5000";
 
+const BLOCKS = [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H"
+];
+
+const AddRoom = () => {
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
+        block: "",
         room_no: "",
-        floor: "",
-        capacity: "",
-        room_type: "",
-        fees: "",
-        hostel: "",
-        status: "Available"
+        total_beds: "8",
+        status: "Available",
+        hostel: "Virtuous Hostel"
     });
 
-    const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
-    const [saving, setSaving] = useState(false);
+    const [submitting, setSubmitting] =
+        useState(false);
 
+    const [error, setError] =
+        useState("");
 
-    // =====================================================
-    // HANDLE INPUT
-    // =====================================================
+    const [success, setSuccess] =
+        useState("");
 
     const handleChange = (e) => {
-
         const { name, value } = e.target;
 
-        setFormData({
-            ...formData,
+        setFormData((prev) => ({
+            ...prev,
             [name]: value
-        });
+        }));
 
         setError("");
         setSuccess("");
-
     };
 
+    const generateRoomNumber = async () => {
+        if (!formData.block) {
+            setError(
+                "Please select a block first."
+            );
+            return;
+        }
 
-    // =====================================================
-    // SUBMIT
-    // =====================================================
+        try {
+            const token =
+                localStorage.getItem(
+                    "adminToken"
+                );
+
+            const response = await fetch(
+                `${API_URL}/api/admin/rooms`,
+                {
+                    headers: {
+                        Authorization:
+                            `Bearer ${token}`
+                    }
+                }
+            );
+
+            const data =
+                await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.message ||
+                    "Unable to fetch rooms."
+                );
+            }
+
+            const rooms =
+                data.rooms || [];
+
+            const blockRooms =
+                rooms.filter(
+                    (room) =>
+                        String(
+                            room.block
+                        ).toUpperCase() ===
+                        formData.block
+                );
+
+            let highestNumber = 0;
+
+            blockRooms.forEach(
+                (room) => {
+                    const match =
+                        String(
+                            room.room_no
+                        ).match(
+                            new RegExp(
+                                `^${formData.block}(\\d+)$`,
+                                "i"
+                            )
+                        );
+
+                    if (match) {
+                        const number =
+                            parseInt(
+                                match[1],
+                                10
+                            );
+
+                        if (
+                            number >
+                            highestNumber
+                        ) {
+                            highestNumber =
+                                number;
+                        }
+                    }
+                }
+            );
+
+            let nextNumber;
+
+            if (highestNumber === 0) {
+                nextNumber = 101;
+            } else {
+                nextNumber =
+                    highestNumber + 1;
+            }
+
+            setFormData((prev) => ({
+                ...prev,
+                room_no:
+                    `${formData.block}${nextNumber}`
+            }));
+        } catch (err) {
+            console.error(
+                "Generate Room Error:",
+                err
+            );
+
+            setError(
+                err.message ||
+                "Unable to generate room number."
+            );
+        }
+    };
 
     const handleSubmit = async (e) => {
-
         e.preventDefault();
 
         setError("");
         setSuccess("");
 
+        if (!formData.block) {
+            setError(
+                "Please select a block."
+            );
+            return;
+        }
 
-        // =================================================
-        // VALIDATION
-        // =================================================
+        if (!formData.room_no.trim()) {
+            setError(
+                "Please enter room number."
+            );
+            return;
+        }
+
+        if (!formData.total_beds) {
+            setError(
+                "Please enter total beds."
+            );
+            return;
+        }
+
+        const totalBeds =
+            Number(formData.total_beds);
 
         if (
-            !formData.room_no ||
-            !formData.capacity ||
-            !formData.fees ||
-            !formData.hostel
+            !Number.isInteger(totalBeds) ||
+            totalBeds <= 0
         ) {
-
             setError(
-                "Please fill all required fields."
+                "Total beds must be a positive number."
             );
-
             return;
         }
 
-
-        if (
-            !Number.isInteger(
-                Number(formData.capacity)
-            ) ||
-            Number(formData.capacity) <= 0
-        ) {
-
+        if (!formData.hostel.trim()) {
             setError(
-                "Room capacity must be a valid number."
+                "Please enter hostel name."
             );
-
             return;
         }
-
-
-        if (Number(formData.fees) < 0) {
-
-            setError(
-                "Room fees cannot be negative."
-            );
-
-            return;
-        }
-
-
-        const token =
-            localStorage.getItem("adminToken");
-
-
-        if (!token) {
-
-            navigate("/admin/login", {
-                replace: true
-            });
-
-            return;
-        }
-
-
-        // =================================================
-        // API
-        // =================================================
 
         try {
+            setSubmitting(true);
 
-            setSaving(true);
-
+            const token =
+                localStorage.getItem(
+                    "adminToken"
+                );
 
             const response = await fetch(
-                "http://localhost:5000/api/admin/rooms",
+                `${API_URL}/api/admin/rooms`,
                 {
                     method: "POST",
-
                     headers: {
-
                         "Content-Type":
                             "application/json",
-
                         Authorization:
                             `Bearer ${token}`
-
                     },
-
                     body: JSON.stringify({
+                        block:
+                            formData.block,
                         room_no:
-                            formData.room_no,
-
-                        floor:
-                            formData.floor,
-
-                        capacity:
-                            Number(formData.capacity),
-
-                        room_type:
-                            formData.room_type,
-
-                        fees:
-                            Number(formData.fees),
-
-                        hostel:
-                            formData.hostel,
-
+                            formData.room_no
+                                .trim()
+                                .toUpperCase(),
+                        total_beds:
+                            totalBeds,
                         status:
                             formData.status,
-                        
-                        // floor:
-                        //     formData.floor
-                        
+                        hostel:
+                            formData.hostel
+                                .trim()
                     })
                 }
             );
 
-
             const data =
                 await response.json();
 
-
-            if (!response.ok || !data.success) {
-
-                setError(
+            if (!response.ok) {
+                throw new Error(
                     data.message ||
-                    "Unable to add room."
+                    "Failed to add room."
                 );
-
-                return;
             }
-
 
             setSuccess(
                 "Room added successfully."
             );
 
-
-            // Reset form
-
             setFormData({
+                block: "",
                 room_no: "",
-                floor: "",
-                capacity: "",
-                room_type: "",
-                fees: "",
-                hostel: "",
-                status: "Available"
+                total_beds: "8",
+                status: "Available",
+                hostel:
+                    "Virtuous Hostel"
             });
 
-
         } catch (err) {
-
             console.error(
                 "Add Room Error:",
                 err
             );
 
             setError(
-                "Cannot connect to backend server."
+                err.message ||
+                "Unable to add room."
             );
-
         } finally {
-
-            setSaving(false);
-
+            setSubmitting(false);
         }
-
     };
-
-
-    // =====================================================
-    // LOGOUT
-    // =====================================================
-
-    const handleLogout = () => {
-
-        localStorage.removeItem(
-            "adminToken"
-        );
-
-        localStorage.removeItem(
-            "admin"
-        );
-
-        navigate("/admin/login", {
-            replace: true
-        });
-
-    };
-
 
     return (
-
         <div className="add-room-page">
 
+            <div className="add-room-container">
 
-            {/* =================================================
-                SIDEBAR
-            ================================================= */}
-
-            <aside className="add-room-sidebar">
-
-
-                <div className="add-room-brand">
-
-                    <div className="add-room-brand-icon">
-                        🏠
-                    </div>
+                <div className="add-room-header">
 
                     <div>
-
-                        <strong>
-                            Hostel
-                        </strong>
-
-                        <span>
-                            Admin Panel
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <nav className="add-room-nav">
-
-
-                    <button
-                        onClick={() =>
-                            navigate("/admin/dashboard")
-                        }
-                    >
-                        📊 Dashboard
-                    </button>
-
-
-                    <button
-                        onClick={() =>
-                            navigate("/admin/students")
-                        }
-                    >
-                        🎓 Students
-                    </button>
-
-
-                    <button
-                        className="active"
-                    >
-                        🛏️ Rooms
-                    </button>
-
-
-                    <button
-                        onClick={() =>
-                            navigate("/admin/rooms")
-                        }
-                    >
-                        📋 Manage Rooms
-                    </button>
-
-
-                    <button
-                        onClick={() =>
-                            navigate("/admin/profile")
-                        }
-                    >
-                        👤 Profile
-                    </button>
-
-                </nav>
-
-
-                <button
-                    className="add-room-logout"
-                    onClick={handleLogout}
-                >
-                    🚪 Logout
-                </button>
-
-            </aside>
-
-
-            {/* =================================================
-                MAIN
-            ================================================= */}
-
-            <main className="add-room-main">
-
-
-                {/* =================================================
-                    HEADER
-                ================================================= */}
-
-                <header className="add-room-header">
-
-                    <div>
-
-                        <span>
-                            ROOM MANAGEMENT
+                        <span className="add-room-label">
+                            ADMIN PANEL
                         </span>
 
                         <h1>
-                            Add Room
+                            Add New Room
                         </h1>
 
                         <p>
-                            Create a new hostel room and
-                            define its capacity and fees.
+                            Create a new hostel
+                            room with available
+                            beds.
                         </p>
-
                     </div>
 
-
                     <button
-                        className="room-back-btn"
+                        type="button"
+                        className="add-room-back-btn"
                         onClick={() =>
-                            navigate("/admin/rooms")
+                            navigate(
+                                "/admin/rooms"
+                            )
                         }
                     >
-                        ← Manage Rooms
+                        ← Back to Rooms
                     </button>
 
-                </header>
+                </div>
 
+                {error && (
+                    <div className="add-room-alert add-room-error">
 
-                {/* =================================================
-                    FORM CARD
-                ================================================= */}
+                        <span>⚠️</span>
 
-                <section className="add-room-card">
+                        <p>
+                            {error}
+                        </p>
 
+                        <button
+                            type="button"
+                            onClick={() =>
+                                setError("")
+                            }
+                        >
+                            ×
+                        </button>
+
+                    </div>
+                )}
+
+                {success && (
+                    <div className="add-room-alert add-room-success">
+
+                        <span>✓</span>
+
+                        <p>
+                            {success}
+                        </p>
+
+                        <button
+                            type="button"
+                            onClick={() =>
+                                setSuccess("")
+                            }
+                        >
+                            ×
+                        </button>
+
+                    </div>
+                )}
+
+                <form
+                    className="add-room-card"
+                    onSubmit={handleSubmit}
+                >
 
                     <div className="add-room-card-header">
 
-                        <div className="room-form-icon">
+                        <div className="add-room-icon">
                             🛏️
                         </div>
 
                         <div>
-
                             <h2>
                                 Room Information
                             </h2>
 
                             <p>
-                                Enter the room details below.
+                                Configure room
+                                block, number
+                                and beds.
                             </p>
-
                         </div>
 
                     </div>
 
+                    <div className="add-room-form">
 
-                    <form
-                        className="add-room-form"
-                        onSubmit={handleSubmit}
-                    >
+                        {/* BLOCK */}
 
+                        <div className="add-room-field">
 
-                        {/* =================================================
-                            ROOM DETAILS
-                        ================================================= */}
+                            <label>
+                                BLOCK
+                            </label>
 
-                        <div className="room-section-title">
-                            Room Details
+                            <select
+                                name="block"
+                                value={
+                                    formData.block
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                disabled={
+                                    submitting
+                                }
+                                required
+                            >
+                                <option value="">
+                                    Select Block
+                                </option>
+
+                                {BLOCKS.map(
+                                    (block) => (
+                                        <option
+                                            key={
+                                                block
+                                            }
+                                            value={
+                                                block
+                                            }
+                                        >
+                                            Block{" "}
+                                            {block}
+                                        </option>
+                                    )
+                                )}
+                            </select>
+
+                            <small>
+                                Select hostel
+                                block.
+                            </small>
+
                         </div>
 
+                        {/* ROOM NUMBER */}
 
-                        <div className="room-form-grid">
+                        <div className="add-room-field">
 
+                            <label>
+                                ROOM NUMBER
+                            </label>
 
-                            {/* ROOM NUMBER */}
-
-                            <div className="room-form-group">
-
-                                <label>
-                                    Room Number *
-                                </label>
+                            <div className="room-number-row">
 
                                 <input
                                     type="text"
@@ -432,291 +446,246 @@ function AddRoom() {
                                     value={
                                         formData.room_no
                                     }
-                                    onChange={handleChange}
-                                    placeholder="Example: A 101"
+                                    onChange={
+                                        handleChange
+                                    }
+                                    placeholder="Example: A101"
+                                    disabled={
+                                        submitting
+                                    }
+                                    required
                                 />
 
-                            </div>
-
-
-                            {/* FLOOR */}
-
-                            <div className="room-form-group">
-
-                                <label>
-                                    Floor
-                                </label>
-
-                                <input
-                                    type="text"
-                                    name="floor"
-                                    value={
-                                        formData.floor
+                                <button
+                                    type="button"
+                                    className="generate-btn"
+                                    onClick={
+                                        generateRoomNumber
                                     }
-                                    onChange={handleChange}
-                                    placeholder="Example: 1nd Floor"
-                                />
-
-                            </div>
-
-
-                            {/* HOSTEL */}
-
-                            <div className="room-form-group">
-
-                                <label>
-                                    Hostel *
-                                </label>
-
-                                <input
-                                    type="text"
-                                    name="hostel"
-                                    value={
-                                        formData.hostel
+                                    disabled={
+                                        submitting
                                     }
-                                    onChange={handleChange}
-                                    placeholder="Enter hostel name"
-                                />
-
-                            </div>
-
-
-                            {/* ROOM TYPE */}
-
-                            <div className="room-form-group">
-
-                                <label>
-                                    Room Type
-                                </label>
-
-                                <select
-                                    name="room_type"
-                                    value={
-                                        formData.room_type
-                                    }
-                                    onChange={handleChange}
                                 >
-
-                                    <option value="">
-                                        Select Room Type
-                                    </option>
-
-                                    <option value="Single">
-                                        Single
-                                    </option>
-
-                                    <option value="Double">
-                                        Double
-                                    </option>
-
-                                    <option value="Triple">
-                                        Triple
-                                    </option>
-
-                                    <option value="Four Sharing">
-                                        Four Sharing
-                                    </option>
-
-                                </select>
+                                    Generate
+                                </button>
 
                             </div>
 
-
-                            {/* CAPACITY */}
-
-                            <div className="room-form-group">
-
-                                <label>
-                                    Capacity *
-                                </label>
-
-                                <input
-                                    type="number"
-                                    name="capacity"
-                                    min="1"
-                                    value={
-                                        formData.capacity
-                                    }
-                                    onChange={handleChange}
-                                    placeholder="Example: 3"
-                                />
-
-                            </div>
-
-
-                            {/* FEE */}
-
-                            <div className="room-form-group">
-
-                                <label>
-                                    Room Fees *
-                                </label>
-
-                                <div className="room-fee-input">
-
-                                    <span>
-                                        ₹
-                                    </span>
-
-                                    <input
-                                        type="number"
-                                        name="fees"
-                                        min="0"
-                                        step="0.01"
-                                        value={
-                                            formData.fees
-                                        }
-                                        onChange={handleChange}
-                                        placeholder="Example: 3000"
-                                    />
-
-                                </div>
-
-                            </div>
-
-
-                            {/* STATUS */}
-
-                            <div className="room-form-group">
-
-                                <label>
-                                    Status
-                                </label>
-
-                                <select
-                                    name="status"
-                                    value={
-                                        formData.status
-                                    }
-                                    onChange={handleChange}
-                                >
-
-                                    <option value="Available">
-                                        Available
-                                    </option>
-
-                                    <option value="Maintenance">
-                                        Maintenance
-                                    </option>
-
-                                    <option value="Inactive">
-                                        Inactive
-                                    </option>
-
-                                </select>
-
-                            </div>
+                            <small>
+                                Example: A101,
+                                B101, C201.
+                            </small>
 
                         </div>
 
+                        {/* TOTAL BEDS */}
 
-                        {/* =================================================
-                            CAPACITY INFO
-                        ================================================= */}
+                        <div className="add-room-field">
 
-                        <div className="room-capacity-info">
+                            <label>
+                                TOTAL BEDS
+                            </label>
 
-                            <div className="capacity-icon">
-                                👥
-                            </div>
+                            <input
+                                type="number"
+                                name="total_beds"
+                                min="1"
+                                value={
+                                    formData.total_beds
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                placeholder="Enter total beds"
+                                disabled={
+                                    submitting
+                                }
+                                required
+                            />
 
-                            <div>
+                            <small>
+                                Total beds available
+                                in this room.
+                            </small>
+
+                        </div>
+
+                        {/* STATUS */}
+
+                        <div className="add-room-field">
+
+                            <label>
+                                ROOM STATUS
+                            </label>
+
+                            <select
+                                name="status"
+                                value={
+                                    formData.status
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                disabled={
+                                    submitting
+                                }
+                            >
+                                <option value="Available">
+                                    Available
+                                </option>
+
+                                <option value="Occupied">
+                                    Occupied
+                                </option>
+
+                                <option value="Maintenance">
+                                    Maintenance
+                                </option>
+                            </select>
+
+                            <small>
+                                Current room
+                                status.
+                            </small>
+
+                        </div>
+
+                        {/* HOSTEL */}
+
+                        <div className="add-room-field add-room-full">
+
+                            <label>
+                                HOSTEL NAME
+                            </label>
+
+                            <input
+                                type="text"
+                                name="hostel"
+                                value={
+                                    formData.hostel
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                placeholder="Enter hostel name"
+                                disabled={
+                                    submitting
+                                }
+                                required
+                            />
+
+                        </div>
+
+                    </div>
+
+                    {/* PREVIEW */}
+
+                    <div className="add-room-preview">
+
+                        <div className="preview-title">
+                            ROOM PREVIEW
+                        </div>
+
+                        <div className="preview-grid">
+
+                            <div className="preview-room">
+
+                                <span>
+                                    ROOM
+                                </span>
 
                                 <strong>
-                                    Room Capacity
+                                    {formData.room_no ||
+                                        "A101"}
                                 </strong>
 
-                                <p>
-                                    Maximum students that can be
-                                    allocated to this room.
-                                </p>
+                            </div>
+
+                            <div className="preview-item">
+
+                                <span>
+                                    BLOCK
+                                </span>
+
+                                <strong>
+                                    {formData.block ||
+                                        "-"}
+                                </strong>
+
+                            </div>
+
+                            <div className="preview-item">
+
+                                <span>
+                                    TOTAL BEDS
+                                </span>
+
+                                <strong>
+                                    {
+                                        formData.total_beds ||
+                                        "0"
+                                    }
+                                </strong>
+
+                            </div>
+
+                            <div className="preview-item">
+
+                                <span>
+                                    STATUS
+                                </span>
+
+                                <strong>
+                                    {
+                                        formData.status
+                                    }
+                                </strong>
 
                             </div>
 
                         </div>
 
+                    </div>
 
-                        {/* =================================================
-                            MESSAGES
-                        ================================================= */}
+                    {/* ACTIONS */}
 
-                        {success && (
+                    <div className="add-room-actions">
 
-                            <div className="add-room-success">
-                                ✓ {success}
-                            </div>
+                        <button
+                            type="button"
+                            className="cancel-btn"
+                            onClick={() =>
+                                navigate(
+                                    "/admin/rooms"
+                                )
+                            }
+                            disabled={
+                                submitting
+                            }
+                        >
+                            Cancel
+                        </button>
 
-                        )}
+                        <button
+                            type="submit"
+                            className="add-room-submit-btn"
+                            disabled={
+                                submitting
+                            }
+                        >
+                            {submitting
+                                ? "Adding Room..."
+                                : "✓ Add Room"}
+                        </button>
 
+                    </div>
 
-                        {error && (
+                </form>
 
-                            <div className="add-room-error">
-                                ⚠ {error}
-                            </div>
-
-                        )}
-
-
-                        {/* =================================================
-                            ACTIONS
-                        ================================================= */}
-
-                        <div className="add-room-actions">
-
-                            <button
-                                type="button"
-                                className="room-cancel-btn"
-                                onClick={() =>
-                                    navigate(
-                                        "/admin/rooms"
-                                    )
-                                }
-                            >
-                                Cancel
-                            </button>
-
-
-                            <button
-                                type="submit"
-                                className="room-save-btn"
-                                disabled={saving}
-                            >
-                                {saving
-                                    ? "Saving..."
-                                    : "➕ Add Room"
-                                }
-                            </button>
-
-                        </div>
-
-                    </form>
-
-                </section>
-
-
-                {/* =================================================
-                    FOOTER
-                ================================================= */}
-
-                <footer className="add-room-footer">
-
-                    <span>
-                        © 2026 Hostel Management System
-                    </span>
-
-                    <span>
-                        Admin Panel
-                    </span>
-
-                </footer>
-
-            </main>
+            </div>
 
         </div>
-
     );
-
-}
+};
 
 export default AddRoom;

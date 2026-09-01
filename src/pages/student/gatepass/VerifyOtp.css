@@ -1,0 +1,285 @@
+.verify-otp-page {
+min-height: 100vh;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 40px 20px;
+background: #f3f8fb;
+font-family: Arial, Helvetica, sans-serif;
+}
+
+.verify-otp-card {
+width: 100%;
+max-width: 595px;
+background: #ffffff;
+border-radius: 28px;
+overflow: hidden;
+box-shadow: 0 20px 55px rgba(15, 35, 55, 0.14);
+border-top: 5px solid #f5a000;
+}
+
+.verify-otp-header {
+padding: 55px 30px 45px;
+text-align: center;
+background: linear-gradient(135deg, #12364d, #117d75);
+color: #ffffff;
+}
+
+.verify-otp-icon {
+width: 96px;
+height: 96px;
+margin: 0 auto 25px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 43px;
+border-radius: 25px;
+background: rgba(255, 255, 255, 0.1);
+border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.verify-otp-header h1 {
+margin: 0 0 8px;
+font-size: 38px;
+font-weight: 800;
+}
+
+.verify-otp-header p {
+margin: 0;
+font-size: 18px;
+opacity: 0.95;
+}
+
+.verify-otp-body {
+padding: 45px 50px 40px;
+}
+
+.verify-otp-title {
+text-align: center;
+margin-bottom: 30px;
+}
+
+.verify-otp-title h2 {
+margin: 0 0 10px;
+font-size: 25px;
+color: #153654;
+font-weight: 800;
+}
+
+.verify-otp-title p {
+margin: 0;
+color: #71849a;
+font-size: 15px;
+line-height: 1.6;
+}
+
+.verify-error {
+display: flex;
+align-items: center;
+gap: 10px;
+padding: 14px 16px;
+margin-bottom: 22px;
+border: 1px solid #ffc5c5;
+border-radius: 10px;
+background: #fff1f1;
+color: #c62828;
+font-size: 14px;
+font-weight: 600;
+}
+
+.verify-success {
+display: flex;
+align-items: center;
+gap: 10px;
+padding: 14px 16px;
+margin-bottom: 22px;
+border: 1px solid #b8e8cf;
+border-radius: 10px;
+background: #effcf5;
+color: #138a52;
+font-size: 14px;
+font-weight: 600;
+}
+
+.otp-label {
+display: block;
+margin-bottom: 14px;
+color: #153654;
+font-size: 14px;
+font-weight: 800;
+letter-spacing: 0.8px;
+}
+
+.otp-input-container {
+display: flex;
+justify-content: center;
+gap: 10px;
+margin-bottom: 30px;
+}
+
+.otp-input {
+width: 58px;
+height: 62px;
+border: 1px solid #c9d7e4;
+border-radius: 12px;
+background: #f8fafc;
+color: #153654;
+font-size: 25px;
+font-weight: 800;
+text-align: center;
+outline: none;
+transition: 0.2s ease;
+}
+
+.otp-input:focus {
+border-color: #0f817c;
+background: #ffffff;
+box-shadow: 0 0 0 3px rgba(15, 129, 124, 0.1);
+}
+
+.verify-otp-button {
+width: 100%;
+height: 58px;
+border: none;
+border-radius: 12px;
+background: #10827d;
+color: #ffffff;
+font-size: 16px;
+font-weight: 800;
+cursor: pointer;
+transition: 0.2s ease;
+box-shadow: 0 10px 22px rgba(16, 130, 125, 0.18);
+}
+
+.verify-otp-button:hover:not(:disabled) {
+background: #0b706c;
+transform: translateY(-1px);
+}
+
+.verify-otp-button:disabled {
+opacity: 0.65;
+cursor: not-allowed;
+}
+
+.resend-section {
+padding: 25px 0;
+text-align: center;
+border-bottom: 1px solid #e1e8ee;
+}
+
+.resend-section p {
+margin: 0 0 8px;
+color: #71849a;
+font-size: 14px;
+}
+
+.resend-timer {
+color: #71849a;
+font-size: 14px;
+font-weight: 700;
+}
+
+.resend-button {
+padding: 0;
+border: none;
+background: transparent;
+color: #087f7b;
+font-size: 14px;
+font-weight: 800;
+cursor: pointer;
+}
+
+.resend-button:hover {
+text-decoration: underline;
+}
+
+.resend-button:disabled {
+opacity: 0.6;
+cursor: not-allowed;
+}
+
+.verify-note {
+display: flex;
+gap: 10px;
+align-items: flex-start;
+margin-top: 25px;
+padding: 15px;
+border-radius: 10px;
+background: #f4f8fb;
+}
+
+.verify-note span {
+font-size: 17px;
+}
+
+.verify-note p {
+margin: 0;
+color: #71849a;
+font-size: 12px;
+line-height: 1.5;
+}
+
+.back-gatepass-button {
+display: block;
+margin: 25px auto 0;
+padding: 0;
+border: none;
+background: transparent;
+color: #087f7b;
+font-size: 15px;
+font-weight: 800;
+cursor: pointer;
+}
+
+.back-gatepass-button:hover {
+text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+.verify-otp-page {
+padding: 20px 12px;
+}
+
+.verify-otp-card {
+border-radius: 22px;
+}
+
+.verify-otp-header {
+padding: 40px 20px 35px;
+}
+
+.verify-otp-icon {
+width: 82px;
+height: 82px;
+font-size: 36px;
+}
+
+.verify-otp-header h1 {
+font-size: 32px;
+}
+
+.verify-otp-body {
+padding: 35px 22px 30px;
+}
+
+.otp-input-container {
+gap: 7px;
+}
+
+.otp-input {
+width: 47px;
+height: 54px;
+font-size: 22px;
+}
+}
+
+@media (max-width: 390px) {
+.otp-input-container {
+gap: 5px;
+}
+
+.otp-input {
+width: 42px;
+height: 50px;
+}
+}

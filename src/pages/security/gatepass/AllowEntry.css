@@ -1,0 +1,509 @@
+.entry-security-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f4f7fa;
+  color: #102f4d;
+}
+
+.entry-security-sidebar {
+  width: 260px;
+  min-height: 100vh;
+  background: #102f4d;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 100;
+}
+
+.entry-security-logo {
+  padding: 24px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+
+.entry-security-logo-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #0f8179;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.entry-security-logo h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.entry-security-logo span {
+  font-size: 11px;
+  color: #b9c8d5;
+}
+
+.entry-security-nav {
+  padding: 20px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.entry-security-nav button {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: #d6e1e9;
+  padding: 13px 15px;
+  border-radius: 9px;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: 0.2s;
+}
+
+.entry-security-nav button:hover,
+.entry-security-nav button.active {
+  background: #0f8179;
+  color: #fff;
+}
+
+.entry-security-sidebar-bottom {
+  margin-top: auto;
+  padding: 16px;
+  border-top: 1px solid rgba(255,255,255,0.12);
+}
+
+.entry-security-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.entry-security-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #0f8179;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.entry-security-user-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.entry-security-user-info strong {
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.entry-security-user-info span {
+  color: #aebdca;
+  font-size: 11px;
+}
+
+.entry-security-logout {
+  width: 100%;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: transparent;
+  color: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.entry-security-main {
+  margin-left: 260px;
+  width: calc(100% - 260px);
+  padding: 30px;
+}
+
+.entry-security-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.entry-security-header h1 {
+  margin: 0 0 6px;
+  font-size: 28px;
+}
+
+.entry-security-header p {
+  margin: 0;
+  color: #71808d;
+}
+
+.entry-back-button {
+  border: 1px solid #d5dee5;
+  background: #fff;
+  color: #102f4d;
+  padding: 11px 17px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.entry-container {
+  max-width: 1050px;
+  margin: auto;
+}
+
+.entry-verification-badge {
+  width: fit-content;
+  margin: 0 auto 20px;
+  padding: 9px 18px;
+  border-radius: 30px;
+  background: #e5f7f3;
+  color: #08786f;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.entry-verification-badge span {
+  margin-right: 6px;
+}
+
+.entry-status-card {
+  background: #eaf7f4;
+  border: 1px solid #ccebe5;
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.entry-status-icon {
+  width: 52px;
+  height: 52px;
+  background: #fff;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
+}
+
+.entry-status-card h2 {
+  margin: 0 0 6px;
+  font-size: 19px;
+}
+
+.entry-status-card p {
+  margin: 0;
+  color: #52706e;
+  font-size: 13px;
+}
+
+.entry-student-card,
+.entry-gatepass-card,
+.allow-entry-card {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid #e3e9ee;
+  box-shadow: 0 5px 20px rgba(16,47,77,0.06);
+  margin-bottom: 18px;
+}
+
+.entry-student-header {
+  padding: 18px 22px;
+  border-bottom: 1px solid #edf1f4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.entry-student-header h2,
+.entry-card-title h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.entry-approved-badge {
+  background: #e7f7ef;
+  color: #16814d;
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.entry-student-content {
+  padding: 22px;
+  display: flex;
+  gap: 25px;
+}
+
+.entry-photo-wrapper {
+  flex-shrink: 0;
+}
+
+.entry-student-photo {
+  width: 120px;
+  height: 145px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #dce4ea;
+}
+
+.entry-photo-placeholder {
+  width: 120px;
+  height: 145px;
+  border-radius: 10px;
+  background: #e8f1f5;
+  color: #102f4d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  font-weight: 700;
+}
+
+.entry-student-info {
+  flex: 1;
+}
+
+.entry-student-info h3 {
+  margin: 0 0 18px;
+  font-size: 23px;
+}
+
+.entry-info-grid,
+.entry-gatepass-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.entry-info-grid > div,
+.entry-detail-item {
+  padding: 13px;
+  background: #f7f9fb;
+  border-radius: 9px;
+}
+
+.entry-info-grid span,
+.entry-detail-item span {
+  display: block;
+  font-size: 11px;
+  color: #7a8894;
+  margin-bottom: 5px;
+}
+
+.entry-info-grid strong,
+.entry-detail-item strong {
+  font-size: 13px;
+  color: #263f53;
+}
+
+.entry-gatepass-card {
+  padding: 22px;
+}
+
+.entry-card-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.entry-card-title span {
+  font-size: 21px;
+}
+
+.entry-pending-text {
+  color: #b27a0c !important;
+}
+
+.allow-entry-card {
+  padding: 25px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  border-left: 4px solid #0f8179;
+}
+
+.allow-entry-icon {
+  width: 55px;
+  height: 55px;
+  border-radius: 12px;
+  background: #e7f6f4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 27px;
+  flex-shrink: 0;
+}
+
+.allow-entry-content {
+  flex: 1;
+}
+
+.allow-entry-content h2 {
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+
+.allow-entry-content p {
+  margin: 0 0 14px;
+  color: #647583;
+  line-height: 1.6;
+}
+
+.entry-warning {
+  background: #e7f7ef;
+  color: #16814d;
+  border: 1px solid #ccebd9;
+  padding: 11px 13px;
+  border-radius: 8px;
+  font-size: 12px;
+  margin-bottom: 18px;
+}
+
+.allow-entry-button,
+.entry-primary-button {
+  border: none;
+  background: #0f8179;
+  color: #fff;
+  padding: 13px 24px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.allow-entry-button:hover,
+.entry-primary-button:hover {
+  background: #0b6e67;
+}
+
+.allow-entry-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.entry-recorded-info {
+  background: #e7f7ef;
+  color: #16814d;
+  padding: 13px 16px;
+  border-radius: 9px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.entry-message {
+  max-width: 600px;
+  margin: 60px auto;
+  background: #fff;
+  padding: 40px;
+  text-align: center;
+  border-radius: 14px;
+  box-shadow: 0 5px 20px rgba(16,47,77,0.06);
+}
+
+.entry-error {
+  border-top: 4px solid #d9534f;
+}
+
+.entry-message-icon {
+  font-size: 35px;
+  margin-bottom: 10px;
+}
+
+.entry-message h3 {
+  margin: 5px 0 8px;
+}
+
+.entry-message p {
+  color: #687783;
+}
+
+.entry-loader {
+  width: 35px;
+  height: 35px;
+  border: 3px solid #dce9e8;
+  border-top-color: #0f8179;
+  border-radius: 50%;
+  margin: 0 auto 15px;
+  animation: entrySpin 0.8s linear infinite;
+}
+
+@keyframes entrySpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 900px) {
+  .entry-security-sidebar {
+    width: 220px;
+  }
+
+  .entry-security-main {
+    margin-left: 220px;
+    width: calc(100% - 220px);
+    padding: 20px;
+  }
+
+  .entry-info-grid,
+  .entry-gatepass-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .entry-security-sidebar {
+    position: relative;
+    width: 100%;
+    min-height: auto;
+  }
+
+  .entry-security-layout {
+    display: block;
+  }
+
+  .entry-security-main {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .entry-security-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .entry-student-content {
+    flex-direction: column;
+  }
+
+  .entry-info-grid,
+  .entry-gatepass-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .allow-entry-card {
+    flex-direction: column;
+  }
+}

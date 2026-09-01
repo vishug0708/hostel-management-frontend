@@ -216,6 +216,17 @@ function AdminDashboard() {
                     <button
                         className="sidebar-item"
                         onClick={() =>
+                            navigate("/admin/cricket-box")
+                        }
+                    >
+                        <span>🏏</span>
+                        Cricket Box
+                    </button>
+
+
+                    <button
+                        className="sidebar-item"
+                        onClick={() =>
                             navigate("/admin/announcements")
                         }
                     >
@@ -246,7 +257,7 @@ function AdminDashboard() {
                     </button>
 
 
-                  
+
 
 
                 </nav>

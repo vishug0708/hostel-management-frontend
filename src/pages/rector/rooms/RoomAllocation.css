@@ -1,0 +1,615 @@
+.room-allocation-page {
+    min-height: 100vh;
+    padding: 30px;
+    box-sizing: border-box;
+    background: #f3f7fa;
+    color: #132b46;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.room-allocation-header {
+    max-width: 1400px;
+    margin: 0 auto 25px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.room-allocation-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #087c78;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1.4px;
+}
+
+.room-allocation-header h1 {
+    margin: 0;
+    color: #132b46;
+    font-size: 34px;
+    font-weight: 800;
+}
+
+.room-allocation-header p {
+    margin: 8px 0 0;
+    color: #637991;
+    font-size: 16px;
+}
+
+.room-allocation-back {
+    padding: 12px 18px;
+    border: 1px solid #cddbe5;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #17314d;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.room-allocation-back:hover {
+    border-color: #087c78;
+    color: #087c78;
+}
+
+.room-allocation-alert {
+    max-width: 1400px;
+    margin: 0 auto 20px;
+    padding: 14px 18px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.room-allocation-alert span:nth-child(2) {
+    flex: 1;
+}
+
+.room-allocation-alert button {
+    border: none;
+    background: transparent;
+    color: inherit;
+    font-size: 21px;
+    cursor: pointer;
+}
+
+.room-allocation-alert.error {
+    border: 1px solid #ffcaca;
+    background: #fff1f1;
+    color: #b42318;
+}
+
+.room-allocation-alert.success {
+    border: 1px solid #b9e7c9;
+    background: #edfcf2;
+    color: #087443;
+}
+
+.student-selection-card {
+    max-width: 1400px;
+    margin: 0 auto 25px;
+    overflow: hidden;
+    border: 1px solid #dce6ed;
+    border-radius: 15px;
+    background: #ffffff;
+    box-shadow: 0 5px 20px rgba(25, 45, 65, 0.05);
+}
+
+.student-selection-title {
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-bottom: 1px solid #e0e8ee;
+    background: #f8fafc;
+}
+
+.student-selection-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    background: #d9f8f4;
+    font-size: 23px;
+}
+
+.student-selection-title h2 {
+    margin: 0 0 4px;
+    color: #17314d;
+    font-size: 21px;
+}
+
+.student-selection-title p {
+    margin: 0;
+    color: #71849a;
+    font-size: 14px;
+}
+
+.student-selection-content {
+    padding: 22px 24px 25px;
+}
+
+.student-selection-content label {
+    display: block;
+    margin-bottom: 9px;
+    color: #17314d;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.student-selection-content select {
+    width: 100%;
+    min-height: 54px;
+    padding: 0 16px;
+    box-sizing: border-box;
+    border: 1px solid #b9d2df;
+    border-radius: 10px;
+    outline: none;
+    background: #ffffff;
+    color: #263c54;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.student-selection-content select:focus {
+    border-color: #087c78;
+    box-shadow: 0 0 0 3px rgba(8, 124, 120, 0.1);
+}
+
+.student-empty {
+    margin-top: 10px;
+    color: #087c78;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.room-directory {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 27px;
+    box-sizing: border-box;
+    border: 1px solid #dce6ed;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 5px 20px rgba(25, 45, 65, 0.05);
+}
+
+.room-directory-header {
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.room-directory-header span {
+    display: block;
+    margin-bottom: 6px;
+    color: #087c78;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+}
+
+.room-directory-header h2 {
+    margin: 0;
+    color: #132b46;
+    font-size: 28px;
+}
+
+.room-count {
+    padding: 10px 17px;
+    border-radius: 9px;
+    background: #f0f5f8;
+    color: #324b63;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.allocation-block {
+    margin-bottom: 30px;
+}
+
+.allocation-block:last-child {
+    margin-bottom: 0;
+}
+
+.allocation-block-title {
+    margin-bottom: 15px;
+    padding-bottom: 9px;
+    border-bottom: 2px solid #d9e7c4;
+    color: #087c78;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.allocation-room-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.allocation-room-card {
+    overflow: hidden;
+    border: 1px solid #dce6ed;
+    border-radius: 15px;
+    background: #ffffff;
+    box-shadow: 0 3px 12px rgba(20, 40, 60, 0.04);
+    transition: 0.2s ease;
+}
+
+.allocation-room-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(20, 40, 60, 0.08);
+}
+
+.allocation-room-card.room-selected {
+    border: 2px solid #087c78;
+    box-shadow: 0 8px 20px rgba(8, 124, 120, 0.12);
+}
+
+.allocation-room-card-header {
+    min-height: 108px;
+    padding: 19px 20px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    border-bottom: 1px solid #dce6ed;
+    background: #f8fafc;
+}
+
+.allocation-block-name {
+    display: block;
+    margin-bottom: 5px;
+    color: #087c78;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+}
+
+.allocation-room-card-header h3 {
+    margin: 0 0 5px;
+    color: #132b46;
+    font-size: 23px;
+    font-weight: 800;
+}
+
+.allocation-room-card-header p {
+    margin: 0;
+    color: #657b92;
+    font-size: 14px;
+}
+
+.allocation-status {
+    padding: 7px 9px;
+    border-radius: 7px;
+    font-size: 10px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.allocation-status.available {
+    background: #dff9e9;
+    color: #087c43;
+}
+
+.allocation-status.occupied {
+    background: #ffe2e2;
+    color: #c72e37;
+}
+
+.allocation-status.maintenance {
+    background: #fff0ce;
+    color: #9b6900;
+}
+
+.allocation-bed-section {
+    padding: 20px;
+    border-bottom: 1px solid #dce6ed;
+}
+
+.allocation-bed-heading {
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.allocation-bed-heading span {
+    color: #657b92;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+}
+
+.allocation-bed-heading strong {
+    color: #132b46;
+    font-size: 14px;
+}
+
+.allocation-beds {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 7px;
+}
+
+.allocation-bed {
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.allocation-bed.vacant {
+    border: 1px solid #62e89a;
+    background: #dcf9e7;
+    color: #087c43;
+}
+
+.allocation-bed.allocated {
+    border: 1px solid #d94d4d;
+    background: #d95353;
+    color: #ffffff;
+}
+
+.allocation-bed-legend {
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.allocation-bed-legend span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #60758c;
+    font-size: 12px;
+}
+
+.allocation-bed-legend i {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    border-radius: 50%;
+}
+
+.legend-red {
+    background: #d95353;
+}
+
+.legend-green {
+    background: #57c985;
+}
+
+.allocation-room-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid #dce6ed;
+}
+
+.allocation-room-info div {
+    min-height: 68px;
+    padding: 13px 16px;
+    box-sizing: border-box;
+}
+
+.allocation-room-info div + div {
+    border-left: 1px solid #dce6ed;
+}
+
+.allocation-room-info span {
+    display: block;
+    margin-bottom: 5px;
+    color: #8091a3;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.allocation-room-info strong {
+    color: #263c54;
+    font-size: 13px;
+}
+
+.allocation-room-action {
+    padding: 14px;
+}
+
+.allocation-room-action button {
+    width: 100%;
+    min-height: 40px;
+    border: 1px solid #9edfd8;
+    border-radius: 8px;
+    background: #effafa;
+    color: #087c78;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.allocation-room-action button:hover {
+    background: #d9f5f2;
+}
+
+.allocation-room-action button:disabled {
+    border-color: #d5dfe6;
+    background: #f4f6f8;
+    color: #8493a2;
+    cursor: not-allowed;
+}
+
+.allocation-room-action button.selected-room-btn {
+    border-color: #087c78;
+    background: #087c78;
+    color: #ffffff;
+}
+
+.room-directory-empty {
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.room-directory-empty div {
+    margin-bottom: 10px;
+    font-size: 45px;
+}
+
+.room-directory-empty h3 {
+    margin: 0 0 8px;
+    color: #17314d;
+    font-size: 21px;
+}
+
+.room-directory-empty p {
+    margin: 0;
+    color: #71849a;
+    font-size: 14px;
+}
+
+.allocation-submit-bar {
+    position: sticky;
+    bottom: 20px;
+    z-index: 20;
+    max-width: 1400px;
+    margin: 20px auto 0;
+    padding: 15px 20px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    border: 1px solid #9adbd5;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 8px 30px rgba(15, 50, 70, 0.15);
+}
+
+.allocation-submit-bar span {
+    display: block;
+    margin-bottom: 4px;
+    color: #087c78;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.7px;
+}
+
+.allocation-submit-bar strong {
+    color: #17314d;
+    font-size: 15px;
+}
+
+.allocation-submit-bar button {
+    min-height: 46px;
+    padding: 0 24px;
+    border: none;
+    border-radius: 8px;
+    background: #087c78;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.allocation-submit-bar button:hover {
+    background: #066a67;
+}
+
+.allocation-submit-bar button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.room-allocation-loading {
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #087c78;
+}
+
+.room-allocation-loading p {
+    margin-top: 14px;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.room-allocation-spinner {
+    width: 38px;
+    height: 38px;
+    border: 4px solid #d8eeee;
+    border-top-color: #087c78;
+    border-radius: 50%;
+    animation: roomAllocationSpin 0.8s linear infinite;
+}
+
+@keyframes roomAllocationSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 1200px) {
+    .allocation-room-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    .allocation-room-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 650px) {
+    .room-allocation-page {
+        padding: 18px;
+    }
+
+    .room-allocation-header {
+        flex-direction: column;
+    }
+
+    .room-allocation-header h1 {
+        font-size: 28px;
+    }
+
+    .room-directory {
+        padding: 18px;
+    }
+
+    .room-directory-header {
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .allocation-room-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .allocation-submit-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .allocation-submit-bar button {
+        width: 100%;
+    }
+}

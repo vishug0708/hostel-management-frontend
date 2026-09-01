@@ -1,0 +1,370 @@
+.view-gatepass-page {
+    min-height: 100vh;
+    padding: 35px 20px 60px;
+    box-sizing: border-box;
+    background: #eef4f7;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #102a43;
+}
+
+.view-gatepass-wrapper {
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.view-gatepass-back {
+    margin-bottom: 18px;
+    border: none;
+    background: transparent;
+    color: #087f78;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.view-gatepass-card {
+    overflow: hidden;
+    border: 1px solid #dce6ec;
+    border-radius: 22px;
+    background: white;
+    box-shadow: 0 18px 50px rgba(15,42,60,0.14);
+}
+
+.view-gatepass-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 24px 30px;
+    border-bottom: 1px solid #e1e8ed;
+}
+
+.view-gatepass-logo,
+.view-gatepass-ticket {
+    width: 58px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    font-size: 28px;
+}
+
+.view-gatepass-logo {
+    background: #e7f7f5;
+}
+
+.view-gatepass-ticket {
+    background: #fff5df;
+}
+
+.view-gatepass-header > div:nth-child(2) {
+    flex: 1;
+    text-align: center;
+}
+
+.view-gatepass-header h1 {
+    margin: 0;
+    color: #142f49;
+    font-size: 28px;
+    letter-spacing: 1px;
+}
+
+.view-gatepass-header p {
+    margin: 4px 0;
+    color: #117d75;
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.view-gatepass-header span {
+    color: #7b8c9d;
+    font-size: 11px;
+}
+
+.view-gatepass-photo-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 24px 20px 20px;
+}
+
+.view-gatepass-photo,
+.view-gatepass-photo-placeholder {
+    width: 125px;
+    height: 125px;
+    overflow: hidden;
+    border: 1px solid #d4dde4;
+    border-radius: 7px;
+    object-fit: cover;
+}
+
+.view-gatepass-photo-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #edf3f6;
+    font-size: 45px;
+}
+
+.view-gatepass-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    margin: 0 30px;
+    padding: 15px;
+    border-top: 1px solid #e1e8ed;
+    border-bottom: 1px solid #e1e8ed;
+    font-size: 14px;
+}
+
+.view-gatepass-number b {
+    color: #117d75;
+}
+
+.view-gatepass-section {
+    padding: 24px 30px;
+    border-bottom: 1px solid #e1e8ed;
+}
+
+.view-gatepass-section h2,
+.view-gatepass-qr h2 {
+    margin: 0 0 17px;
+    color: #117d75;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+}
+
+.view-gatepass-info-grid,
+.view-gatepass-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border: 1px solid #dce5eb;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.view-gatepass-info-grid > div,
+.view-gatepass-details > div {
+    padding: 14px 15px;
+    border-right: 1px solid #dce5eb;
+    border-bottom: 1px solid #dce5eb;
+}
+
+.view-gatepass-info-grid > div:nth-child(2n),
+.view-gatepass-details > div:nth-child(2n) {
+    border-right: none;
+}
+
+.view-gatepass-info-grid > div:nth-last-child(-n+2) {
+    border-bottom: none;
+}
+
+.view-gatepass-details .full {
+    grid-column: 1 / -1;
+}
+
+.view-gatepass-info-grid span,
+.view-gatepass-details span,
+.view-gatepass-rector span,
+.view-gatepass-security span {
+    display: block;
+    margin-bottom: 5px;
+    color: #7a8b9c;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.view-gatepass-info-grid strong,
+.view-gatepass-details strong {
+    display: block;
+    color: #172f47;
+    font-size: 13px;
+    word-break: break-word;
+}
+
+.view-gatepass-qr {
+    padding: 26px 30px;
+    text-align: center;
+    border-bottom: 1px solid #e1e8ed;
+    background: #fbfdff;
+}
+
+.view-gatepass-qr-box {
+    display: inline-flex;
+    padding: 12px;
+    border: 2px dashed #63b7b0;
+    border-radius: 13px;
+    background: white;
+}
+
+.view-gatepass-qr p {
+    margin: 11px 0 0;
+    color: #77899a;
+    font-size: 11px;
+}
+
+.view-gatepass-rector,
+.view-gatepass-security {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid #e1e8ed;
+}
+
+.view-gatepass-rector > div,
+.view-gatepass-security > div {
+    padding: 20px 30px;
+}
+
+.view-gatepass-rector > div:first-child,
+.view-gatepass-security > div:first-child {
+    border-right: 1px solid #e1e8ed;
+}
+
+.view-gatepass-rector strong {
+    display: block;
+    color: #172f47;
+    font-size: 14px;
+}
+
+.view-gatepass-rector small {
+    display: block;
+    margin-top: 5px;
+    color: #77899a;
+    font-size: 11px;
+}
+
+.view-approved {
+    color: #159653 !important;
+}
+
+.view-gatepass-security strong {
+    color: #159653;
+    font-size: 13px;
+}
+
+.view-gatepass-validity {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin: 24px 30px 30px;
+    padding: 16px 20px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.view-gatepass-validity strong {
+    font-size: 15px;
+}
+
+.view-gatepass-validity span {
+    color: #687b8d;
+    font-size: 12px;
+}
+
+.view-gatepass-validity.valid {
+    border: 1px solid #a8dfbd;
+    background: #edfaf2;
+    color: #14864e;
+}
+
+.view-gatepass-validity.expired {
+    border: 1px solid #f2b4b4;
+    background: #fff0f0;
+    color: #d33b3b;
+}
+
+.view-gatepass-validity.inactive {
+    border: 1px solid #d7e0e7;
+    background: #f8fafc;
+    color: #64748b;
+}
+
+.view-gatepass-error {
+    max-width: 500px;
+    margin: 100px auto;
+    padding: 45px 30px;
+    border-radius: 18px;
+    background: white;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(15,42,60,0.12);
+}
+
+.view-gatepass-error button {
+    padding: 11px 20px;
+    border: none;
+    border-radius: 9px;
+    background: #117d75;
+    color: white;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+@media (max-width: 650px) {
+    .view-gatepass-page {
+        padding: 20px 10px 40px;
+    }
+
+    .view-gatepass-header {
+        padding: 20px 15px;
+    }
+
+    .view-gatepass-logo,
+    .view-gatepass-ticket {
+        width: 46px;
+        height: 46px;
+        font-size: 22px;
+    }
+
+    .view-gatepass-header h1 {
+        font-size: 21px;
+    }
+
+    .view-gatepass-header p {
+        font-size: 13px;
+    }
+
+    .view-gatepass-number {
+        margin: 0 16px;
+        font-size: 12px;
+    }
+
+    .view-gatepass-section {
+        padding: 21px 16px;
+    }
+
+    .view-gatepass-info-grid,
+    .view-gatepass-details,
+    .view-gatepass-rector,
+    .view-gatepass-security {
+        grid-template-columns: 1fr;
+    }
+
+    .view-gatepass-info-grid > div,
+    .view-gatepass-details > div {
+        border-right: none;
+        border-bottom: 1px solid #dce5eb;
+    }
+
+    .view-gatepass-details .full {
+        grid-column: auto;
+    }
+
+    .view-gatepass-rector > div,
+    .view-gatepass-security > div {
+        padding: 17px 16px;
+    }
+
+    .view-gatepass-rector > div:first-child,
+    .view-gatepass-security > div:first-child {
+        border-right: none;
+        border-bottom: 1px solid #e1e8ed;
+    }
+
+    .view-gatepass-validity {
+        margin: 20px 16px 24px;
+    }
+}

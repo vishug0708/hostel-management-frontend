@@ -276,7 +276,7 @@ function Index() {
                                 hostel operations.
                             </p>
 
-                            
+
                             <Link
                                 to="/admin/login"
                                 className="portal-button"
@@ -313,9 +313,13 @@ function Index() {
                                 to="/student/login"
                                 className="portal-button"
                             >
+
                                 Student Login
+
                                 <span>→</span>
+
                             </Link>
+
 
                         </div>
 
@@ -342,16 +346,55 @@ function Index() {
                                 and daily operations.
                             </p>
 
+                            <Link
+                                to="/rector/login"
+                                className="portal-button"
+                            >
+
+                                Rector Login
+
+                                <span>→</span>
+
+                            </Link>
+
+
+                        </div>
+
+                        {/* STAFF */}
+
+                        <div className="portal-card">
+
+                            <div className="portal-icon staff-icon">
+                                🔧
+                            </div>
+
+                            <span className="portal-number">
+                                04
+                            </span>
+
+                            <h3>
+                                Staff Login
+                            </h3>
+
+                            <p>
+                                Manage assigned hostel complaints
+                                and maintenance tasks according
+                                to your staff role.
+                            </p>
+
+
                             <button
                                 className="portal-button"
                                 onClick={() =>
                                     alert(
-                                        "Rector Login will be available soon."
+                                        "Security Login will be available soon."
                                     )
                                 }
                             >
-                                Rector Login
+
+                                Staff Login
                                 <span>→</span>
+
                             </button>
 
                         </div>
@@ -366,7 +409,7 @@ function Index() {
                             </div>
 
                             <span className="portal-number">
-                                04
+                                05
                             </span>
 
                             <h3>
@@ -378,18 +421,16 @@ function Index() {
                                 students and manage entry
                                 and exit records.
                             </p>
-
-                            <button
+                            <Link
+                                to="/security/login"
                                 className="portal-button"
-                                onClick={() =>
-                                    alert(
-                                        "Security Login will be available soon."
-                                    )
-                                }
                             >
+
                                 Security Login
+
                                 <span>→</span>
-                            </button>
+
+                            </Link>
 
                         </div>
 

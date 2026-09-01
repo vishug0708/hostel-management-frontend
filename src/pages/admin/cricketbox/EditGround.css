@@ -1,0 +1,667 @@
+/* =====================================================
+   EDIT GROUND PAGE
+===================================================== */
+
+.edit-ground-page {
+    min-height: 100vh;
+    display: flex;
+    background: #f1f5f9;
+    color: #0f172a;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* =====================================================
+   SIDEBAR
+===================================================== */
+
+.edit-ground-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 255px;
+    height: 100vh;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    padding: 22px 15px;
+    background: #0f172a;
+    color: white;
+    z-index: 100;
+}
+
+.edit-ground-brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 5px 10px 25px;
+    border-bottom: 1px solid #1e293b;
+}
+
+.edit-ground-brand-icon {
+    width: 43px;
+    height: 43px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    background: #0f766e;
+    font-size: 21px;
+}
+
+.edit-ground-brand strong {
+    display: block;
+    font-size: 17px;
+}
+
+.edit-ground-brand span {
+    display: block;
+    margin-top: 3px;
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+.edit-ground-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 25px;
+}
+
+.edit-ground-nav button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 13px;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    color: #94a3b8;
+    text-align: left;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.edit-ground-nav button:hover {
+    background: #1e293b;
+    color: white;
+    transform: translateX(2px);
+}
+
+.edit-ground-nav button.active {
+    background: #134e4a;
+    color: white;
+    box-shadow: inset 3px 0 0 #2dd4bf;
+}
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+.edit-ground-logout {
+    width: 100%;
+    margin-top: auto;
+    padding: 12px 13px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid #334155;
+    border-radius: 9px;
+    background: transparent;
+    color: #fca5a5;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.edit-ground-logout:hover {
+    background: #7f1d1d;
+    color: white;
+}
+
+/* =====================================================
+   MAIN
+===================================================== */
+
+.edit-ground-main {
+    width: calc(100% - 255px);
+    margin-left: 255px;
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 30px 35px;
+}
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.edit-ground-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.edit-ground-header > div:first-child span {
+    color: #0f766e;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.edit-ground-header h1 {
+    margin: 6px 0 5px;
+    font-size: 29px;
+    line-height: 1.2;
+}
+
+.edit-ground-header p {
+    margin: 0;
+    color: #64748b;
+    font-size: 13px;
+}
+
+.edit-ground-back {
+    padding: 11px 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    background: white;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.edit-ground-back:hover {
+    border-color: #0f766e;
+    color: #0f766e;
+}
+
+/* =====================================================
+   ERROR
+===================================================== */
+
+.edit-ground-error {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+    padding: 12px 14px;
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+    background: #fef2f2;
+    color: #991b1b;
+}
+
+.edit-ground-error > span {
+    font-size: 15px;
+}
+
+.edit-ground-error p {
+    flex: 1;
+    margin: 0;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.edit-ground-error button {
+    border: none;
+    background: transparent;
+    color: #991b1b;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+/* =====================================================
+   FORM
+===================================================== */
+
+.edit-ground-form {
+    overflow: hidden;
+    max-width: 950px;
+    margin: 0 auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 17px;
+    background: white;
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.05);
+}
+
+.edit-ground-form-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 23px 25px;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc;
+}
+
+.edit-ground-form-icon {
+    width: 47px;
+    height: 47px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: #ccfbf1;
+    font-size: 23px;
+}
+
+.edit-ground-form-header h2 {
+    margin: 0 0 4px;
+    color: #1e293b;
+    font-size: 17px;
+}
+
+.edit-ground-form-header p {
+    margin: 0;
+    color: #94a3b8;
+    font-size: 9px;
+}
+
+/* =====================================================
+   FORM SECTION
+===================================================== */
+
+.edit-ground-section {
+    padding: 24px 25px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.edit-ground-section h3 {
+    margin: 0 0 17px;
+    color: #334155;
+    font-size: 12px;
+}
+
+/* =====================================================
+   FIELDS
+===================================================== */
+
+.edit-ground-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 17px;
+}
+
+.edit-ground-field {
+    min-width: 0;
+}
+
+.edit-ground-field.full {
+    grid-column: 1 / -1;
+}
+
+.edit-ground-field label {
+    display: block;
+    margin-bottom: 7px;
+    color: #475569;
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.edit-ground-field label span {
+    margin-left: 3px;
+    color: #dc2626;
+}
+
+.edit-ground-field input,
+.edit-ground-field textarea,
+.edit-ground-field select {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    outline: none;
+    background: white;
+    color: #334155;
+    font-family: inherit;
+    font-size: 16px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.edit-ground-field input,
+.edit-ground-field select {
+    height: 40px;
+    padding: 0 12px;
+}
+
+.edit-ground-field textarea {
+    resize: vertical;
+    min-height: 95px;
+    padding: 11px 12px;
+    line-height: 1.5;
+}
+
+.edit-ground-field input:focus,
+.edit-ground-field textarea:focus,
+.edit-ground-field select:focus {
+    border-color: #0f766e;
+    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.08);
+}
+
+.edit-ground-field input::placeholder,
+.edit-ground-field textarea::placeholder {
+    color: #94a3b8;
+}
+
+.edit-ground-field small {
+    display: block;
+    margin-top: 5px;
+    color: #94a3b8;
+    font-size: 8px;
+}
+
+/* =====================================================
+   PRICE INPUT
+===================================================== */
+
+.edit-ground-price-input {
+    position: relative;
+}
+
+.edit-ground-price-input > span {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 700;
+    pointer-events: none;
+}
+
+.edit-ground-price-input input {
+    padding-left: 27px;
+}
+
+/* =====================================================
+   STATUS OPTIONS
+===================================================== */
+
+.edit-ground-status-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.edit-ground-status-options label {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 13px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.edit-ground-status-options label:hover {
+    border-color: #99f6e4;
+}
+
+.edit-ground-status-options label.selected {
+    border-color: #5eead4;
+    background: #f0fdfa;
+}
+
+.edit-ground-status-options input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    flex-shrink: 0;
+    border-radius: 50%;
+}
+
+.active-dot {
+    background: #22c55e;
+    box-shadow: 0 0 0 4px #dcfce7;
+}
+
+.inactive-dot {
+    background: #ef4444;
+    box-shadow: 0 0 0 4px #fee2e2;
+}
+
+.edit-ground-status-options strong {
+    display: block;
+    color: #334155;
+    font-size: 10px;
+}
+
+.edit-ground-status-options small {
+    display: block;
+    margin-top: 3px;
+    color: #94a3b8;
+    font-size: 8px;
+    line-height: 1.4;
+}
+
+/* =====================================================
+   FORM ACTIONS
+===================================================== */
+
+.edit-ground-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 20px 25px;
+    background: #f8fafc;
+}
+
+.edit-ground-cancel,
+.edit-ground-submit {
+    min-width: 120px;
+    height: 40px;
+    padding: 0 16px;
+    border-radius: 9px;
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.edit-ground-cancel {
+    border: 1px solid #cbd5e1;
+    background: white;
+    color: #475569;
+}
+
+.edit-ground-cancel:hover {
+    background: #f8fafc;
+}
+
+.edit-ground-submit {
+    border: 1px solid #0f766e;
+    background: #0f766e;
+    color: white;
+}
+
+.edit-ground-submit:hover {
+    background: #115e59;
+}
+
+.edit-ground-cancel:disabled,
+.edit-ground-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* =====================================================
+   LOADING
+===================================================== */
+
+.edit-ground-loading {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5f9;
+    text-align: center;
+}
+
+.edit-ground-loading-icon {
+    width: 65px;
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    border-radius: 17px;
+    background: #ccfbf1;
+    font-size: 28px;
+}
+
+.edit-ground-loading h2 {
+    margin: 0 0 6px;
+    color: #1e293b;
+    font-size: 18px;
+}
+
+.edit-ground-loading p {
+    margin: 0;
+    color: #94a3b8;
+    font-size: 10px;
+}
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.edit-ground-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 950px;
+    margin: 0 auto;
+    padding: 28px 0;
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media (max-width: 900px) {
+    .edit-ground-sidebar {
+        width: 220px;
+    }
+
+    .edit-ground-main {
+        width: calc(100% - 220px);
+        margin-left: 220px;
+        padding: 25px;
+    }
+}
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 700px) {
+    .edit-ground-page {
+        display: block;
+    }
+
+    .edit-ground-sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        padding: 15px;
+    }
+
+    .edit-ground-nav {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        margin-top: 15px;
+    }
+
+    .edit-ground-logout {
+        margin-top: 15px;
+    }
+
+    .edit-ground-main {
+        width: 100%;
+        margin-left: 0;
+        padding: 20px 15px;
+    }
+
+    .edit-ground-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .edit-ground-back {
+        width: 100%;
+    }
+
+    .edit-ground-form-header {
+        padding: 20px;
+    }
+
+    .edit-ground-section {
+        padding: 20px;
+    }
+
+    .edit-ground-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .edit-ground-field.full {
+        grid-column: auto;
+    }
+
+    .edit-ground-status-options {
+        grid-template-columns: 1fr;
+    }
+
+    .edit-ground-form-actions {
+        padding: 18px 20px;
+    }
+
+    .edit-ground-cancel,
+    .edit-ground-submit {
+        flex: 1;
+    }
+
+    .edit-ground-footer {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+    }
+}
+
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
+
+@media (max-width: 420px) {
+    .edit-ground-nav {
+        grid-template-columns: 1fr;
+    }
+
+    .edit-ground-header h1 {
+        font-size: 25px;
+    }
+
+    .edit-ground-form-actions {
+        flex-direction: column;
+    }
+
+    .edit-ground-cancel,
+    .edit-ground-submit {
+        width: 100%;
+    }
+}

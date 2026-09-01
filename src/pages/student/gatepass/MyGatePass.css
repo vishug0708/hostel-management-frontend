@@ -1,0 +1,642 @@
+.my-gatepass-page {
+    min-height: 100vh;
+    display: flex;
+    background: #f3f7fa;
+    color: #102a43;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.student-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    width: 298px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: 25px 17px;
+    background: #0d172a;
+    color: white;
+}
+
+.student-sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 4px 10px 25px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.student-brand-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 13px;
+    background: #0f8b82;
+    font-size: 24px;
+}
+
+.student-sidebar-brand h2 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.student-sidebar-brand span {
+    display: block;
+    margin-top: 4px;
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+.student-sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 25px;
+}
+
+.student-nav-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    color: #cbd5e1;
+    font-size: 15px;
+    text-align: left;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.student-nav-item:hover {
+    background: rgba(255,255,255,0.07);
+    color: white;
+}
+
+.student-nav-item.active {
+    background: #145f5a;
+    color: white;
+    box-shadow: inset 3px 0 #2dd4bf;
+}
+
+.student-logout-button {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    background: transparent;
+    color: #fca5a5;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.my-gatepass-main {
+    width: calc(100% - 298px);
+    min-height: 100vh;
+    margin-left: 298px;
+    padding: 40px 48px 60px;
+    box-sizing: border-box;
+}
+
+.my-gatepass-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.my-gatepass-eyebrow {
+    color: #087f78;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 3px;
+}
+
+.my-gatepass-header h1 {
+    margin: 8px 0 7px;
+    color: #102f4f;
+    font-size: 42px;
+}
+
+.my-gatepass-header p {
+    margin: 0;
+    color: #64748b;
+    font-size: 15px;
+}
+
+.apply-new-gatepass-button {
+    padding: 13px 20px;
+    border: none;
+    border-radius: 10px;
+    background: #0f8179;
+    color: white;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 7px 17px rgba(15,118,110,0.16);
+}
+
+.apply-new-gatepass-button:hover {
+    background: #0b6b65;
+}
+
+.my-gatepass-alert {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 22px;
+    padding: 14px 17px;
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+    background: #fef2f2;
+    color: #b91c1c;
+    font-size: 13px;
+}
+
+.my-gatepass-alert button {
+    margin-left: auto;
+    border: none;
+    background: transparent;
+    color: #b91c1c;
+    font-size: 19px;
+    cursor: pointer;
+}
+
+.my-gatepass-loading {
+    min-height: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+}
+
+.gatepass-spinner {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 12px;
+    border: 3px solid #dbe7ec;
+    border-top-color: #0f8179;
+    border-radius: 50%;
+    animation: gatepassSpin 0.8s linear infinite;
+}
+
+@keyframes gatepassSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.my-gatepass-empty {
+    padding: 60px 30px;
+    border: 1px solid #dce5ec;
+    border-radius: 18px;
+    background: white;
+    text-align: center;
+}
+
+.empty-gatepass-icon {
+    width: 70px;
+    height: 70px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 18px;
+    background: #e7f7f5;
+    font-size: 31px;
+}
+
+.my-gatepass-empty h2 {
+    margin: 20px 0 8px;
+    font-size: 23px;
+}
+
+.my-gatepass-empty p {
+    margin: 0 0 22px;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.my-gatepass-empty button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 9px;
+    background: #0f8179;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.gatepass-list {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.gatepass-card {
+    overflow: hidden;
+    border: 1px solid #dce5ec;
+    border-radius: 18px;
+    background: white;
+    box-shadow: 0 8px 25px rgba(15,23,42,0.05);
+}
+
+.gatepass-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 27px;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc;
+}
+
+.gatepass-small-title {
+    color: #0f8179;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.gatepass-card-top h2 {
+    margin: 5px 0 0;
+    color: #102f4f;
+    font-size: 24px;
+}
+
+.gatepass-status {
+    padding: 7px 13px;
+    border-radius: 30px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.gatepass-status.pending {
+    background: #fff7df;
+    color: #a16207;
+}
+
+.gatepass-status.approved {
+    background: #e8f8ef;
+    color: #15803d;
+}
+
+.gatepass-status.outside {
+    background: #fff0db;
+    color: #c2410c;
+}
+
+.gatepass-status.completed {
+    background: #e5f4ff;
+    color: #0369a1;
+}
+
+.gatepass-status.rejected {
+    background: #fef0f0;
+    color: #b91c1c;
+}
+
+.gatepass-content {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 30px;
+    padding: 28px;
+}
+
+.gatepass-student-column {
+    text-align: center;
+    border-right: 1px solid #e2e8f0;
+    padding-right: 25px;
+}
+
+.gatepass-photo {
+    width: 105px;
+    height: 120px;
+    margin: 0 auto 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 1px solid #dce5ec;
+    border-radius: 12px;
+    background: #edf8f6;
+    font-size: 35px;
+}
+
+.gatepass-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.gatepass-student-column h3 {
+    margin: 0 0 5px;
+    color: #102a43;
+    font-size: 16px;
+}
+
+.gatepass-student-column p {
+    margin: 0;
+    color: #718096;
+    font-size: 11px;
+    word-break: break-word;
+}
+
+.gatepass-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 25px;
+}
+
+.gatepass-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.gatepass-detail-item.full {
+    grid-column: 1 / -1;
+}
+
+.gatepass-detail-item span {
+    color: #718096;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.gatepass-detail-item strong {
+    color: #243b53;
+    font-size: 13px;
+    font-weight: 700;
+    word-break: break-word;
+}
+
+.gatepass-qr-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 25px 20px;
+    border-top: 1px solid #e2e8f0;
+    background: #fbfdff;
+}
+
+.gatepass-qr-heading {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.gatepass-qr-heading span {
+    color: #0f8179;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.gatepass-qr-heading p {
+    margin: 6px 0 0;
+    color: #718096;
+    font-size: 12px;
+}
+
+.gatepass-qr-box {
+    padding: 15px;
+    border: 1px solid #dce5ec;
+    border-radius: 12px;
+    background: white;
+}
+
+.gatepass-no-qr {
+    padding: 20px;
+    border: 1px dashed #cbd5e1;
+    border-radius: 10px;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.gatepass-validity {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 17px 25px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.gatepass-validity > div:first-child {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.gatepass-validity > div:first-child > span {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: 900;
+}
+
+.gatepass-validity.valid {
+    background: #f0fdf8;
+}
+
+.gatepass-validity.valid > div:first-child > span {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.gatepass-validity.expired {
+    background: #fff5f5;
+}
+
+.gatepass-validity.expired > div:first-child > span {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.gatepass-validity.not-active {
+    background: #f8fafc;
+}
+
+.gatepass-validity.not-active > div:first-child > span {
+    background: #e2e8f0;
+    color: #64748b;
+}
+
+.gatepass-validity strong {
+    display: block;
+    font-size: 13px;
+}
+
+.gatepass-validity p {
+    margin: 4px 0 0;
+    color: #64748b;
+    font-size: 11px;
+}
+
+.gatepass-security-status {
+    display: flex;
+    gap: 10px;
+}
+
+.gatepass-security-status span {
+    padding: 7px 10px;
+    border-radius: 7px;
+    background: white;
+    color: #475569;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.gatepass-times {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1px solid #e2e8f0;
+}
+
+.gatepass-times > div {
+    padding: 15px 25px;
+}
+
+.gatepass-times > div + div {
+    border-left: 1px solid #e2e8f0;
+}
+
+.gatepass-times span {
+    display: block;
+    margin-bottom: 5px;
+    color: #718096;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.gatepass-times strong {
+    color: #243b53;
+    font-size: 12px;
+}
+
+@media (max-width: 950px) {
+    .student-sidebar {
+        width: 230px;
+    }
+
+    .my-gatepass-main {
+        width: calc(100% - 230px);
+        margin-left: 230px;
+        padding: 30px;
+    }
+
+    .gatepass-content {
+        grid-template-columns: 140px 1fr;
+        gap: 20px;
+    }
+
+    .gatepass-details {
+        grid-template-columns: 1fr;
+    }
+
+    .gatepass-detail-item.full {
+        grid-column: auto;
+    }
+}
+
+@media (max-width: 700px) {
+    .my-gatepass-page {
+        display: block;
+    }
+
+    .student-sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+    }
+
+    .my-gatepass-main {
+        width: 100%;
+        margin-left: 0;
+        padding: 25px 18px 40px;
+    }
+
+    .my-gatepass-header {
+        flex-direction: column;
+    }
+
+    .my-gatepass-header h1 {
+        font-size: 34px;
+    }
+
+    .gatepass-content {
+        grid-template-columns: 1fr;
+    }
+
+    .gatepass-student-column {
+        border-right: none;
+        border-bottom: 1px solid #e2e8f0;
+        padding-right: 0;
+        padding-bottom: 22px;
+    }
+
+    .gatepass-validity {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .gatepass-times {
+        grid-template-columns: 1fr;
+    }
+
+    .gatepass-times > div + div {
+        border-top: 1px solid #e2e8f0;
+        border-left: none;
+    }
+}
+
+.gatepass-view-action {
+    display: flex;
+    justify-content: center;
+    padding: 18px 25px 22px;
+    border-top: 1px solid #e2e8f0;
+    background: #fbfdff;
+}
+
+.gatepass-view-action button {
+    min-width: 180px;
+    padding: 11px 20px;
+    border: none;
+    border-radius: 9px;
+    background: #0f8179;
+    color: white;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.gatepass-view-action button:hover {
+    background: #0b6b65;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 700px) {
+    .gatepass-view-action {
+        padding: 16px 18px 20px;
+    }
+
+    .gatepass-view-action button {
+        width: 100%;
+    }
+}

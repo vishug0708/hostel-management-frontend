@@ -2,50 +2,45 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./EditRoom.css";
 
-function EditRoom() {
+const EditRoom = () => {
     const navigate = useNavigate();
     const { id } = useParams();
 
     const [formData, setFormData] = useState({
+        block: "",
         room_no: "",
-        floor: "",
-        capacity: "",
         room_type: "",
+        total_beds: "",
         fees: "",
-        hostel: "",
-        status: "Available"
+        status: "Available",
+        hostel: ""
     });
 
+    const [allocatedBeds, setAllocatedBeds] = useState(0);
     const [loading, setLoading] = useState(true);
-    const [saving, setSaving] = useState(false);
-    const [message, setMessage] = useState("");
+    const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
 
     useEffect(() => {
         fetchRoom();
     }, [id]);
 
     const fetchRoom = async () => {
-        const token = localStorage.getItem("adminToken");
-
-        if (!token) {
-            navigate("/admin/login", { replace: true });
-            return;
-        }
-
-        if (!id) {
-            setError("Room ID is missing.");
-            setLoading(false);
-            return;
-        }
-
         try {
+            setLoading(true);
+            setError("");
+
+            const token =
+                localStorage.getItem("adminToken");
+
             const response = await fetch(
                 `http://localhost:5000/api/admin/rooms/${id}`,
                 {
                     method: "GET",
                     headers: {
-                        Authorization: `Bearer ${token}`
+                        Authorization:
+                            `Bearer ${token}`
                     }
                 }
             );
@@ -53,240 +48,268 @@ function EditRoom() {
             const data = await response.json();
 
             if (!response.ok || !data.success) {
-                setError(
+                throw new Error(
                     data.message ||
-                    "Unable to load room details."
+                    "Failed to load room."
                 );
-                return;
             }
 
             const room = data.room;
 
             setFormData({
+                block: room.block || "",
                 room_no: room.room_no || "",
-                floor: room.floor || "",
-                capacity: room.capacity || "",
-                room_type: room.room_type || "",
-                fees: room.fees || "",
-                hostel: room.hostel || "",
-                status: room.status || "Available"
+                room_type:
+                    room.room_type || "",
+                total_beds:
+                    room.total_beds || "",
+                fees:
+                    room.fees ?? "",
+                status:
+                    room.status || "Available",
+                hostel:
+                    room.hostel || ""
             });
+
+            setAllocatedBeds(
+                Number(
+                    room.allocated_beds || 0
+                )
+            );
+
         } catch (err) {
-            console.error("Fetch Room Error:", err);
-            setError("Cannot connect to backend server.");
+            console.error(
+                "Fetch Room Error:",
+                err
+            );
+
+            setError(
+                err.message ||
+                "Unable to load room."
+            );
         } finally {
             setLoading(false);
         }
     };
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const {
+            name,
+            value
+        } = e.target;
 
         setFormData((prev) => ({
             ...prev,
             [name]: value
         }));
 
-        setMessage("");
         setError("");
+        setSuccess("");
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const token = localStorage.getItem("adminToken");
+        setError("");
+        setSuccess("");
 
-        if (!token) {
-            navigate("/admin/login", { replace: true });
+        if (!formData.block.trim()) {
+            setError(
+                "Please enter block."
+            );
             return;
         }
 
         if (!formData.room_no.trim()) {
-            setError("Room number is required.");
+            setError(
+                "Please enter room number."
+            );
             return;
         }
 
-        if (!formData.floor) {
-            setError("Floor is required.");
+        if (!formData.room_type.trim()) {
+            setError(
+                "Please select room type."
+            );
             return;
         }
 
-        if (!formData.capacity) {
-            setError("Capacity is required.");
+        if (
+            !formData.total_beds ||
+            Number(formData.total_beds) <= 0
+        ) {
+            setError(
+                "Total beds must be greater than 0."
+            );
             return;
         }
 
-        if (!formData.room_type) {
-            setError("Room type is required.");
+        if (
+            Number(formData.total_beds) <
+            allocatedBeds
+        ) {
+            setError(
+                `Total beds cannot be less than ${allocatedBeds} because ${allocatedBeds} beds are currently allocated.`
+            );
             return;
         }
 
-        if (!formData.fees) {
-            setError("Room fees is required.");
+        if (
+            formData.fees === "" ||
+            Number(formData.fees) < 0
+        ) {
+            setError(
+                "Please enter valid room fees."
+            );
+            return;
+        }
+
+        if (!formData.hostel.trim()) {
+            setError(
+                "Please enter hostel name."
+            );
             return;
         }
 
         try {
-            setSaving(true);
-            setMessage("");
-            setError("");
+            setSubmitting(true);
+
+            const token =
+                localStorage.getItem(
+                    "adminToken"
+                );
 
             const response = await fetch(
                 `http://localhost:5000/api/admin/rooms/${id}`,
                 {
                     method: "PUT",
                     headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`
+                        "Content-Type":
+                            "application/json",
+                        Authorization:
+                            `Bearer ${token}`
                     },
-                    body: JSON.stringify(formData)
+                    body: JSON.stringify({
+                        block:
+                            formData.block
+                                .trim()
+                                .toUpperCase(),
+
+                        room_no:
+                            formData.room_no
+                                .trim()
+                                .toUpperCase(),
+
+                        room_type:
+                            formData.room_type
+                                .trim(),
+
+                        total_beds:
+                            Number(
+                                formData.total_beds
+                            ),
+
+                        fees:
+                            Number(
+                                formData.fees
+                            ),
+
+                        status:
+                            formData.status,
+
+                        hostel:
+                            formData.hostel
+                                .trim()
+                    })
                 }
             );
 
-            const data = await response.json();
+            const data =
+                await response.json();
 
-            if (!response.ok || !data.success) {
-                setError(
+            if (
+                !response.ok ||
+                !data.success
+            ) {
+                throw new Error(
                     data.message ||
                     "Failed to update room."
                 );
-                return;
             }
 
-            setMessage(
-                "Room updated successfully."
+            setSuccess(
+                `Room ${formData.room_no.toUpperCase()} updated successfully.`
             );
 
             setTimeout(() => {
                 navigate(
-                    `/admin/rooms/view/${id}`
+                    "/admin/rooms"
                 );
             }, 1000);
+
         } catch (err) {
-            console.error("Update Room Error:", err);
-            setError("Cannot connect to backend server.");
+            console.error(
+                "Update Room Error:",
+                err
+            );
+
+            setError(
+                err.message ||
+                "Unable to update room."
+            );
         } finally {
-            setSaving(false);
+            setSubmitting(false);
         }
     };
 
-    const handleLogout = () => {
-        localStorage.removeItem("adminToken");
-        localStorage.removeItem("admin");
-
-        navigate("/admin/login", {
-            replace: true
-        });
-    };
+    const availableBeds =
+        Math.max(
+            Number(
+                formData.total_beds || 0
+            ) - allocatedBeds,
+            0
+        );
 
     if (loading) {
         return (
             <div className="edit-room-loading">
-                <div className="edit-room-spinner">⏳</div>
-                <p>Loading room details...</p>
-            </div>
-        );
-    }
-
-    if (error && !formData.room_nor) {
-        return (
-            <div className="edit-room-error-page">
-                <div className="edit-room-error-icon">
-                    ⚠️
+                <div className="edit-room-loading-icon">
+                    ⏳
                 </div>
 
-                <h2>Unable to Load Room</h2>
+                <h2>
+                    Loading Room...
+                </h2>
 
-                <p>{error}</p>
-
-                <button
-                    onClick={() =>
-                        navigate("/admin/rooms")
-                    }
-                >
-                    ← Back to Rooms
-                </button>
+                <p>
+                    Please wait while room
+                    information is being loaded.
+                </p>
             </div>
         );
     }
 
     return (
         <div className="edit-room-page">
-            <aside className="edit-room-sidebar">
-                <div className="edit-room-brand">
-                    <div className="edit-room-brand-icon">
-                        🏠
-                    </div>
+
+            <div className="edit-room-container">
+
+                {/* HEADER */}
+
+                <div className="edit-room-header">
 
                     <div>
-                        <strong>Hostel</strong>
-                        <span>Admin Panel</span>
-                    </div>
-                </div>
+                        <span className="edit-room-label">
+                            ADMIN PANEL
+                        </span>
 
-                <nav className="edit-room-nav">
-                    <button
-                        onClick={() =>
-                            navigate("/admin/dashboard")
-                        }
-                    >
-                        📊 Dashboard
-                    </button>
-
-                    <button
-                        onClick={() =>
-                            navigate("/admin/students")
-                        }
-                    >
-                        🎓 Students
-                    </button>
-
-                    <button
-                        className="active"
-                        onClick={() =>
-                            navigate("/admin/rooms")
-                        }
-                    >
-                        🛏️ Rooms
-                    </button>
-
-                    <button
-                        onClick={() =>
-                            navigate("/admin/rooms/add")
-                        }
-                    >
-                        ➕ Add Room
-                    </button>
-
-                    <button
-                        onClick={() =>
-                            navigate("/admin/profile")
-                        }
-                    >
-                        👤 Profile
-                    </button>
-                </nav>
-
-                <button
-                    className="edit-room-logout"
-                    onClick={handleLogout}
-                >
-                    🚪 Logout
-                </button>
-            </aside>
-
-            <main className="edit-room-main">
-                <header className="edit-room-header">
-                    <div>
-                        <span>ROOM MANAGEMENT</span>
-
-                        <h1>Edit Room</h1>
+                        <h1>
+                            Edit Room
+                        </h1>
 
                         <p>
-                            Update the information of room{" "}
-                            <strong>
-                                {formData.room_no}
-                            </strong>
+                            Update room and bed
+                            information.
                         </p>
                     </div>
 
@@ -294,246 +317,520 @@ function EditRoom() {
                         className="edit-room-back-btn"
                         onClick={() =>
                             navigate(
-                                `/admin/rooms/view/${id}`
+                                "/admin/rooms"
                             )
                         }
                     >
-                        ← Back to Room
+                        ← Back to Rooms
                     </button>
-                </header>
 
-                <section className="edit-room-card">
-                    <div className="edit-room-card-header">
-                        <div className="edit-room-card-icon">
+                </div>
+
+                {/* ERROR */}
+
+                {error && (
+                    <div className="edit-room-alert error">
+
+                        <span>
+                            ⚠️
+                        </span>
+
+                        <p>
+                            {error}
+                        </p>
+
+                        <button
+                            onClick={() =>
+                                setError("")
+                            }
+                        >
+                            ×
+                        </button>
+
+                    </div>
+                )}
+
+                {/* SUCCESS */}
+
+                {success && (
+                    <div className="edit-room-alert success">
+
+                        <span>
+                            ✓
+                        </span>
+
+                        <p>
+                            {success}
+                        </p>
+
+                    </div>
+                )}
+
+                {/* CURRENT BED STATUS */}
+
+                <div className="edit-room-status-card">
+
+                    <div className="edit-room-status-heading">
+
+                        <div className="edit-room-status-icon">
                             🛏️
                         </div>
 
                         <div>
-                            <h2>Room Information</h2>
-                            <p>
-                                Modify room details below.
-                            </p>
+                            <span>
+                                CURRENT ROOM STATUS
+                            </span>
+
+                            <h2>
+                                Room{" "}
+                                {formData.room_no ||
+                                    "—"}
+                            </h2>
                         </div>
+
                     </div>
 
-                    <form
-                        className="edit-room-form"
-                        onSubmit={handleSubmit}
-                    >
-                        {message && (
-                            <div className="edit-room-success">
-                                ✓ {message}
-                            </div>
-                        )}
+                    <div className="edit-room-stat-grid">
 
-                        {error && (
-                            <div className="edit-room-error">
-                                ⚠️ {error}
-                            </div>
-                        )}
+                        <div className="edit-room-stat">
 
-                        <div className="edit-room-form-grid">
-                            <div className="edit-room-field">
-                                <label>
-                                    Room Number
-                                </label>
+                            <span>
+                                TOTAL BEDS
+                            </span>
 
-                                <input
-                                    type="text"
-                                    name="room_no"
-                                    value={
-                                        formData.room_no
-                                    }
-                                    onChange={handleChange}
-                                    placeholder="Enter room number"
-                                    required
-                                />
-                            </div>
+                            <strong>
+                                {
+                                    formData.total_beds ||
+                                    0
+                                }
+                            </strong>
 
-                            <div className="edit-room-field">
-                                <label>
-                                    Floor
-                                </label>
-
-                                <input
-                                    type="text"
-                                    name="floor"
-                                    value={formData.floor}
-                                    onChange={handleChange}
-                                    placeholder="Enter floor"
-                                    required
-                                />
-                            </div>
-
-                            <div className="edit-room-field">
-                                <label>
-                                    Capacity
-                                </label>
-
-                                <input
-                                    type="number"
-                                    name="capacity"
-                                    value={
-                                        formData.capacity
-                                    }
-                                    onChange={handleChange}
-                                    placeholder="Number of students"
-                                    min="1"
-                                    required
-                                />
-                            </div>
-
-                            <div className="edit-room-field">
-                                <label>
-                                    Room Type
-                                </label>
-
-                                <select
-                                    name="room_type"
-                                    value={
-                                        formData.room_type
-                                    }
-                                    onChange={handleChange}
-                                    required
-                                >
-                                    <option value="">
-                                        Select room type
-                                    </option>
-
-                                    <option value="Single">
-                                        Single
-                                    </option>
-
-                                    <option value="2 Sharing">
-                                        2 Sharing
-                                    </option>
-
-                                    <option value="3 Sharing">
-                                        3 Sharing
-                                    </option>
-
-                                    <option value="4 Sharing">
-                                        4 Sharing
-                                    </option>
-                                </select>
-                            </div>
-
-                            <div className="edit-room-field">
-                                <label>
-                                    Hostel
-                                </label>
-
-                                <input
-                                    type="text"
-                                    name="hostel"
-                                    value={formData.hostel}
-                                    onChange={handleChange}
-                                    placeholder="Enter hostel name"
-                                    required
-                                />
-                            </div>
-
-                            <div className="edit-room-field">
-                                <label>
-                                    Room Fee
-                                </label>
-
-                                <div className="edit-room-fee-input">
-                                    <span>₹</span>
-
-                                    <input
-                                        type="number"
-                                        name="fees"
-                                        value={formData.fees}
-                                        onChange={handleChange}
-                                        placeholder="Enter room fees"
-                                        min="0"
-                                        step="0.01"
-                                        required
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="edit-room-field">
-                                <label>
-                                    Room Status
-                                </label>
-
-                                <select
-                                    name="status"
-                                    value={
-                                        formData.status
-                                    }
-                                    onChange={handleChange}
-                                    required
-                                >
-                                    <option value="Available">
-                                        Available
-                                    </option>
-
-                                    <option value="Occupied">
-                                        Occupied
-                                    </option>
-
-                                    <option value="Maintenance">
-                                        Maintenance
-                                    </option>
-
-                                    <option value="Inactive">
-                                        Inactive
-                                    </option>
-                                </select>
-                            </div>
                         </div>
 
-                        <div className="edit-room-notice">
-                            <span>ℹ️</span>
+                        <div className="edit-room-stat">
+
+                            <span>
+                                ALLOCATED
+                            </span>
+
+                            <strong>
+                                {allocatedBeds}
+                            </strong>
+
+                        </div>
+
+                        <div className="edit-room-stat">
+
+                            <span>
+                                VACANT
+                            </span>
+
+                            <strong>
+                                {availableBeds}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {/* FORM */}
+
+                <form
+                    className="edit-room-card"
+                    onSubmit={handleSubmit}
+                >
+
+                    <div className="edit-room-card-header">
+
+                        <div className="edit-room-icon">
+                            ✏️
+                        </div>
+
+                        <div>
+                            <h2>
+                                Room Information
+                            </h2>
 
                             <p>
-                                Student room allocation and
-                                deallocation are managed by
-                                the Rector.
+                                Make changes to
+                                the selected room.
                             </p>
                         </div>
 
-                        <div className="edit-room-actions">
-                            <button
-                                type="button"
-                                className="edit-room-cancel-btn"
-                                onClick={() =>
-                                    navigate(
-                                        `/admin/rooms/view/${id}`
-                                    )
+                    </div>
+
+                    <div className="edit-room-form">
+
+                        {/* BLOCK */}
+
+                        <div className="edit-room-field">
+
+                            <label>
+                                BLOCK
+                            </label>
+
+                            <input
+                                type="text"
+                                name="block"
+                                value={
+                                    formData.block
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                placeholder="A"
+                                disabled={
+                                    submitting
+                                }
+                            />
+
+                            <small>
+                                Example: A, B, C,
+                                D, E, F, G, H
+                            </small>
+
+                        </div>
+
+                        {/* ROOM NUMBER */}
+
+                        <div className="edit-room-field">
+
+                            <label>
+                                ROOM NUMBER
+                            </label>
+
+                            <input
+                                type="text"
+                                name="room_no"
+                                value={
+                                    formData.room_no
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                placeholder="A101"
+                                disabled={
+                                    submitting
+                                }
+                            />
+
+                            <small>
+                                Example: A101
+                            </small>
+
+                        </div>
+
+                        {/* ROOM TYPE */}
+
+                        <div className="edit-room-field">
+
+                            <label>
+                                ROOM TYPE
+                            </label>
+
+                            <select
+                                name="room_type"
+                                value={
+                                    formData.room_type
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                disabled={
+                                    submitting
                                 }
                             >
-                                Cancel
-                            </button>
 
-                            <button
-                                type="submit"
-                                className="edit-room-save-btn"
-                                disabled={saving}
-                            >
-                                {saving
-                                    ? "Updating..."
-                                    : "✓ Update Room"}
-                            </button>
+                                <option value="">
+                                    Select Room Type
+                                </option>
+
+                                <option value="Single">
+                                    Single
+                                </option>
+
+                                <option value="Double">
+                                    Double
+                                </option>
+
+                                <option value="Triple">
+                                    Triple
+                                </option>
+
+                                <option value="Four Sharing">
+                                    Four Sharing
+                                </option>
+
+                                <option value="Six Sharing">
+                                    Six Sharing
+                                </option>
+
+                                <option value="Eight Sharing">
+                                    Eight Sharing
+                                </option>
+
+                                <option value="Other">
+                                    Other
+                                </option>
+
+                            </select>
+
                         </div>
-                    </form>
-                </section>
 
-                <footer className="edit-room-footer">
-                    <span>
-                        © 2026 Hostel Management System
-                    </span>
+                        {/* TOTAL BEDS */}
 
-                    <span>
-                        Admin Panel
-                    </span>
-                </footer>
-            </main>
+                        <div className="edit-room-field">
+
+                            <label>
+                                TOTAL BEDS
+                            </label>
+
+                            <input
+                                type="number"
+                                name="total_beds"
+                                value={
+                                    formData.total_beds
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                min={
+                                    allocatedBeds > 0
+                                        ? allocatedBeds
+                                        : 1
+                                }
+                                disabled={
+                                    submitting
+                                }
+                            />
+
+                            <small>
+                                Minimum{" "}
+                                {allocatedBeds}{" "}
+                                beds required because
+                                they are already allocated.
+                            </small>
+
+                        </div>
+
+                        {/* FEES */}
+
+                        <div className="edit-room-field">
+
+                            <label>
+                                ROOM FEES
+                            </label>
+
+                            <input
+                                type="number"
+                                name="fees"
+                                value={
+                                    formData.fees
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                min="0"
+                                step="0.01"
+                                placeholder="50000"
+                                disabled={
+                                    submitting
+                                }
+                            />
+
+                        </div>
+
+                        {/* STATUS */}
+
+                        <div className="edit-room-field">
+
+                            <label>
+                                ROOM STATUS
+                            </label>
+
+                            <select
+                                name="status"
+                                value={
+                                    formData.status
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                disabled={
+                                    submitting
+                                }
+                            >
+
+                                <option value="Available">
+                                    Available
+                                </option>
+
+                                <option value="Occupied">
+                                    Occupied
+                                </option>
+
+                                <option value="Reserved">
+                                    Reserved
+                                </option>
+
+                                <option value="Not In Use">
+                                    Not In Use
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        {/* HOSTEL */}
+
+                        <div className="edit-room-field full-width">
+
+                            <label>
+                                HOSTEL NAME
+                            </label>
+
+                            <input
+                                type="text"
+                                name="hostel"
+                                value={
+                                    formData.hostel
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                placeholder="Virtuous Hostel"
+                                disabled={
+                                    submitting
+                                }
+                            />
+
+                        </div>
+
+                    </div>
+
+                    {/* BED VISUALIZATION */}
+
+                    <div className="edit-room-bed-section">
+
+                        <div className="edit-room-bed-header">
+
+                            <div>
+                                <span>
+                                    BED STATUS
+                                </span>
+
+                                <h3>
+                                    Current Bed
+                                    Occupancy
+                                </h3>
+                            </div>
+
+                            <div className="edit-room-bed-summary">
+
+                                <span className="edit-room-bed-dot allocated">
+                                    ●
+                                </span>
+
+                                Allocated
+
+                                <span className="edit-room-bed-dot vacant">
+                                    ●
+                                </span>
+
+                                Vacant
+
+                            </div>
+
+                        </div>
+
+                        <div className="edit-room-beds">
+
+                            {Array.from({
+                                length: Number(
+                                    formData.total_beds ||
+                                    0
+                                )
+                            }).map(
+                                (_, index) => {
+
+                                    const allocated =
+                                        index <
+                                        allocatedBeds;
+
+                                    return (
+                                        <div
+                                            key={
+                                                index
+                                            }
+                                            className={`edit-room-bed ${
+                                                allocated
+                                                    ? "allocated"
+                                                    : "vacant"
+                                            }`}
+                                        >
+
+                                            <span>
+                                                Bed{" "}
+                                                {index +
+                                                    1}
+                                            </span>
+
+                                            <strong>
+                                                {allocated
+                                                    ? "Allocated"
+                                                    : "Vacant"}
+                                            </strong>
+
+                                        </div>
+                                    );
+                                }
+                            )}
+
+                        </div>
+
+                    </div>
+
+                    {/* ACTIONS */}
+
+                    <div className="edit-room-actions">
+
+                        <button
+                            type="button"
+                            className="edit-room-cancel-btn"
+                            onClick={() =>
+                                navigate(
+                                    "/admin/rooms"
+                                )
+                            }
+                            disabled={
+                                submitting
+                            }
+                        >
+                            Cancel
+                        </button>
+
+                        <button
+                            type="submit"
+                            className="edit-room-submit-btn"
+                            disabled={
+                                submitting
+                            }
+                        >
+                            {submitting
+                                ? "Updating Room..."
+                                : "Update Room"}
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
         </div>
     );
-}
+};
 
 export default EditRoom;

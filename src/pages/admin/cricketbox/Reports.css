@@ -1,0 +1,485 @@
+.cricket-reports-page {
+    min-height: 100vh;
+    display: flex;
+    background: #f4f7fb;
+    color: #0f1d35;
+}
+
+.cricket-reports-sidebar {
+    width: 260px;
+    min-height: 100vh;
+    background: #0d172b;
+    padding: 28px 16px;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 10;
+}
+
+.cricket-reports-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px 28px;
+    border-bottom: 1px solid rgba(255,255,255,.1);
+}
+
+.cricket-reports-logo {
+    width: 50px;
+    height: 50px;
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #07847d;
+    font-size: 25px;
+}
+
+.cricket-reports-brand h2 {
+    margin: 0;
+    color: #fff;
+    font-size: 20px;
+}
+
+.cricket-reports-brand span {
+    color: #aeb9cd;
+    font-size: 13px;
+}
+
+.cricket-reports-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-top: 25px;
+}
+
+.cricket-reports-nav button {
+    border: 0;
+    background: transparent;
+    color: #aeb9cd;
+    text-align: left;
+    padding: 13px 16px;
+    border-radius: 10px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.cricket-reports-nav button:hover {
+    background: rgba(255,255,255,.06);
+    color: #fff;
+}
+
+.cricket-reports-nav button.active {
+    background: #125d59;
+    color: #fff;
+    border-left: 3px solid #21d4c3;
+}
+
+.cricket-reports-logout {
+    margin-top: auto;
+    border: 1px solid #33415a;
+    background: transparent;
+    color: #ff9b9b;
+    padding: 13px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.cricket-reports-main {
+    width: calc(100% - 260px);
+    margin-left: 260px;
+    padding: 38px 42px;
+}
+
+.cricket-reports-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 25px;
+    margin-bottom: 28px;
+}
+
+.cricket-reports-eyebrow {
+    color: #087b76;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 1.6px;
+}
+
+.cricket-reports-header h1 {
+    margin: 7px 0 5px;
+    font-size: 34px;
+}
+
+.cricket-reports-header p {
+    margin: 0;
+    color: #718099;
+}
+
+.cricket-reports-back {
+    background: #fff;
+    border: 1px solid #d3ddeb;
+    border-radius: 10px;
+    padding: 12px 18px;
+    color: #263752;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.cricket-reports-filters {
+    background: #fff;
+    border: 1px solid #dce4ef;
+    border-radius: 15px;
+    padding: 22px;
+    margin-bottom: 24px;
+}
+
+.cricket-reports-filter-title h3 {
+    margin: 0 0 4px;
+    font-size: 18px;
+}
+
+.cricket-reports-filter-title p {
+    margin: 0 0 20px;
+    color: #8090a8;
+    font-size: 13px;
+}
+
+.cricket-reports-filter-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.cricket-reports-filter-grid label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.cricket-reports-filter-grid input,
+.cricket-reports-filter-grid select {
+    width: 100%;
+    height: 44px;
+    border: 1px solid #d4ddea;
+    border-radius: 9px;
+    padding: 0 12px;
+    background: #fff;
+    color: #263752;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.cricket-reports-filter-grid input:focus,
+.cricket-reports-filter-grid select:focus {
+    border-color: #07847d;
+}
+
+.cricket-reports-filter-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.cricket-reports-filter-actions button {
+    border: 0;
+    border-radius: 9px;
+    padding: 11px 17px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.report-apply-btn {
+    background: #087f79;
+    color: #fff;
+}
+
+.report-reset-btn,
+.report-refresh-btn {
+    background: #f1f5f9;
+    color: #334155;
+}
+
+.cricket-reports-error {
+    background: #fff1f1;
+    border: 1px solid #ffcaca;
+    border-radius: 12px;
+    padding: 14px 17px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 22px;
+}
+
+.cricket-reports-error p {
+    margin: 0;
+    flex: 1;
+    color: #b42318;
+    font-weight: 600;
+}
+
+.cricket-reports-error button {
+    border: 0;
+    background: #087f79;
+    color: #fff;
+    padding: 9px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.cricket-reports-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 25px;
+}
+
+.report-card {
+    background: #fff;
+    border: 1px solid #dce4ef;
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.report-card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 21px;
+    font-weight: 800;
+}
+
+.report-card-icon.blue {
+    background: #edf5ff;
+}
+
+.report-card-icon.green {
+    background: #eafbf3;
+}
+
+.report-card-icon.yellow {
+    background: #fff8df;
+}
+
+.report-card-icon.purple {
+    background: #f1ebff;
+}
+
+.report-card-icon.teal {
+    background: #e7faf8;
+}
+
+.report-card span {
+    display: block;
+    color: #7d8ca5;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+
+.report-card strong {
+    display: block;
+    margin-top: 5px;
+    font-size: 24px;
+}
+
+.cricket-report-panel {
+    background: #fff;
+    border: 1px solid #dce4ef;
+    border-radius: 15px;
+    overflow: hidden;
+    margin-bottom: 25px;
+}
+
+.cricket-report-panel-header {
+    padding: 21px 22px;
+    border-bottom: 1px solid #e5eaf2;
+}
+
+.cricket-report-panel-header span {
+    color: #07847d;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.3px;
+}
+
+.cricket-report-panel-header h2 {
+    margin: 5px 0 0;
+    font-size: 21px;
+}
+
+.cricket-report-table-wrapper {
+    overflow-x: auto;
+}
+
+.cricket-report-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.cricket-report-table th {
+    background: #f8fafc;
+    color: #718096;
+    text-align: left;
+    padding: 14px 20px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+}
+
+.cricket-report-table td {
+    padding: 16px 20px;
+    border-top: 1px solid #edf1f6;
+    font-size: 14px;
+}
+
+.ground-name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ground-name > span {
+    width: 38px;
+    height: 38px;
+    border-radius: 9px;
+    background: #e9f8f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ground-name strong {
+    display: block;
+}
+
+.ground-name small {
+    display: block;
+    margin-top: 3px;
+    color: #8996aa;
+}
+
+.revenue-text {
+    color: #087b76;
+    font-weight: 800;
+}
+
+.share-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 130px;
+}
+
+.share-bar {
+    width: 80px;
+    height: 7px;
+    background: #e7edf4;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.share-fill {
+    height: 100%;
+    background: #087f79;
+    border-radius: 10px;
+}
+
+.share-cell > span {
+    font-size: 12px;
+    color: #66758d;
+    font-weight: 700;
+}
+
+.cricket-report-loading,
+.cricket-report-empty {
+    padding: 60px 20px;
+    text-align: center;
+    color: #7a899f;
+}
+
+.cricket-report-empty > div {
+    font-size: 35px;
+    margin-bottom: 10px;
+}
+
+.cricket-report-empty h3 {
+    margin: 0 0 6px;
+    color: #27364d;
+}
+
+.cricket-report-empty p {
+    margin: 0;
+}
+
+.cricket-report-empty.compact {
+    padding: 35px 20px;
+}
+
+.cricket-reports-footer {
+    display: flex;
+    justify-content: space-between;
+    color: #8491a5;
+    font-size: 13px;
+    padding: 5px 2px 25px;
+}
+
+@media (max-width: 1000px) {
+    .cricket-reports-sidebar {
+        width: 220px;
+    }
+
+    .cricket-reports-main {
+        width: calc(100% - 220px);
+        margin-left: 220px;
+        padding: 25px;
+    }
+
+    .cricket-reports-filter-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .cricket-reports-summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 700px) {
+    .cricket-reports-sidebar {
+        display: none;
+    }
+
+    .cricket-reports-main {
+        width: 100%;
+        margin-left: 0;
+        padding: 20px;
+    }
+
+    .cricket-reports-header {
+        flex-direction: column;
+    }
+
+    .cricket-reports-filter-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .cricket-reports-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .cricket-reports-footer {
+        flex-direction: column;
+        gap: 5px;
+    }
+}

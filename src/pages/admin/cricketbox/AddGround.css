@@ -1,0 +1,645 @@
+/* =====================================================
+   ADD GROUND PAGE
+===================================================== */
+
+.add-ground-page {
+    min-height: 100vh;
+    display: flex;
+    background: #f1f5f9;
+    color: #0f172a;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* =====================================================
+   SIDEBAR
+===================================================== */
+
+.add-ground-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 255px;
+    height: 100vh;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    padding: 22px 15px;
+    background: #0f172a;
+    color: white;
+    z-index: 100;
+}
+
+.add-ground-brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 5px 10px 25px;
+    border-bottom: 1px solid #1e293b;
+}
+
+.add-ground-brand-icon {
+    width: 43px;
+    height: 43px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    background: #0f766e;
+    font-size: 21px;
+}
+
+.add-ground-brand strong {
+    display: block;
+    font-size: 17px;
+}
+
+.add-ground-brand span {
+    display: block;
+    margin-top: 3px;
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+.add-ground-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 25px;
+}
+
+.add-ground-nav button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 13px;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    color: #94a3b8;
+    text-align: left;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.add-ground-nav button:hover {
+    background: #1e293b;
+    color: white;
+    transform: translateX(2px);
+}
+
+.add-ground-nav button.active {
+    background: #134e4a;
+    color: white;
+    box-shadow: inset 3px 0 0 #2dd4bf;
+}
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+.add-ground-logout {
+    width: 100%;
+    margin-top: auto;
+    padding: 12px 13px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid #334155;
+    border-radius: 9px;
+    background: transparent;
+    color: #fca5a5;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.add-ground-logout:hover {
+    background: #7f1d1d;
+    color: white;
+}
+
+/* =====================================================
+   MAIN
+===================================================== */
+
+.add-ground-main {
+    width: calc(100% - 255px);
+    margin-left: 255px;
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 30px 35px;
+}
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.add-ground-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.add-ground-header > div:first-child span {
+    color: #0f766e;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.add-ground-header h1 {
+    margin: 6px 0 5px;
+    font-size: 29px;
+    line-height: 1.2;
+}
+
+.add-ground-header p {
+    margin: 0;
+    color: #64748b;
+    font-size: 13px;
+}
+
+.add-ground-back {
+    padding: 11px 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    background: white;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.add-ground-back:hover {
+    border-color: #0f766e;
+    color: #0f766e;
+}
+
+/* =====================================================
+   ERROR
+===================================================== */
+
+.add-ground-error {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+    padding: 12px 14px;
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+    background: #fef2f2;
+    color: #991b1b;
+}
+
+.add-ground-error > span {
+    font-size: 15px;
+}
+
+.add-ground-error p {
+    flex: 1;
+    margin: 0;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.add-ground-error button {
+    border: none;
+    background: transparent;
+    color: #991b1b;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+/* =====================================================
+   FORM
+===================================================== */
+
+.add-ground-form {
+    overflow: hidden;
+    max-width: 950px;
+    margin: 0 auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 17px;
+    background: white;
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.05);
+}
+
+.add-ground-form-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 23px 25px;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc;
+}
+
+.add-ground-form-icon {
+    width: 47px;
+    height: 47px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: #ccfbf1;
+    font-size: 23px;
+}
+
+.add-ground-form-header h2 {
+    margin: 0 0 4px;
+    color: #1e293b;
+    font-size: 17px;
+}
+
+.add-ground-form-header p {
+    margin: 0;
+    color: #94a3b8;
+    font-size: 9px;
+}
+
+/* =====================================================
+   FORM SECTION
+===================================================== */
+
+.add-ground-section {
+    padding: 24px 25px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.add-ground-section h3 {
+    margin: 0 0 17px;
+    color: #334155;
+    font-size: 12px;
+}
+
+/* =====================================================
+   FIELDS
+===================================================== */
+
+.add-ground-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 17px;
+}
+
+.add-ground-field {
+    min-width: 0;
+}
+
+.add-ground-field.full {
+    grid-column: 1 / -1;
+}
+
+.add-ground-field label {
+    display: block;
+    margin-bottom: 7px;
+    color: #475569;
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.add-ground-field label span {
+    margin-left: 3px;
+    color: #dc2626;
+}
+
+.add-ground-field input,
+.add-ground-field textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    outline: none;
+    background: white;
+    color: #334155;
+    font-family: inherit;
+    font-size: 10px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.add-ground-field input {
+    height: 40px;
+    padding: 0 12px;
+}
+
+.add-ground-field textarea {
+    resize: vertical;
+    min-height: 95px;
+    padding: 11px 12px;
+    line-height: 1.5;
+}
+
+.add-ground-field input:focus,
+.add-ground-field textarea:focus {
+    border-color: #0f766e;
+    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.08);
+}
+
+.add-ground-field input::placeholder,
+.add-ground-field textarea::placeholder {
+    color: #94a3b8;
+}
+
+.add-ground-field small {
+    display: block;
+    margin-top: 5px;
+    color: #94a3b8;
+    font-size: 8px;
+}
+
+/* =====================================================
+   PRICE INPUT
+===================================================== */
+
+.add-ground-price-input {
+    position: relative;
+}
+
+.add-ground-price-input > span {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 700;
+    pointer-events: none;
+}
+
+.add-ground-price-input input {
+    padding-left: 27px;
+}
+
+/* =====================================================
+   STATUS OPTIONS
+===================================================== */
+
+.add-ground-status-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.add-ground-status-options label {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 13px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.add-ground-status-options label:hover {
+    border-color: #99f6e4;
+}
+
+.add-ground-status-options label.selected {
+    border-color: #5eead4;
+    background: #f0fdfa;
+}
+
+.add-ground-status-options input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    flex-shrink: 0;
+    border-radius: 50%;
+}
+
+.active-dot {
+    background: #22c55e;
+    box-shadow: 0 0 0 4px #dcfce7;
+}
+
+.inactive-dot {
+    background: #ef4444;
+    box-shadow: 0 0 0 4px #fee2e2;
+}
+
+.add-ground-status-options strong {
+    display: block;
+    color: #334155;
+    font-size: 10px;
+}
+
+.add-ground-status-options small {
+    display: block;
+    margin-top: 3px;
+    color: #94a3b8;
+    font-size: 8px;
+    line-height: 1.4;
+}
+
+.add-ground-field select {
+    width: 100%;
+    height: 40px;
+    box-sizing: border-box;
+    padding: 0 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    outline: none;
+    background: white;
+    color: #334155;
+    font-family: inherit;
+    font-size: 10px;
+}
+
+.add-ground-field select:focus {
+    border-color: #0f766e;
+    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.08);
+}
+
+/* =====================================================
+   FORM ACTIONS
+===================================================== */
+
+.add-ground-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 20px 25px;
+    background: #f8fafc;
+}
+
+.add-ground-cancel,
+.add-ground-submit {
+    min-width: 120px;
+    height: 40px;
+    padding: 0 16px;
+    border-radius: 9px;
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.add-ground-cancel {
+    border: 1px solid #cbd5e1;
+    background: white;
+    color: #475569;
+}
+
+.add-ground-cancel:hover {
+    background: #f8fafc;
+}
+
+.add-ground-submit {
+    border: 1px solid #0f766e;
+    background: #0f766e;
+    color: white;
+}
+
+.add-ground-submit:hover {
+    background: #115e59;
+}
+
+.add-ground-cancel:disabled,
+.add-ground-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.add-ground-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 950px;
+    margin: 0 auto;
+    padding: 28px 0;
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media (max-width: 900px) {
+    .add-ground-sidebar {
+        width: 220px;
+    }
+
+    .add-ground-main {
+        width: calc(100% - 220px);
+        margin-left: 220px;
+        padding: 25px;
+    }
+}
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 700px) {
+    .add-ground-page {
+        display: block;
+    }
+
+    .add-ground-sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        padding: 15px;
+    }
+
+    .add-ground-nav {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        margin-top: 15px;
+    }
+
+    .add-ground-logout {
+        margin-top: 15px;
+    }
+
+    .add-ground-main {
+        width: 100%;
+        margin-left: 0;
+        padding: 20px 15px;
+    }
+
+    .add-ground-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .add-ground-back {
+        width: 100%;
+    }
+
+    .add-ground-form-header {
+        padding: 20px;
+    }
+
+    .add-ground-section {
+        padding: 20px;
+    }
+
+    .add-ground-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .add-ground-field.full {
+        grid-column: auto;
+    }
+
+    .add-ground-status-options {
+        grid-template-columns: 1fr;
+    }
+
+    .add-ground-form-actions {
+        padding: 18px 20px;
+    }
+
+    .add-ground-cancel,
+    .add-ground-submit {
+        flex: 1;
+    }
+
+    .add-ground-footer {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+    }
+}
+
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
+
+@media (max-width: 420px) {
+    .add-ground-nav {
+        grid-template-columns: 1fr;
+    }
+
+    .add-ground-header h1 {
+        font-size: 25px;
+    }
+
+    .add-ground-form-actions {
+        flex-direction: column;
+    }
+
+    .add-ground-cancel,
+    .add-ground-submit {
+        width: 100%;
+    }
+}
