@@ -23,10 +23,10 @@ import FeeRecords from "./pages/admin/fees/FeeRecords";
 import PendingFees from "./pages/admin/fees/PendingFees";
 import StudentFeeDetails from "./pages/admin/fees/StudentFeeDetails";
 import ViewComplaints from "./pages/admin/complaints/ViewComplaints";
-import ManageGround from "./pages/admin/cricketBox/ManageGround";
-import AddGround from "./pages/admin/cricketBox/AddGround";
-import EditGround from "./pages/admin/cricketBox/EditGround";
-import BookingHistory from "./pages/admin/cricketBox/BookingHistory";
+import ManageGround from "./pages/admin/cricketbox/ManageGround";
+import AddGround from "./pages/admin/cricketbox/AddGround";
+import EditGround from "./pages/admin/cricketbox/EditGround";
+import BookingHistory from "./pages/admin/cricketbox/BookingHistory";
 import Reports from "./pages/admin/cricketbox/Reports";
 
 
