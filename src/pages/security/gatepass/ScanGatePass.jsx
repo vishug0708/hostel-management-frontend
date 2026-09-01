@@ -110,8 +110,7 @@ const ScanGatePass = () => {
     await stopScanner();
 
     await verifyGatePass(decodedText);
-}
-                ,
+},
                 () => { }
             );
         } catch (error) {
@@ -163,6 +162,9 @@ const ScanGatePass = () => {
         qrValue
     ) => {
         try {
+
+             console.log("Sending QR to backend:", qrValue);
+            
             setLoading(true);
             setMessage("");
 
