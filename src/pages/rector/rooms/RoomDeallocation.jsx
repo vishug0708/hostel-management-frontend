@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./RoomDeallocation.css";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 function RoomDeallocation() {
     const navigate = useNavigate();
 
@@ -31,7 +33,7 @@ function RoomDeallocation() {
             setError("");
 
             const response = await fetch(
-                "http://localhost:5000/api/rector/room_allocation",
+               `${API_URL}/api/rector/room_allocation`,
                 {
                     method: "GET",
                     headers: {
@@ -93,7 +95,7 @@ function RoomDeallocation() {
             setSuccess("");
 
             const response = await fetch(
-                "http://localhost:5000/api/rector/room_allocation/deallocate",
+                `${API_URL}/api/rector/room_allocation/deallocate`,
                 {
                     method: "PUT",
                     headers: {
