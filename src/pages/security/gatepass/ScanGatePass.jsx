@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Html5Qrcode } from "html5-qrcode";
 import "./ScanGatePass.css";
@@ -9,7 +9,8 @@ const API_URL =
 const ScanGatePass = () => {
     const navigate = useNavigate();
 
-    const [scanner, setScanner] = useState(null);
+    const scannerRef = useRef(null);
+    const scanLockedRef = useRef(false);
     const [scanning, setScanning] = useState(false);
     const [loading, setLoading] = useState(false);
     const [gatePass, setGatePass] = useState(null);
@@ -68,87 +69,84 @@ const ScanGatePass = () => {
     };
 
     const startScanner = async () => {
+        if (scannerRef.current) {
+            return;
+        }
+
         try {
             setMessage("");
             setGatePass(null);
+            scanLockedRef.current = false;
 
-            const qrScanner =
-                new Html5Qrcode(
-                    "security-qr-reader"
-                );
-
-            setScanner(qrScanner);
-            setScanning(true);
+            const qrScanner = new Html5Qrcode("security-qr-reader");
+            scannerRef.current = qrScanner;
 
             await qrScanner.start(
-                {
-                    facingMode: "environment"
-                },
+                { facingMode: "environment" },
                 {
                     fps: 10,
-                    qrbox: {
-                        width: 250,
-                        height: 250
-                    }
+                    qrbox: { width: 280, height: 280 },
+                    aspectRatio: 1
                 },
-
                 async (decodedText) => {
+                    if (scanLockedRef.current || !decodedText) {
+                        return;
+                    }
+
+                    scanLockedRef.current = true;
+
                     console.log("========== QR SCANNED ==========");
                     console.log("QR VALUE:", decodedText);
                     console.log("QR VALUE TYPE:", typeof decodedText);
 
                     playBeep();
-
                     await stopScanner();
-
-                    await verifyGatePass(decodedText);
+                    await verifyGatePass(String(decodedText).trim());
                 },
-                () => { }
+                (errorMessage) => {
+                    console.debug("QR search:", errorMessage);
+                }
             );
+
+            setScanning(true);
+            console.log("QR scanner started successfully");
         } catch (error) {
-            console.error(
-                "QR Scanner Error:",
-                error
-            );
-
+            console.error("QR Scanner Error:", error);
+            scannerRef.current = null;
             setScanning(false);
-
             showMessage(
-                "Camera permission denied or camera is unavailable.",
+                error?.message || "Camera permission denied or camera is unavailable.",
                 "error"
             );
         }
     };
 
     const stopScanner = async () => {
+        const qrScanner = scannerRef.current;
+
         try {
-            if (
-                scanner &&
-                scanner.isScanning
-            ) {
-                await scanner.stop();
-                await scanner.clear();
+            if (qrScanner) {
+                if (qrScanner.isScanning) {
+                    await qrScanner.stop();
+                }
+                await qrScanner.clear();
             }
         } catch (error) {
-            console.error(
-                "Stop Scanner Error:",
-                error
-            );
+            console.error("Stop Scanner Error:", error);
+        } finally {
+            scannerRef.current = null;
+            setScanning(false);
         }
-
-        setScanning(false);
     };
 
     useEffect(() => {
         return () => {
-            if (
-                scanner &&
-                scanner.isScanning
-            ) {
-                scanner.stop().catch(() => { });
+            const qrScanner = scannerRef.current;
+            if (qrScanner?.isScanning) {
+                qrScanner.stop().catch(() => {});
             }
         };
-    }, [scanner]);
+    }, []);
 
     const verifyGatePass = async (
         qrValue
