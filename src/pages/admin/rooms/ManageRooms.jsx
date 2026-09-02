@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ManageRooms.css";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 const ManageRooms = () => {
     const navigate = useNavigate();
 
@@ -25,7 +27,7 @@ const ManageRooms = () => {
                 localStorage.getItem("adminToken");
 
             const response = await fetch(
-                "http://localhost:5000/api/admin/rooms",
+                `${API_URL}/api/admin/rooms`,
                 {
                     method: "GET",
                     headers: {
@@ -242,7 +244,7 @@ const ManageRooms = () => {
                 );
 
             const response = await fetch(
-                `http://localhost:5000/api/admin/rooms/${room.id}`,
+                `${API_URL}/api/admin/rooms/${room.id}`,
                 {
                     method: "DELETE",
                     headers: {
