@@ -1089,4 +1089,6 @@ const ScanGatePass = () => {
         </div>
     );
 };
+
 export default ScanGatePass;
+
