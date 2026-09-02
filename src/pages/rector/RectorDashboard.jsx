@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./RectorDashboard.css";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 function RectorDashboard() {
     const navigate = useNavigate();
 
@@ -36,7 +38,7 @@ function RectorDashboard() {
             setError("");
 
             const response = await fetch(
-                "http://localhost:5000/api/rector/dashboard",
+                `${API_URL}/api/rector/dashboard`,
                 {
                     method: "GET",
                     headers: {
