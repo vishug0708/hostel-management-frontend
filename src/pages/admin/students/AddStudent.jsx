@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AddStudent.css";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 function AddStudent() {
 
     const navigate = useNavigate();
@@ -141,7 +143,7 @@ function AddStudent() {
             // =============================================
 
             const response = await fetch(
-                "http://localhost:5000/api/admin/students",
+                `${API_URL}/api/admin/students`,
                 {
                     method: "POST",
 

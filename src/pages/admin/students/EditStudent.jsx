@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./EditStudent.css";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 function EditStudent() {
 
     const navigate = useNavigate();
@@ -47,7 +49,7 @@ function EditStudent() {
             try {
 
                 const response = await fetch(
-                    `http://localhost:5000/api/admin/students/${id}`,
+                   `${API_URL}/api/admin/students/${id}`,
                     {
                         method: "GET",
 
@@ -191,7 +193,7 @@ function EditStudent() {
 
 
             const response = await fetch(
-                `http://localhost:5000/api/admin/students/${id}`,
+                `${API_URL}/api/admin/students/${id}`,
                 {
                     method: "PUT",
 

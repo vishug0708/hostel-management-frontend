@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ManageStudents.css";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 function ManageStudents() {
 
     const navigate = useNavigate();
@@ -40,7 +42,7 @@ function ManageStudents() {
             try {
 
                 const response = await fetch(
-                    "http://localhost:5000/api/admin/students",
+                    `${API_URL}/api/admin/students`,
                     {
                         method: "GET",
 

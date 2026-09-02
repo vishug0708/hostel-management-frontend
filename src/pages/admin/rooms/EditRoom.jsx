@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./EditRoom.css";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 const EditRoom = () => {
     const navigate = useNavigate();
     const { id } = useParams();
