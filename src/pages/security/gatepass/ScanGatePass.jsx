@@ -91,26 +91,18 @@ const ScanGatePass = () => {
                         height: 250
                     }
                 },
-                // async (decodedText) => {
-                //     playBeep();
 
-                //     await stopScanner();
-
-                //     await verifyGatePass(
-                //         decodedText
-                //     );
-                // }
                 async (decodedText) => {
-    console.log("========== QR SCANNED ==========");
-    console.log("QR VALUE:", decodedText);
-    console.log("QR VALUE TYPE:", typeof decodedText);
+                    console.log("========== QR SCANNED ==========");
+                    console.log("QR VALUE:", decodedText);
+                    console.log("QR VALUE TYPE:", typeof decodedText);
 
-    playBeep();
+                    playBeep();
 
-    await stopScanner();
+                    await stopScanner();
 
-    await verifyGatePass(decodedText);
-},
+                    await verifyGatePass(decodedText);
+                },
                 () => { }
             );
         } catch (error) {
@@ -163,8 +155,8 @@ const ScanGatePass = () => {
     ) => {
         try {
 
-             console.log("Sending QR to backend:", qrValue);
-            
+            console.log("Sending QR to backend:", qrValue);    //for website purpose
+
             setLoading(true);
             setMessage("");
 
