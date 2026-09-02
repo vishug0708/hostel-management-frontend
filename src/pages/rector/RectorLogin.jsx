@@ -36,7 +36,7 @@ function RectorLogin() {
             setError("");
 
             const response = await fetch(
-                "http://localhost:5000/api/rector/login",
+                `${import.meta.env.VITE_API_URL}/api/rector/login`,
                 {
                     method: "POST",
                     headers: {
