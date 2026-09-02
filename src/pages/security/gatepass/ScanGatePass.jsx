@@ -143,7 +143,7 @@ const ScanGatePass = () => {
         return () => {
             const qrScanner = scannerRef.current;
             if (qrScanner?.isScanning) {
-                qrScanner.stop().catch(() => {});
+                qrScanner.stop().catch(() => { });
             }
         };
     }, []);
@@ -172,15 +172,36 @@ const ScanGatePass = () => {
                 }
             );
 
-            const data =
-                await response.json();
+            const data = await response.json();
+
+            console.log("========== GATE PASS API RESPONSE ==========");
+            console.log("Status:", response.status);
+            console.log("Response:", data);
+            console.log("Gate Pass:", data.gatePass);
+            console.log("============================================");
 
             if (!response.ok) {
+                setGatePass(data.gatePass || data.data || null);
+
                 throw new Error(
-                    data.message ||
-                    "Invalid gate pass."
+                    data.message || "Invalid gate pass."
                 );
             }
+
+            const scannedGatePass = data.gatePass || data.data;
+
+            console.log("SCANNED GATE PASS:", scannedGatePass);
+
+            if (!scannedGatePass) {
+                throw new Error("Backend returned no gate pass data.");
+            }
+
+            setGatePass(scannedGatePass);
+
+            showMessage(
+                "Gate pass verified successfully.",
+                "success"
+            );
 
             setGatePass(
                 data.gatePass ||
@@ -1068,5 +1089,4 @@ const ScanGatePass = () => {
         </div>
     );
 };
-
 export default ScanGatePass;
