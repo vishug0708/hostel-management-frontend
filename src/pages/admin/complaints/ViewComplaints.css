@@ -814,26 +814,83 @@
     }
 
     .view-complaints-sidebar {
-        position: relative;
-        width: 100%;
-        height: auto;
-        padding: 15px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 270px;
+        height: 100vh;
+        padding: 18px 15px;
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        overflow-y: auto;
+        box-shadow: 8px 0 25px rgba(15, 23, 42, 0.18);
     }
 
-    .view-complaints-nav {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        margin-top: 15px;
-    }
-
-    .view-complaints-logout {
-        margin-top: 15px;
+    .view-complaints-sidebar.view-complaints-sidebar-open {
+        transform: translateX(0);
     }
 
     .view-complaints-main {
         width: 100%;
         margin-left: 0;
-        padding: 20px 15px;
+        padding: 0 15px 20px;
+    }
+
+    .view-complaints-mobile-header {
+        min-height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        margin: 0 -15px 20px;
+        padding: 10px 15px;
+        box-sizing: border-box;
+        background: white;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .view-complaints-mobile-header .view-complaints-hamburger {
+        flex-shrink: 0;
+    }
+
+    .view-complaints-mobile-brand {
+        flex: 1;
+    }
+
+    .view-complaints-mobile-profile {
+        flex-shrink: 0;
+    }
+
+    .view-complaints-mobile-overlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 1050;
+        background: rgba(15, 23, 42, 0.45);
+    }
+
+    .view-complaints-sidebar {
+        z-index: 1100;
+    }
+
+    .view-complaints-nav {
+        display: flex;
+        flex-direction: column;
+        margin-top: 25px;
+    }
+
+    .view-complaints-sidebar-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        margin-top: 20px;
+    }
+
+    .view-complaints-sidebar-logout {
+        margin-top: auto;
     }
 
     .view-complaints-header {

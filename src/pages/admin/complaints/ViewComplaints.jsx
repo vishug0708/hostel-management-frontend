@@ -447,7 +447,7 @@ function ViewComplaints() {
 
             {mobileMenuOpen && (
                 <div
-                    className="admin-mobile-overlay"
+                    className="view-complaints-mobile-overlay"
                     onClick={closeMobileMenu}
                 />
             )}
