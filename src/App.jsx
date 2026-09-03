@@ -28,6 +28,10 @@ import AddGround from "./pages/admin/cricketbox/AddGround";
 import EditGround from "./pages/admin/cricketbox/EditGround";
 import BookingHistory from "./pages/admin/cricketbox/BookingHistory";
 import Reports from "./pages/admin/cricketbox/Reports";
+import ManageStaff from "./pages/admin/staff/ManageStaff";
+import AddStaff from "./pages/admin/staff/AddStaff";
+import EditStaff from "./pages/admin/staff/EditStaff";
+
 
 
 import RectorLogin from "./pages/rector/RectorLogin";
@@ -218,6 +222,21 @@ function App() {
                 <Route
                     path="/admin/cricket-box/reports"
                     element={<Reports />}
+                />
+
+                <Route
+                    path="/admin/staff"
+                    element={<ManageStaff />}
+                />
+
+                <Route
+                    path="/admin/staff/add"
+                    element={<AddStaff />}
+                />
+
+                <Route
+                    path="/admin/staff/edit/:id"
+                    element={<EditStaff />}
                 />
 
 

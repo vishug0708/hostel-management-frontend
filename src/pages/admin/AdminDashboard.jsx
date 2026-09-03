@@ -306,7 +306,16 @@ function AdminDashboard() {
                     </button>
 
 
-
+                    <button
+                        className="sidebar-item"
+                        onClick={() => {
+                            setMobileMenuOpen(false);
+                            navigate("/admin/staff");
+                        }}
+                    >
+                        <span>🧑‍💻</span>
+                        Staff
+                    </button>
 
 
                 </nav>
