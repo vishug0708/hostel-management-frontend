@@ -11,6 +11,8 @@ function ViewComplaints() {
     const [search, setSearch] = useState("");
     const [statusFilter, setStatusFilter] = useState("All");
 
+    const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
     useEffect(() => {
         fetchComplaints();
     }, []);
@@ -30,7 +32,7 @@ function ViewComplaints() {
             setError("");
 
             const response = await fetch(
-                "http://localhost:5000/api/admin/complaints",
+                `${API_URL}/api/admin/complaints`,
                 {
                     method: "GET",
                     headers: {
