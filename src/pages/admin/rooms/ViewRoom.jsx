@@ -189,7 +189,6 @@ const ViewRoom = () => {
                 </p>
 
             </div>
-                    </div>
                 </main>
             </div>
         );
@@ -239,7 +238,6 @@ const ViewRoom = () => {
                 </button>
 
             </div>
-                    </div>
                 </main>
             </div>
         );

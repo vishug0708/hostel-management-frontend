@@ -345,7 +345,6 @@ const EditRoom = () => {
                     information is being loaded.
                 </p>
             </div>
-                    </div>
                 </main>
             </div>
         );
