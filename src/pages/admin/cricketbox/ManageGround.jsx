@@ -168,6 +168,10 @@ function ManageGround() {
         return `${formattedHour}:${minute} ${period}`;
     };
 
+    const closeMobileMenu = () => {
+        setMobileMenuOpen(false);
+    };
+
     const filteredGrounds = grounds.filter(
         (ground) => {
             const searchText =
@@ -176,10 +180,6 @@ function ManageGround() {
             if (!searchText) {
                 return true;
             }
-
-            const closeMobileMenu = () => {
-        setMobileMenuOpen(false);
-    };
 
     return (
                 String(
@@ -215,7 +215,7 @@ function ManageGround() {
 
             {/* SIDEBAR */}
 
-            <aside className="manage-ground-sidebar">
+            <aside className={`manage-ground-sidebar ${mobileMenuOpen ? "mobile-open" : ""}`}>
 
                 <div className="manage-ground-brand">
 
@@ -296,6 +296,26 @@ function ManageGround() {
                     <button
                         onClick={() =>
                             navigate(
+                                "/admin/announcements"
+                            )
+                        }
+                    >
+                        📢 Announcements
+                    </button>
+
+                    <button
+                        onClick={() =>
+                            navigate(
+                                "/admin/reports"
+                            )
+                        }
+                    >
+                        📊 Reports
+                    </button>
+
+                    <button
+                        onClick={() =>
+                            navigate(
                                 "/admin/profile"
                             )
                         }
@@ -313,6 +333,13 @@ function ManageGround() {
                 </button>
 
             </aside>
+
+                {mobileMenuOpen && (
+                    <div
+                        className="admin-mobile-overlay"
+                        onClick={closeMobileMenu}
+                    />
+                )}
 
             {/* MAIN */}
 
@@ -699,398 +726,4 @@ function ManageGround() {
 }
 
 export default ManageGround
-                <aside className="manage-ground-sidebar {mobileMenuOpen ? "mobile-open" : ""}">
-                    <div className="manage-ground-brand">
-                        <div className="manage-ground-brand-icon">🏠</div>
-                        <div><strong>Hostel</strong><span>Admin Panel</span></div>
-                    </div>
-                    <nav className="manage-ground-nav">
-                        <button onClick={() => { closeMobileMenu(); navigate("/admin/dashboard"); }}>📊 Dashboard</button>
-                        <button onClick={() => { closeMobileMenu(); navigate("/admin/students"); }}>🎓 Students</button>
-                        <button onClick={() => { closeMobileMenu(); navigate("/admin/rooms"); }}>🛏️ Rooms</button>
-                        <button onClick={() => { closeMobileMenu(); navigate("/admin/fees"); }}>💳 Fees</button>
-                        <button onClick={() => { closeMobileMenu(); navigate("/admin/complaints"); }}>📝 Complaints</button>
-                        <button className="active" onClick={() => { closeMobileMenu(); navigate("/admin/cricket-box"); }}>🏏 Cricket Box</button>
-                        <button onClick={() => { closeMobileMenu(); navigate("/admin/announcements"); }}>📢 Announcements</button>
-                        <button onClick={() => { closeMobileMenu(); navigate("/admin/reports"); }}>📊 Reports</button>
-                        <button onClick={() => { closeMobileMenu(); navigate("/admin/profile"); }}>👤 Profile</button>
-                    </nav>
-                    <button className="manage-ground-logout" onClick={handleLogout}>🚪 Logout</button>
-                </aside>
-                {mobileMenuOpen && (
-                    <div className="admin-mobile-overlay" onClick={() => setMobileMenuOpen(false)} />
-                )}
-            {/* MAIN */}
-
-            <main className="manage-ground-main">
-
-                {/* HEADER */}
-
-                <header className="manage-ground-header">
-
-                    <div>
-
-                        <span>
-                            CRICKET BOX MANAGEMENT
-                        </span>
-
-                        <h1>
-                            Manage Grounds
-                        </h1>
-
-                        <p>
-                            Manage cricket boxes,
-                            availability and pricing.
-                        </p>
-
-                    </div>
-
-                    <div className="manage-ground-header-actions">
-<button
-                            className="manage-ground-add"
-                            onClick={() =>
-                                navigate(
-                                    "/admin/cricket-box/add"
-                                )
-                            }
-                        >
-                            + Add Ground
-                        </button>
-
-
-                    </div>
-
-                </header>
-
-                {/* SEARCH */}
-
-                <section className="manage-ground-toolbar">
-
-                    <div className="manage-ground-search">
-
-                        <span>
-                            🔍
-                        </span>
-
-                        <input
-                            type="text"
-                            value={search}
-                            onChange={(e) =>
-                                setSearch(
-                                    e.target.value
-                                )
-                            }
-                            placeholder="Search ground, location..."
-                        />
-
-                    </div>
-
-                    <div className="manage-ground-total">
-                        {filteredGrounds.length}
-                        {" Grounds"}
-                    </div>
-
-                    <button
-                        className="manage-ground-add"
-                        onClick={() =>
-                            navigate(
-                                "/admin/cricket-box/booking-history"
-                            )
-                        }
-                    >
-                        📋 Booking History
-                    </button>
-
-                    <button
-                        className="manage-ground-add"
-                        onClick={() =>
-                            navigate(
-                                "/admin/cricket-box/reports"
-                            )
-                        }
-                    >
-                        📝 Reports
-                    </button>
-
-                </section>
-
-                {/* LOADING */}
-
-                {loading && (
-
-                    <div className="manage-ground-state">
-
-                        <div>
-                            ⏳
-                        </div>
-
-                        <p>
-                            Loading cricket grounds...
-                        </p>
-
-                    </div>
-
-                )}
-
-                {/* ERROR */}
-
-                {!loading && error && (
-
-                    <div className="manage-ground-state error">
-
-                        <div>
-                            ⚠️
-                        </div>
-
-                        <h3>
-                            Unable to Load Grounds
-                        </h3>
-
-                        <p>
-                            {error}
-                        </p>
-
-                        <button
-                            onClick={fetchGrounds}
-                        >
-                            Try Again
-                        </button>
-
-                    </div>
-
-                )}
-
-                {/* EMPTY */}
-
-                {!loading &&
-                    !error &&
-                    filteredGrounds.length === 0 && (
-
-                        <div className="manage-ground-state">
-
-                            <div>
-                                🏏
-                            </div>
-
-                            <h3>
-                                No Cricket Grounds Found
-                            </h3>
-
-                            <p>
-                                Add your first cricket
-                                box to start accepting
-                                bookings.
-                            </p>
-
-                            <button
-                                onClick={() =>
-                                    navigate(
-                                        "/admin/cricket-box/add"
-                                    )
-                                }
-                            >
-                                + Add Ground
-                            </button>
-
-                        </div>
-
-                    )}
-
-                {/* GROUND GRID */}
-
-                {!loading &&
-                    !error &&
-                    filteredGrounds.length > 0 && (
-
-                        <section className="manage-ground-grid">
-
-                            {filteredGrounds.map(
-                                (ground) => (
-
-                                    <article
-                                        className="manage-ground-card"
-                                        key={ground.id}
-                                    >
-
-                                        <div className="manage-ground-card-top">
-
-                                            <div className="manage-ground-card-icon">
-                                                🏏
-                                            </div>
-
-                                            <span
-                                                className={
-                                                    `manage-ground-status ${String(
-                                                        ground.status ||
-                                                        "Active"
-                                                    ).toLowerCase()
-                                                    }`
-                                                }
-                                            >
-                                                {
-                                                    ground.status ||
-                                                    "Active"
-                                                }
-                                            </span>
-
-                                        </div>
-
-                                        <div className="manage-ground-card-content">
-
-                                            <h2>
-                                                {
-                                                    ground.name ||
-                                                    "Unnamed Ground"
-                                                }
-                                            </h2>
-
-                                            <p className="manage-ground-location">
-                                                📍{" "}
-                                                {
-                                                    ground.location ||
-                                                    "Location not available"
-                                                }
-                                            </p>
-
-                                            <p className="manage-ground-description">
-                                                {
-                                                    ground.description ||
-                                                    "No description available."
-                                                }
-                                            </p>
-
-                                        </div>
-
-                                        <div className="manage-ground-details">
-
-                                            <div>
-
-                                                <span>
-                                                    CAPACITY
-                                                </span>
-
-                                                <strong>
-                                                    {
-                                                        ground.capacity ||
-                                                        "—"
-                                                    }
-                                                </strong>
-
-                                            </div>
-
-                                            <div>
-
-                                                <span>
-                                                    PRICE / HOUR
-                                                </span>
-
-                                                <strong>
-                                                    ₹
-                                                    {
-                                                        Number(
-                                                            ground.price_per_hour ||
-                                                            0
-                                                        ).toLocaleString(
-                                                            "en-IN"
-                                                        )
-                                                    }
-                                                </strong>
-
-                                            </div>
-
-                                        </div>
-
-                                        <div className="manage-ground-timing">
-
-                                            <span>
-                                                🕐
-                                            </span>
-
-                                            <p>
-                                                {
-                                                    formatTime(
-                                                        ground.opening_time
-                                                    )
-                                                }
-
-                                                {" - "}
-
-                                                {
-                                                    formatTime(
-                                                        ground.closing_time
-                                                    )
-                                                }
-                                            </p>
-
-                                        </div>
-
-                                        <div className="manage-ground-slot-duration">
-
-                                            <span>
-                                                ⏱️
-                                            </span>
-
-                                            <p>
-                                                Slot Duration:{" "}
-                                                {ground.slot_duration || 60}
-                                                {" Minutes"}
-                                            </p>
-
-                                        </div>
-
-
-                                        <div className="manage-ground-actions">
-
-                                            <button
-                                                className="manage-ground-edit"
-                                                onClick={() =>
-                                                    navigate(
-                                                        `/admin/cricket-box/edit/${ground.id}`
-                                                    )
-                                                }
-                                            >
-                                                ✏️ Edit
-                                            </button>
-
-                                            <button
-                                                className="manage-ground-delete"
-                                                onClick={() =>
-                                                    handleDelete(
-                                                        ground.id
-                                                    )
-                                                }
-                                            >
-                                                🗑 Delete
-                                            </button>
-
-                                        </div>
-
-                                    </article>
-
-                                )
-                            )}
-
-                        </section>
-
-                    )}
-
-                {/* FOOTER */}
-
-                <footer className="manage-ground-footer">
-
-                    <span>
-                        © 2026 Hostel Management System
-                    </span>
-
-                    <span>
-                        Admin Panel
-                    </span>
-
-                </footer>
-
-            </main>
-        </div>
-    );
-}
-
-export default ManageGround;
+                
