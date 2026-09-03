@@ -27,40 +27,55 @@ function AdminDashboard() {
     // =====================================================
 
     useEffect(() => {
-
         const token = localStorage.getItem("adminToken");
-        const adminData = localStorage.getItem("admin");
 
         if (!token) {
-
             navigate("/admin/login", {
                 replace: true
             });
-
             return;
         }
 
-        if (adminData) {
-
+        const loadAdminProfile = async () => {
             try {
+                const response = await fetch(`${API_URL}/api/admin/profile`, {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
 
-                setAdmin(
-                    JSON.parse(adminData)
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || "Failed to load admin profile");
+                }
+
+                const adminData = data.admin || data;
+
+                setAdmin(adminData);
+
+                localStorage.setItem(
+                    "admin",
+                    JSON.stringify(adminData)
                 );
-
             } catch (error) {
+                console.error("Admin profile loading error:", error);
 
-                console.error(
-                    "Admin data error:",
-                    error
-                );
+                const savedAdmin = localStorage.getItem("admin");
 
+                if (savedAdmin) {
+                    try {
+                        setAdmin(JSON.parse(savedAdmin));
+                    } catch (parseError) {
+                        console.error("Admin data error:", parseError);
+                    }
+                }
             }
+        };
 
-        }
-
+        loadAdminProfile();
     }, [navigate]);
-
 
     // =====================================================
     // LOGOUT
