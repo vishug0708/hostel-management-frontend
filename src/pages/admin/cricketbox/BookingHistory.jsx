@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./BookingHistory.css";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 function BookingHistory() {
     const navigate = useNavigate();
 
@@ -30,7 +32,7 @@ function BookingHistory() {
             setError("");
 
             const response = await fetch(
-                "http://localhost:5000/api/admin/cricket-bookings/history",
+                `${API_URL}/api/admin/cricket-bookings/history`,
                 {
                     method: "GET",
                     headers: {

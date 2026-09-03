@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AddGround.css";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 function AddGround() {
     const navigate = useNavigate();
 
@@ -83,7 +85,7 @@ function AddGround() {
             setError("");
 
             const response = await fetch(
-                "http://localhost:5000/api/admin/cricket-grounds",
+                `${API_URL}/api/admin/cricket-grounds`,
                 {
                     method: "POST",
                     headers: {

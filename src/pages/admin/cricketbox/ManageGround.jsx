@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ManageGround.css";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 function ManageGround() {
     const navigate = useNavigate();
 
@@ -29,7 +31,7 @@ function ManageGround() {
             setError("");
 
             const response = await fetch(
-                "http://localhost:5000/api/admin/cricket-grounds",
+                `${API_URL}/api/admin/cricket-grounds/${id}`,
                 {
                     method: "GET",
                     headers: {
@@ -80,7 +82,7 @@ function ManageGround() {
 
         try {
             const response = await fetch(
-                `http://localhost:5000/api/admin/cricket-grounds/${id}`,
+                `${API_URL}/api/admin/cricket-grounds/${id}`,
                 {
                     method: "DELETE",
                     headers: {

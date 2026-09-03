@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./EditGround.css";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 function EditGround() {
     const navigate = useNavigate();
     const { id } = useParams();
@@ -41,7 +43,7 @@ function EditGround() {
             setError("");
 
             const response = await fetch(
-                `http://localhost:5000/api/admin/cricket-grounds/${id}`,
+                `${API_URL}/api/admin/cricket-grounds/${id}`,
                 {
                     method: "GET",
                     headers: {
@@ -187,7 +189,7 @@ function EditGround() {
             setError("");
 
             const response = await fetch(
-                `http://localhost:5000/api/admin/cricket-grounds/${id}`,
+                `${API_URL}/api/admin/cricket-grounds/${id}`,
                 {
                     method: "PUT",
                     headers: {
