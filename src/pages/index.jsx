@@ -383,19 +383,16 @@ function Index() {
                             </p>
 
 
-                            <button
+                            <Link
+                                to="/staff/login"
                                 className="portal-button"
-                                onClick={() =>
-                                    alert(
-                                        "Security Login will be available soon."
-                                    )
-                                }
                             >
 
                                 Staff Login
+
                                 <span>→</span>
 
-                            </button>
+                            </Link>
 
                         </div>
 
