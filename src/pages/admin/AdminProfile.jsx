@@ -55,8 +55,8 @@ function AdminProfile() {
                 const adminData = data.admin;
 
                 setAdmin(adminData);
+                setPhotoPreview(getPhotoUrl(adminData?.photo));
 
-                // Latest admin data save in localStorage
                 localStorage.setItem(
                     "admin",
                     JSON.stringify(adminData)
@@ -64,19 +64,25 @@ function AdminProfile() {
             } catch (error) {
                 console.error("Admin Profile Error:", error);
 
-                // Fallback to localStorage
                 const savedAdmin = localStorage.getItem("admin");
 
                 if (savedAdmin) {
                     try {
-                        setAdmin(JSON.parse(savedAdmin));
+                        const savedData = JSON.parse(savedAdmin);
+                        setAdmin(savedData);
+                        setPhotoPreview(getPhotoUrl(savedData?.photo));
                     } catch (parseError) {
                         console.error(
                             "Admin data parse error:",
                             parseError
                         );
+                        setError("Unable to load admin profile.");
                     }
+                } else {
+                    setError("Unable to load admin profile.");
                 }
+            } finally {
+                setLoading(false);
             }
         };
 
