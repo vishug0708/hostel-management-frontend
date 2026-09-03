@@ -517,14 +517,6 @@ function AdminProfile() {
 
                     </div>
 
-                    <button
-                        className="back-dashboard-btn"
-                        onClick={() =>
-                            navigate("/admin/dashboard")
-                        }
-                    >
-                        ← Dashboard
-                    </button>
 
                 </header>
 
@@ -714,6 +706,15 @@ function AdminProfile() {
                         </form>
 
                     </div>
+
+                    <button
+                        className="back-dashboard-btn"
+                        onClick={() =>
+                            navigate("/admin/dashboard")
+                        }
+                    >
+                        ← Dashboard
+                    </button>
 
 
                     {/* ACCOUNT INFORMATION */}
