@@ -26,31 +26,60 @@ function AdminProfile() {
     const [photoPreview, setPhotoPreview] = useState("");
 
     useEffect(() => {
+        const token = localStorage.getItem("adminToken");
+
+        if (!token) {
+            navigate("/admin/login", {
+                replace: true
+            });
+            return;
+        }
+
         const fetchAdminProfile = async () => {
-            const token = localStorage.getItem("adminToken");
-            if (!token) {
-                navigate("/admin/login", { replace: true });
-                return;
-            }
             try {
                 const response = await fetch(`${API_URL}/api/admin/profile`, {
                     method: "GET",
-                    headers: { Authorization: `Bearer ${token}` }
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
                 });
+
                 const data = await response.json();
+
                 if (!response.ok || !data.success) {
-                    setError(data.message || "Unable to load admin profile.");
-                    return;
+                    throw new Error(
+                        data.message || "Unable to load admin profile."
+                    );
                 }
-                setAdmin(data.admin);
-                setPhotoPreview(getPhotoUrl(data.admin?.photo));
-            } catch (err) {
-                console.error("Admin Profile Error:", err);
-                setError("Cannot connect to backend server.");
-            } finally {
-                setLoading(false);
+
+                const adminData = data.admin;
+
+                setAdmin(adminData);
+
+                // Latest admin data save in localStorage
+                localStorage.setItem(
+                    "admin",
+                    JSON.stringify(adminData)
+                );
+            } catch (error) {
+                console.error("Admin Profile Error:", error);
+
+                // Fallback to localStorage
+                const savedAdmin = localStorage.getItem("admin");
+
+                if (savedAdmin) {
+                    try {
+                        setAdmin(JSON.parse(savedAdmin));
+                    } catch (parseError) {
+                        console.error(
+                            "Admin data parse error:",
+                            parseError
+                        );
+                    }
+                }
             }
         };
+
         fetchAdminProfile();
     }, [navigate]);
 
