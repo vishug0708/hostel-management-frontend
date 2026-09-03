@@ -1064,3 +1064,27 @@
         font-size: 19px;
     }
 }
+
+/* =====================================================
+   FINAL MOBILE HAMBURGER OVERRIDE
+===================================================== */
+
+@media (max-width: 700px) {
+    .view-complaints-mobile-header {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    .view-complaints-hamburger {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    .view-complaints-mobile-profile {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+}
