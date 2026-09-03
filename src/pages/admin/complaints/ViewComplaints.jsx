@@ -2,6 +2,31 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ViewComplaints.css";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+function getPhotoUrl(photo) {
+    if (!photo) return "";
+
+    const value = String(photo).trim();
+
+    if (
+        value.startsWith("data:") ||
+        value.startsWith("blob:") ||
+        value.startsWith("http://") ||
+        value.startsWith("https://")
+    ) {
+        return value;
+    }
+
+    const normalized = value.replace(/^\/+/, "");
+
+    if (normalized.startsWith("uploads/")) {
+        return `${API_URL}/${normalized}`;
+    }
+
+    return `${API_URL}/uploads/admins/${normalized}`;
+}
+
 function ViewComplaints() {
     const navigate = useNavigate();
 
@@ -10,29 +35,34 @@ function ViewComplaints() {
     const [error, setError] = useState("");
     const [search, setSearch] = useState("");
     const [statusFilter, setStatusFilter] = useState("All");
-
-    const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [adminPhoto, setAdminPhoto] = useState("");
 
     useEffect(() => {
         fetchComplaints();
+
+        const savedAdmin = localStorage.getItem("admin");
+
+        if (savedAdmin) {
+            try {
+                const admin = JSON.parse(savedAdmin);
+                setAdminPhoto(admin?.photo || "");
+            } catch (error) {
+                console.error("Admin photo error:", error);
+            }
+        }
     }, []);
 
-    const fetchComplaints = async () => {
+    const fetchAdminProfile = async () => {
         const token = localStorage.getItem("adminToken");
 
         if (!token) {
-            navigate("/admin/login", {
-                replace: true
-            });
             return;
         }
 
         try {
-            setLoading(true);
-            setError("");
-
             const response = await fetch(
-                `${API_URL}/api/admin/complaints`,
+                `${API_URL}/api/admin/profile`,
                 {
                     method: "GET",
                     headers: {
@@ -45,29 +75,42 @@ function ViewComplaints() {
 
             if (!response.ok || !data.success) {
                 throw new Error(
-                    data.message ||
-                    "Unable to load complaints."
+                    data.message || "Unable to load admin profile."
                 );
             }
 
-            setComplaints(
-                Array.isArray(data.complaints)
-                    ? data.complaints
-                    : []
+            const adminData = data.admin;
+
+            setAdmin(adminData);
+
+            localStorage.setItem(
+                "admin",
+                JSON.stringify(adminData)
             );
-        } catch (err) {
+        } catch (error) {
             console.error(
-                "Complaints Error:",
-                err
+                "Admin Profile Error:",
+                error
             );
 
-            setError(
-                err.message ||
-                "Cannot connect to backend server."
-            );
-        } finally {
-            setLoading(false);
+            const savedAdmin =
+                localStorage.getItem("admin");
+
+            if (savedAdmin) {
+                try {
+                    setAdmin(JSON.parse(savedAdmin));
+                } catch (parseError) {
+                    console.error(
+                        "Admin data parse error:",
+                        parseError
+                    );
+                }
+            }
         }
+    };
+
+    const closeMobileMenu = () => {
+        setMobileMenuOpen(false);
     };
 
     const handleLogout = () => {
@@ -232,104 +275,181 @@ function ViewComplaints() {
         <div className="view-complaints-page">
 
             {/* SIDEBAR */}
-
-            <aside className="view-complaints-sidebar">
-
-                <div className="view-complaints-brand">
-
+            <aside
+                className={`view-complaints-sidebar ${mobileMenuOpen ? "view-complaints-sidebar-open" : ""
+                    }`}
+            >
+                <div className="view-complaints-sidebar-brand">
                     <div className="view-complaints-brand-icon">
                         🏠
                     </div>
 
                     <div>
-                        <strong>
-                            Hostel
-                        </strong>
-
-                        <span>
-                            Admin Panel
-                        </span>
+                        <strong>Hostel</strong>
+                        <span>Admin Panel</span>
                     </div>
-
                 </div>
 
-                <nav className="view-complaints-nav">
-
+                <nav className="view-complaints-sidebar-nav">
                     <button
-                        onClick={() =>
-                            navigate(
-                                "/admin/dashboard"
-                            )
-                        }
+                        className="view-complaints-sidebar-item"
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/admin/dashboard");
+                        }}
                     >
-                        📊 Dashboard
+                        <span>📊</span>
+                        Dashboard
                     </button>
 
                     <button
-                        onClick={() =>
-                            navigate(
-                                "/admin/students"
-                            )
-                        }
+                        className="view-complaints-sidebar-item"
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/admin/students");
+                        }}
                     >
-                        🎓 Students
+                        <span>🎓</span>
+                        Students
                     </button>
 
                     <button
-                        onClick={() =>
-                            navigate(
-                                "/admin/rooms"
-                            )
-                        }
+                        className="view-complaints-sidebar-item"
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/admin/rooms");
+                        }}
                     >
-                        🛏️ Rooms
+                        <span>🛏️</span>
+                        Rooms
                     </button>
 
                     <button
-                        onClick={() =>
-                            navigate(
-                                "/admin/fees"
-                            )
-                        }
+                        className="view-complaints-sidebar-item"
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/admin/fees");
+                        }}
                     >
-                        💰 Fees
+                        <span>💳</span>
+                        Fees
                     </button>
 
                     <button
-                        className="active"
-                        onClick={() =>
-                            navigate(
-                                "/admin/complaints"
-                            )
-                        }
+                        className="view-complaints-sidebar-item active"
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/admin/complaints");
+                        }}
                     >
-                        📝 Complaints
+                        <span>📝</span>
+                        Complaints
                     </button>
 
                     <button
-                        onClick={() =>
-                            navigate(
-                                "/admin/profile"
-                            )
-                        }
+                        className="view-complaints-sidebar-item"
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/admin/cricket-box");
+                        }}
                     >
-                        👤 Profile
+                        <span>🏏</span>
+                        Cricket Box
                     </button>
 
+                    <button
+                        className="view-complaints-sidebar-item"
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/admin/announcements");
+                        }}
+                    >
+                        <span>📢</span>
+                        Announcements
+                    </button>
+
+                    <button
+                        className="view-complaints-sidebar-item"
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/admin/reports");
+                        }}
+                    >
+                        <span>📊</span>
+                        Reports
+                    </button>
+
+                    <button
+                        className="view-complaints-sidebar-item"
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/admin/profile");
+                        }}
+                    >
+                        <span>👤</span>
+                        Profile
+                    </button>
                 </nav>
 
                 <button
-                    className="view-complaints-logout"
+                    className="view-complaints-sidebar-logout"
                     onClick={handleLogout}
                 >
-                    🚪 Logout
+                    <span>🚪</span>
+                    Logout
                 </button>
-
             </aside>
+
+            
+
+            {mobileMenuOpen && (
+                <div
+                    className="admin-mobile-overlay"
+                    onClick={closeMobileMenu}
+                />
+            )}
+
 
             {/* MAIN */}
 
             <main className="view-complaints-main">
+
+                {/* MOBILE HEADER */}
+                <div className="view-complaints-mobile-header">
+                    <button
+                        className="view-complaints-hamburger"
+                        onClick={() => setMobileMenuOpen(true)}
+                        aria-label="Open complaints menu"
+                    >
+                        ☰
+                    </button>
+
+                    <div className="view-complaints-mobile-brand">
+                        <div className="view-complaints-mobile-brand-icon">
+                            🏠
+                        </div>
+
+                        <div>
+                            <strong>Hostel</strong>
+                            <span>Admin Panel</span>
+                        </div>
+                    </div>
+
+                    <button
+                        className="view-complaints-mobile-profile"
+                        onClick={() => navigate("/admin/profile")}
+                        aria-label="Open profile"
+                    >
+                        {admin?.photo ? (
+                            <img
+                                src={getPhotoUrl(admin.photo)}
+                                alt="Admin profile"
+                            />
+                        ) : (
+                            "👤"
+                        )}
+                    </button>
+                </div>
 
                 {/* HEADER */}
 
@@ -657,7 +777,7 @@ function ViewComplaints() {
                                                             {
                                                                 complaint.description
                                                                     ? complaint.description.length >
-                                                                      70
+                                                                        70
                                                                         ? `${complaint.description.substring(
                                                                             0,
                                                                             70
