@@ -18,11 +18,13 @@ function EditStudent() {
         parent_email: "",
         college: "",
         course: "",
-        hostel: ""
+        hostel: "",
+        photo: null
     });
 
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [photoPreview, setPhotoPreview] = useState("");
 
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
@@ -84,8 +86,13 @@ function EditStudent() {
                         student.parent_email || "",
                     college: student.college || "",
                     course: student.course || "",
-                    hostel: student.hostel || ""
+                    hostel: student.hostel || "",
+                    photo: null
                 });
+
+                if (student.photo) {
+                    setPhotoPreview(getPhotoUrl(student.photo));
+                }
 
             } catch (err) {
 
@@ -110,6 +117,67 @@ function EditStudent() {
 
     }, [id, navigate]);
 
+
+    // =====================================================
+    // PHOTO URL
+    // =====================================================
+
+    const getPhotoUrl = (photo) => {
+        if (!photo) {
+            return "";
+        }
+
+        const value = String(photo).trim();
+
+        if (
+            value.startsWith("data:") ||
+            value.startsWith("blob:") ||
+            value.startsWith("http://") ||
+            value.startsWith("https://")
+        ) {
+            return value;
+        }
+
+        const normalized = value.replace(/^\\/+/, "");
+
+        if (normalized.startsWith("uploads/")) {
+            return `${API_URL}/${normalized}`;
+        }
+
+        return `${API_URL}/uploads/students/${normalized}`;
+    };
+
+    // =====================================================
+    // PHOTO CHANGE
+    // =====================================================
+
+    const handlePhotoChange = (e) => {
+        const file = e.target.files?.[0];
+
+        if (!file) {
+            return;
+        }
+
+        if (!file.type.startsWith("image/")) {
+            setError("Please select a valid image file.");
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            setError("Photo size must be less than 5 MB.");
+            return;
+        }
+
+        setError("");
+        setSuccess("");
+
+        setFormData((prev) => ({
+            ...prev,
+            photo: file
+        }));
+
+        setPhotoPreview(URL.createObjectURL(file));
+    };
 
     // =====================================================
     // HANDLE CHANGE
@@ -194,23 +262,29 @@ function EditStudent() {
             setSaving(true);
 
 
+            const body = new FormData();
+
+            body.append("name", formData.name.trim());
+            body.append("email", formData.email.trim());
+            body.append("mobile", formData.mobile.trim());
+            body.append("parent_email", formData.parent_email.trim());
+            body.append("college", formData.college.trim());
+            body.append("course", formData.course.trim());
+            body.append("hostel", formData.hostel.trim());
+
+            if (formData.photo) {
+                body.append("photo", formData.photo);
+            }
+
             const response = await fetch(
                 `${API_URL}/api/admin/students/${id}`,
                 {
                     method: "PUT",
-
                     headers: {
-
-                        "Content-Type":
-                            "application/json",
-
                         Authorization:
                             `Bearer ${token}`
-
                     },
-
-                    body: JSON.stringify(formData)
-
+                    body
                 }
             );
 
@@ -547,6 +621,68 @@ function EditStudent() {
                         className="edit-student-form"
                         onSubmit={handleSubmit}
                     >
+
+
+                        {/* =================================================
+                            PROFILE PHOTO
+                        ================================================= */}
+
+                        <div className="edit-student-photo-section">
+
+                            <div className="edit-student-photo-preview">
+                                {photoPreview ? (
+                                    <img
+                                        src={photoPreview}
+                                        alt={formData.name || "Student"}
+                                        onError={(e) => {
+                                            e.currentTarget.style.display = "none";
+                                        }}
+                                    />
+                                ) : (
+                                    <span>
+                                        {formData.name
+                                            ?.charAt(0)
+                                            ?.toUpperCase() || "S"}
+                                    </span>
+                                )}
+                            </div>
+
+                            <div className="edit-student-photo-content">
+                                <span className="edit-student-photo-label">
+                                    PROFILE PHOTO
+                                </span>
+
+                                <h3>
+                                    Change Student Photo
+                                </h3>
+
+                                <p>
+                                    JPG, JPEG, PNG or WEBP. Maximum size 5 MB.
+                                </p>
+
+                                <label
+                                    htmlFor="student-photo"
+                                    className="edit-student-photo-btn"
+                                >
+                                    📷 Choose Photo
+                                </label>
+
+                                <input
+                                    id="student-photo"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handlePhotoChange}
+                                    hidden
+                                />
+
+                                {formData.photo && (
+                                    <span className="edit-student-photo-name">
+                                        ✓ {formData.photo.name}
+                                    </span>
+                                )}
+                            </div>
+
+                        </div>
 
 
                         {/* =================================================

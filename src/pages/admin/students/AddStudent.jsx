@@ -19,7 +19,8 @@ function AddStudent() {
         parent_email: "",
         college: "",
         course: "",
-        hostel: ""
+        hostel: "",
+        photo: null
     });
 
     const [showPassword, setShowPassword] = useState(false);
@@ -27,6 +28,7 @@ function AddStudent() {
 
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+    const [photoPreview, setPhotoPreview] = useState("");
 
 
     // =====================================================
@@ -46,6 +48,38 @@ function AddStudent() {
         setSuccess("");
     };
 
+
+    // =====================================================
+    // PHOTO CHANGE
+    // =====================================================
+
+    const handlePhotoChange = (e) => {
+        const file = e.target.files?.[0];
+
+        if (!file) {
+            return;
+        }
+
+        if (!file.type.startsWith("image/")) {
+            setError("Please select a valid image file.");
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            setError("Photo size must be less than 5 MB.");
+            return;
+        }
+
+        setError("");
+        setSuccess("");
+
+        setFormData((prev) => ({
+            ...prev,
+            photo: file
+        }));
+
+        setPhotoPreview(URL.createObjectURL(file));
+    };
 
     // =====================================================
     // SUBMIT
@@ -191,8 +225,11 @@ function AddStudent() {
                 parent_email: "",
                 college: "",
                 course: "",
-                hostel: ""
+                hostel: "",
+                photo: null
             });
+
+            setPhotoPreview("");
 
 
         } catch (error) {
@@ -466,6 +503,61 @@ function AddStudent() {
                         className="add-student-form"
                         onSubmit={handleSubmit}
                     >
+
+
+                        {/* =====================================
+                            PROFILE PHOTO
+                        ===================================== */}
+
+                        <div className="add-student-photo-section">
+
+                            <div className="add-student-photo-preview">
+                                {photoPreview ? (
+                                    <img
+                                        src={photoPreview}
+                                        alt="Student preview"
+                                    />
+                                ) : (
+                                    <span>📷</span>
+                                )}
+                            </div>
+
+                            <div className="add-student-photo-content">
+                                <span className="add-student-photo-label">
+                                    PROFILE PHOTO
+                                </span>
+
+                                <h3>
+                                    Student Photo
+                                </h3>
+
+                                <p>
+                                    JPG, JPEG, PNG or WEBP. Maximum size 5 MB.
+                                </p>
+
+                                <label
+                                    htmlFor="student-photo"
+                                    className="add-student-photo-btn"
+                                >
+                                    📷 Choose Photo
+                                </label>
+
+                                <input
+                                    id="student-photo"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handlePhotoChange}
+                                    hidden
+                                />
+
+                                {formData.photo && (
+                                    <span className="add-student-photo-name">
+                                        ✓ {formData.photo.name}
+                                    </span>
+                                )}
+                            </div>
+
+                        </div>
 
 
                         {/* =====================================

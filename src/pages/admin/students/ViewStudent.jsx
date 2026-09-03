@@ -18,6 +18,35 @@ function ViewStudent() {
 
 
     // =====================================================
+    // PHOTO URL
+    // =====================================================
+
+    const getPhotoUrl = (photo) => {
+        if (!photo) {
+            return "";
+        }
+
+        const value = String(photo).trim();
+
+        if (
+            value.startsWith("data:") ||
+            value.startsWith("blob:") ||
+            value.startsWith("http://") ||
+            value.startsWith("https://")
+        ) {
+            return value;
+        }
+
+        const normalized = value.replace(/^\\/+/, "");
+
+        if (normalized.startsWith("uploads/")) {
+            return `${API_URL}/${normalized}`;
+        }
+
+        return `${API_URL}/uploads/students/${normalized}`;
+    };
+
+    // =====================================================
     // FETCH STUDENT
     // =====================================================
 
@@ -428,11 +457,20 @@ function ViewStudent() {
 
 
                         <div className="student-large-avatar">
-
-                            {student.name
-                                ?.charAt(0)
-                                ?.toUpperCase() || "S"}
-
+                            {student.photo ? (
+                                <img
+                                    src={getPhotoUrl(student.photo)}
+                                    alt={student.name || "Student"}
+                                    onError={(e) => {
+                                        e.currentTarget.style.display = "none";
+                                        e.currentTarget.parentElement.classList.add("photo-fallback");
+                                    }}
+                                />
+                            ) : (
+                                student.name
+                                    ?.charAt(0)
+                                    ?.toUpperCase() || "S"
+                            )}
                         </div>
 
 

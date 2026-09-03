@@ -422,6 +422,24 @@
    PROFILE NAME
 ===================================================== */
 
+.student-large-avatar img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    border-radius: inherit;
+}
+
+.student-large-avatar.photo-fallback {
+    color: white;
+    background:
+        linear-gradient(
+            135deg,
+            #14b8a6,
+            #0f766e
+        );
+}
+
 .student-profile-name {
     min-width: 0;
 

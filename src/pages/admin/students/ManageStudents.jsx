@@ -101,6 +101,39 @@ function ManageStudents() {
 
 
     // =====================================================
+    // PHOTO URL
+    // =====================================================
+
+    const getPhotoUrl = (photo) => {
+        if (!photo) {
+            return "";
+        }
+
+        const value = String(photo).trim();
+
+        if (
+            value.startsWith("data:") ||
+            value.startsWith("blob:") ||
+            value.startsWith("http://") ||
+            value.startsWith("https://")
+        ) {
+            return value;
+        }
+
+        const normalized = value.replace(/^\\/+/, "");
+
+        if (normalized.startsWith("uploads/")) {
+            return `${API_URL}/${normalized}`;
+        }
+
+        return `${API_URL}/uploads/students/${normalized}`;
+    };
+
+    const closeMobileMenu = () => {
+        setMobileMenuOpen(false);
+    };
+
+    // =====================================================
     // SEARCH
     // =====================================================
 
@@ -110,12 +143,7 @@ function ManageStudents() {
             const searchText =
                 search.toLowerCase().trim();
 
-            const closeMobileMenu = () => {
-        setMobileMenuOpen(false);
-    };
-
-
-    return (
+            return (
 
                 student.name
                     ?.toLowerCase()
@@ -393,16 +421,7 @@ function ManageStudents() {
                     </div>
 
 
-                    <button
-                        className="add-new-student-btn"
-                        onClick={() =>
-                            navigate(
-                                "/admin/students/add"
-                            )
-                        }
-                    >
-                        ➕ Add Student
-                    </button>
+
 
                 </header>
 
@@ -513,22 +532,37 @@ function ManageStudents() {
                         </div>
 
 
-                        <div className="student-search">
+                        <div className="students-header-controls">
 
-                            <span>
-                                🔍
-                            </span>
+                            <div className="student-search">
 
-                            <input
-                                type="text"
-                                placeholder="Search students..."
-                                value={search}
-                                onChange={(e) =>
-                                    setSearch(
-                                        e.target.value
+                                <span>
+                                    🔍
+                                </span>
+
+                                <input
+                                    type="text"
+                                    placeholder="Search students..."
+                                    value={search}
+                                    onChange={(e) =>
+                                        setSearch(
+                                            e.target.value
+                                        )
+                                    }
+                                />
+
+                            </div>
+
+                            <button
+                                className="add-new-student-btn"
+                                onClick={() =>
+                                    navigate(
+                                        "/admin/students/add"
                                     )
                                 }
-                            />
+                            >
+                                ➕ Add Student
+                            </button>
 
                         </div>
 
@@ -646,10 +680,21 @@ function ManageStudents() {
                                                     <div className="student-name-cell">
 
                                                         <div className="student-avatar">
-                                                            {student.name
-                                                                ?.charAt(0)
-                                                                ?.toUpperCase()
-                                                                || "S"}
+                                                            {student.photo ? (
+                                                                <img
+                                                                    src={getPhotoUrl(student.photo)}
+                                                                    alt={student.name || "Student"}
+                                                                    onError={(e) => {
+                                                                        e.currentTarget.style.display = "none";
+                                                                        e.currentTarget.parentElement.classList.add("photo-fallback");
+                                                                    }}
+                                                                />
+                                                            ) : (
+                                                                student.name
+                                                                    ?.charAt(0)
+                                                                    ?.toUpperCase()
+                                                                || "S"
+                                                            )}
                                                         </div>
 
                                                         <div>

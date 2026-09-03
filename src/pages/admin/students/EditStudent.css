@@ -377,6 +377,94 @@
    SECTION TITLE
 ===================================================== */
 
+.edit-student-photo-section {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+    padding: 18px;
+    border: 1px solid #dbe5ee;
+    border-radius: 14px;
+    background: #f8fafc;
+}
+
+.edit-student-photo-preview {
+    width: 96px;
+    height: 96px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 3px solid #ccfbf1;
+    border-radius: 18px;
+    background: linear-gradient(135deg,#0f766e,#14b8a6);
+    color: white;
+    font-size: 32px;
+    font-weight: 800;
+}
+
+.edit-student-photo-preview img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.edit-student-photo-content {
+    min-width: 0;
+}
+
+.edit-student-photo-label {
+    display: block;
+    margin-bottom: 5px;
+    color: #0f766e;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+}
+
+.edit-student-photo-content h3 {
+    margin: 0 0 5px;
+    color: #0f172a;
+    font-size: 17px;
+}
+
+.edit-student-photo-content p {
+    margin: 0 0 12px;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.edit-student-photo-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 0 14px;
+    box-sizing: border-box;
+    border: 1px solid #99f6e4;
+    border-radius: 8px;
+    background: #f0fdfa;
+    color: #0f766e;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.edit-student-photo-btn:hover {
+    background: #ccfbf1;
+}
+
+.edit-student-photo-name {
+    display: block;
+    margin-top: 8px;
+    color: #047857;
+    font-size: 11px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
 .edit-section-title {
     display: flex;
 
@@ -1047,5 +1135,21 @@
         width:40px;
         height:40px;
         font-size:19px;
+    }
+}
+
+@media (max-width: 600px) {
+    .edit-student-photo-section {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .edit-student-photo-preview {
+        width: 90px;
+        height: 90px;
+    }
+
+    .edit-student-photo-btn {
+        width: 100%;
     }
 }
