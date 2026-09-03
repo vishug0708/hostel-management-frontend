@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AdminDashboard.css";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 
 function AdminDashboard() {
 
@@ -9,6 +11,15 @@ function AdminDashboard() {
 
     const [admin, setAdmin] = useState(null);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+    const getPhotoUrl = (photo) => {
+        if (!photo) return "";
+        const value = String(photo).trim();
+        if (value.startsWith("data:") || value.startsWith("blob:") || value.startsWith("http://") || value.startsWith("https://")) return value;
+        const normalized = value.replace(/^\/+/, "");
+        if (normalized.startsWith("uploads/")) return `${API_URL}/${normalized}`;
+        return `${API_URL}/uploads/admins/${normalized}`;
+    };
 
 
     // =====================================================
@@ -341,7 +352,15 @@ function AdminDashboard() {
                         onClick={() => navigate("/admin/profile")}
                         aria-label="Open profile"
                     >
-                        👤
+                        {admin?.photo ? (
+                            <img
+                                src={getPhotoUrl(admin.photo)}
+                                alt="Admin profile"
+                                onError={(e) => { e.currentTarget.style.display = "none"; }}
+                            />
+                        ) : (
+                            "👤"
+                        )}
                     </button>
                 </div>
 
@@ -367,7 +386,15 @@ function AdminDashboard() {
                     <div className="admin-user">
 
                         <div className="admin-user-avatar">
-                            👨‍💼
+                            {admin?.photo ? (
+                                <img
+                                    src={getPhotoUrl(admin.photo)}
+                                    alt="Admin profile"
+                                    onError={(e) => { e.currentTarget.style.display = "none"; }}
+                                />
+                            ) : (
+                                "👨‍💼"
+                            )}
                         </div>
 
                         <div className="admin-user-info">

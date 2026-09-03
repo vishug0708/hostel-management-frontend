@@ -1,795 +1,267 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AdminProfile.css";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-function AdminProfile() {
+function getPhotoUrl(photo) {
+    if (!photo) return "";
+    const value = String(photo).trim();
+    if (value.startsWith("data:") || value.startsWith("blob:") || value.startsWith("http://") || value.startsWith("https://")) return value;
+    const normalized = value.replace(/^\/+/, "");
+    if (normalized.startsWith("uploads/")) return `${API_URL}/${normalized}`;
+    return `${API_URL}/uploads/admins/${normalized}`;
+}
 
+function AdminProfile() {
     const navigate = useNavigate();
+    const photoInputRef = useRef(null);
     const [admin, setAdmin] = useState(null);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
-
-    // =====================================================
-    // GET ADMIN PROFILE
-    // =====================================================
+    const [photoFile, setPhotoFile] = useState(null);
+    const [photoPreview, setPhotoPreview] = useState("");
 
     useEffect(() => {
-
         const fetchAdminProfile = async () => {
-
             const token = localStorage.getItem("adminToken");
-
             if (!token) {
-
-                navigate("/admin/login", {
-                    replace: true
-                });
-
+                navigate("/admin/login", { replace: true });
                 return;
             }
-
-
             try {
-
-                const response = await fetch(
-                    `${API_URL}/api/admin/profile`,
-                    {
-                        method: "GET",
-
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    }
-                );
-
-
+                const response = await fetch(`${API_URL}/api/admin/profile`, {
+                    method: "GET",
+                    headers: { Authorization: `Bearer ${token}` }
+                });
                 const data = await response.json();
-
-
                 if (!response.ok || !data.success) {
-
-                    setError(
-                        data.message ||
-                        "Unable to load admin profile."
-                    );
-
+                    setError(data.message || "Unable to load admin profile.");
                     return;
                 }
-
-
                 setAdmin(data.admin);
-
-
+                setPhotoPreview(getPhotoUrl(data.admin?.photo));
             } catch (err) {
-
-                console.error(
-                    "Admin Profile Error:",
-                    err
-                );
-
-                setError(
-                    "Cannot connect to backend server."
-                );
-
+                console.error("Admin Profile Error:", err);
+                setError("Cannot connect to backend server.");
             } finally {
-
                 setLoading(false);
-
             }
-
         };
-
-
         fetchAdminProfile();
-
     }, [navigate]);
 
-
-    // =====================================================
-    // INPUT CHANGE
-    // =====================================================
+    const closeMobileMenu = () => setMobileMenuOpen(false);
 
     const handleChange = (e) => {
-
-        setAdmin({
-            ...admin,
-            [e.target.name]: e.target.value
-        });
-
+        setAdmin({ ...admin, [e.target.name]: e.target.value });
         setMessage("");
-
         setError("");
-
     };
 
-
-    // =====================================================
-    // UPDATE PROFILE
-    // =====================================================
-
-    const handleSubmit = async (e) => {
-
-        e.preventDefault();
-
+    const handlePhotoChange = (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
         setMessage("");
-
         setError("");
-
-
-        const token =
-            localStorage.getItem("adminToken");
-
-
-        if (!token) {
-
-            navigate("/admin/login");
-
+        if (!file.type.startsWith("image/")) {
+            setError("Please select a valid image file.");
+            e.target.value = "";
             return;
         }
+        if (file.size > 5 * 1024 * 1024) {
+            setError("Photo size must be 5 MB or less.");
+            e.target.value = "";
+            return;
+        }
+        setPhotoFile(file);
+        setPhotoPreview(URL.createObjectURL(file));
+    };
 
-
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setMessage("");
+        setError("");
+        const token = localStorage.getItem("adminToken");
+        if (!token) {
+            navigate("/admin/login");
+            return;
+        }
         try {
-
             setSaving(true);
+            const body = new FormData();
+            body.append("name", admin.name || "");
+            body.append("email", admin.email || "");
+            body.append("phone", admin.phone || "");
+            if (photoFile) body.append("photo", photoFile);
 
-
-            const response = await fetch(
-                `${API_URL}/api/admin/profile"`,
-                {
-                    method: "PUT",
-
-                    headers: {
-
-                        "Content-Type":
-                            "application/json",
-
-                        Authorization:
-                            `Bearer ${token}`
-
-                    },
-
-                    body: JSON.stringify({
-
-                        name: admin.name,
-
-                        email: admin.email,
-
-                        phone: admin.phone
-
-                    })
-                }
-            );
-
-
+            const response = await fetch(`${API_URL}/api/admin/profile`, {
+                method: "PUT",
+                headers: { Authorization: `Bearer ${token}` },
+                body
+            });
             const data = await response.json();
-
-
             if (!response.ok || !data.success) {
-
-                setError(
-                    data.message ||
-                    "Profile update failed."
-                );
-
+                setError(data.message || "Profile update failed.");
                 return;
             }
 
+            const updatedAdmin = data.admin || { ...admin, photo: data.photo || admin.photo };
+            setAdmin(updatedAdmin);
+            setPhotoPreview(getPhotoUrl(updatedAdmin.photo));
+            setPhotoFile(null);
+            if (photoInputRef.current) photoInputRef.current.value = "";
 
-            // =============================================
-            // UPDATE LOCAL STORAGE
-            // =============================================
-
-            const oldAdmin =
-                JSON.parse(
-                    localStorage.getItem("admin") || "{}"
-                );
-
-
-            const updatedAdmin = {
-
-                ...oldAdmin,
-
-                name: admin.name,
-
-                email: admin.email,
-
-                phone: admin.phone
-
-            };
-
-
-            localStorage.setItem(
-                "admin",
-                JSON.stringify(updatedAdmin)
-            );
-
-
-            setMessage(
-                "Profile updated successfully."
-            );
-
-
+            const oldAdmin = JSON.parse(localStorage.getItem("admin") || "{}");
+            localStorage.setItem("admin", JSON.stringify({ ...oldAdmin, ...updatedAdmin }));
+            setMessage("Profile updated successfully.");
         } catch (err) {
-
-            console.error(
-                "Update Admin Profile Error:",
-                err
-            );
-
-            setError(
-                "Cannot connect to backend server."
-            );
-
+            console.error("Update Admin Profile Error:", err);
+            setError("Cannot connect to backend server.");
         } finally {
-
             setSaving(false);
-
         }
-
     };
-
-
-    // =====================================================
-    // LOGOUT
-    // =====================================================
 
     const handleLogout = () => {
-
         localStorage.removeItem("adminToken");
-
         localStorage.removeItem("admin");
-
-        navigate("/admin/login", {
-            replace: true
-        });
-
+        navigate("/admin/login", { replace: true });
     };
-
-
-    // =====================================================
-    // LOADING
-    // =====================================================
 
     if (loading) {
-
         return (
-
             <div className="admin-profile-loading">
-
-                <div className="profile-loader">
-                    ⏳
-                </div>
-
-                <p>
-                    Loading admin profile...
-                </p>
-
+                <div className="profile-loader">⏳</div>
+                <p>Loading admin profile...</p>
             </div>
-
         );
-
     }
-
-
-    // =====================================================
-    // ERROR WITHOUT ADMIN DATA
-    // =====================================================
 
     if (!admin) {
-
         return (
-
             <div className="admin-profile-error">
-
-                <div className="profile-error-icon">
-                    ⚠️
-                </div>
-
-                <h2>
-                    Unable to Load Profile
-                </h2>
-
-                <p>
-                    {error || "Admin profile not found."}
-                </p>
-
-                <button
-                    onClick={() =>
-                        navigate("/admin/dashboard")
-                    }
-                >
-                    Back to Dashboard
-                </button>
-
+                <div className="profile-error-icon">⚠️</div>
+                <h2>Unable to Load Profile</h2>
+                <p>{error || "Admin profile not found."}</p>
+                <button onClick={() => navigate("/admin/dashboard")}>Back to Dashboard</button>
             </div>
-
         );
-
     }
 
-    const closeMobileMenu = () => {
-        setMobileMenuOpen(false);
-    };
-
-
-    // =====================================================
-    // PAGE
-    // =====================================================
-
     return (
-
         <div className="admin-profile-page">
-
-
-            {/* =================================================
-                SIDEBAR
-            ================================================= */}
-
             <aside className={`admin-profile-sidebar ${mobileMenuOpen ? "mobile-open" : ""}`}>
-
                 <div className="admin-profile-brand">
-
-                    <div className="profile-brand-icon">
-                        🏠
-                    </div>
-
-                    <div>
-                        <strong>
-                            Hostel
-                        </strong>
-
-                        <span>
-                            Admin Panel
-                        </span>
-                    </div>
-
+                    <div className="profile-brand-icon">🏠</div>
+                    <div><strong>Hostel</strong><span>Admin Panel</span></div>
                 </div>
-
-
                 <nav className="admin-profile-nav">
-
-                    <button
-                        onClick={() => {
-                            closeMobileMenu();
-                            navigate("/admin/dashboard");
-                        }}
-                    >
-                        📊 Dashboard
-                    </button>
-
-                    <button
-                        onClick={() => {
-                            closeMobileMenu();
-                            navigate("/admin/students");
-                        }}
-                    >
-                        🎓 Students
-                    </button>
-
-                    <button
-                        onClick={() => {
-                            closeMobileMenu();
-                            navigate("/admin/rooms");
-                        }}
-                    >
-                        🛏️ Rooms
-                    </button>
-
-                    <button
-                        onClick={() => {
-                            closeMobileMenu();
-                            navigate("/admin/fees");
-                        }}
-                    >
-                        💳 Fees
-                    </button>
-
-                    <button
-                        onClick={() => {
-                            closeMobileMenu();
-                            navigate("/admin/complaints");
-                        }}
-                    >
-                        📝 Complaints
-                    </button>
-
-                    <button
-                        onClick={() => {
-                            closeMobileMenu();
-                            navigate("/admin/cricket-box");
-                        }}
-                    >
-                        🏏 Cricket Box
-                    </button>
-
-                    <button
-                        onClick={() => {
-                            closeMobileMenu();
-                            navigate("/admin/announcements");
-                        }}
-                    >
-                        📢 Announcements
-                    </button>
-
-                    <button
-                        onClick={() => {
-                            closeMobileMenu();
-                            navigate("/admin/reports");
-                        }}
-                    >
-                        📊 Reports
-                    </button>
-
-                    <button
-                        className="active"
-                        onClick={() => {
-                            closeMobileMenu();
-                        }}
-                    >
-                        👤 Profile
-                    </button>
-
+                    <button onClick={() => { closeMobileMenu(); navigate("/admin/dashboard"); }}>📊 Dashboard</button>
+                    <button onClick={() => { closeMobileMenu(); navigate("/admin/students"); }}>🎓 Students</button>
+                    <button onClick={() => { closeMobileMenu(); navigate("/admin/rooms"); }}>🛏️ Rooms</button>
+                    <button onClick={() => { closeMobileMenu(); navigate("/admin/fees"); }}>💳 Fees</button>
+                    <button onClick={() => { closeMobileMenu(); navigate("/admin/complaints"); }}>📝 Complaints</button>
+                    <button onClick={() => { closeMobileMenu(); navigate("/admin/cricket-box"); }}>🏏 Cricket Box</button>
+                    <button onClick={() => { closeMobileMenu(); navigate("/admin/announcements"); }}>📢 Announcements</button>
+                    <button onClick={() => { closeMobileMenu(); navigate("/admin/reports"); }}>📊 Reports</button>
+                    <button className="active" onClick={closeMobileMenu}>👤 Profile</button>
                 </nav>
-
-
-                <button
-                    className="profile-logout"
-                    onClick={handleLogout}
-                >
-                    🚪 Logout
-                </button>
-
+                <button className="profile-logout" onClick={handleLogout}>🚪 Logout</button>
             </aside>
 
-            {mobileMenuOpen && (
-                <div
-                    className="admin-mobile-overlay"
-                    onClick={() => setMobileMenuOpen(false)}
-                />
-            )}
-
-
-            {/* =================================================
-                MAIN CONTENT
-            ================================================= */}
+            {mobileMenuOpen && <div className="admin-mobile-overlay" onClick={closeMobileMenu} />}
 
             <main className="admin-profile-main">
-
                 <div className="admin-mobile-header">
-
                     <div className="admin-mobile-left">
-
-                        <button
-                            className="admin-mobile-menu-btn"
-                            onClick={() => setMobileMenuOpen(true)}
-                        >
-                            ☰
-                        </button>
-
+                        <button className="admin-mobile-menu-btn" onClick={() => setMobileMenuOpen(true)}>☰</button>
                         <div className="admin-mobile-brand">
-
-                            <div className="admin-mobile-brand-icon">
-                                🏠
-                            </div>
-
-                            <div>
-                                <strong>Hostel</strong>
-                                <span>Admin Panel</span>
-                            </div>
-
+                            <div className="admin-mobile-brand-icon">🏠</div>
+                            <div><strong>Hostel</strong><span>Admin Panel</span></div>
                         </div>
-
                     </div>
-
-                    <button
-                        className="admin-mobile-profile-btn"
-                        onClick={() => navigate("/admin/profile")}
-                    >
-                        👤
+                    <button className="admin-mobile-profile-btn" onClick={() => navigate("/admin/profile")}>
+                        {admin.photo ? <img src={getPhotoUrl(admin.photo)} alt="Admin profile" /> : "👤"}
                     </button>
-
                 </div>
 
-
-                {/* HEADER */}
-
                 <header className="admin-profile-header">
-
                     <div>
-
-                        <span>
-                            ADMINISTRATION
-                        </span>
-
-                        <h1>
-                            Admin Profile
-                        </h1>
-
-                        <p>
-                            View and manage your administrator
-                            account information.
-                        </p>
-
+                        <span>ADMINISTRATION</span>
+                        <h1>Admin Profile</h1>
+                        <p>View and manage your administrator account information.</p>
                     </div>
-
-
+                    <button className="profile-header-avatar" onClick={() => photoInputRef.current?.click()} title="Change profile photo">
+                        {photoPreview ? <img src={photoPreview} alt="Admin profile" /> : "👤"}
+                    </button>
                 </header>
 
-
-                {/* PROFILE CONTENT */}
-
                 <section className="admin-profile-container">
-
-
-                    {/* PROFILE CARD */}
-
                     <div className="admin-profile-card">
-
-
-                        {/* PROFILE TOP */}
-
                         <div className="admin-profile-top">
-
-                            <div className="admin-profile-avatar">
-                                👨‍💼
+                            <div className="admin-profile-avatar-wrap">
+                                <button type="button" className="admin-profile-avatar" onClick={() => photoInputRef.current?.click()} title="Upload profile photo">
+                                    {photoPreview ? <img src={photoPreview} alt="Admin profile" /> : "👨‍💼"}
+                                    <span className="avatar-camera">📷</span>
+                                </button>
+                                <input ref={photoInputRef} className="profile-photo-input" type="file" accept="image/*" onChange={handlePhotoChange} />
+                                <button type="button" className="upload-photo-btn" onClick={() => photoInputRef.current?.click()}>
+                                    {photoFile ? "Change Photo" : "Upload Photo"}
+                                </button>
+                                <small>JPG, PNG, WEBP • Max 5 MB</small>
                             </div>
-
-                            <div>
-
-                                <h2>
-                                    {admin.name}
-                                </h2>
-
-                                <p>
-                                    Administrator
-                                </p>
-
+                            <div className="admin-profile-identity">
+                                <h2>{admin.name}</h2>
+                                <p>Administrator</p>
+                                <span>Admin ID: #{admin.id}</span>
                             </div>
-
                         </div>
 
-
-                        {/* FORM */}
-
-                        <form
-                            className="admin-profile-form"
-                            onSubmit={handleSubmit}
-                        >
-
-
-                            {/* NAME */}
-
-                            <div className="profile-form-group">
-
-                                <label>
-                                    Full Name
-                                </label>
-
-                                <input
-                                    type="text"
-                                    name="name"
-                                    value={admin.name || ""}
-                                    onChange={handleChange}
-                                    placeholder="Enter your name"
-                                />
-
+                        <form className="admin-profile-form" onSubmit={handleSubmit}>
+                            <div className="profile-form-grid">
+                                <div className="profile-form-group">
+                                    <label>Full Name</label>
+                                    <input type="text" name="name" value={admin.name || ""} onChange={handleChange} placeholder="Enter your name" required />
+                                </div>
+                                <div className="profile-form-group">
+                                    <label>Email Address</label>
+                                    <input type="email" name="email" value={admin.email || ""} onChange={handleChange} placeholder="Enter your email" required />
+                                </div>
+                                <div className="profile-form-group">
+                                    <label>Phone Number</label>
+                                    <input type="text" name="phone" value={admin.phone || ""} onChange={handleChange} placeholder="Enter phone number" required />
+                                </div>
                             </div>
-
-
-                            {/* EMAIL */}
-
-                            <div className="profile-form-group">
-
-                                <label>
-                                    Email Address
-                                </label>
-
-                                <input
-                                    type="email"
-                                    name="email"
-                                    value={admin.email || ""}
-                                    onChange={handleChange}
-                                    placeholder="Enter your email"
-                                />
-
-                            </div>
-
-
-                            {/* PHONE */}
-
-                            <div className="profile-form-group">
-
-                                <label>
-                                    Phone Number
-                                </label>
-
-                                <input
-                                    type="text"
-                                    name="phone"
-                                    value={admin.phone || ""}
-                                    onChange={handleChange}
-                                    placeholder="Enter phone number"
-                                />
-
-                            </div>
-
-
-                            {/* PASSWORD */}
 
                             <div className="profile-password-info">
-
-                                <span>
-                                    🔒
-                                </span>
-
-                                <div>
-
-                                    <strong>
-                                        Password
-                                    </strong>
-
-                                    <p>
-                                        Your password is protected
-                                        and cannot be viewed here.
-                                    </p>
-
-                                </div>
-
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        navigate(
-                                            "/admin/change-password"
-                                        )
-                                    }
-                                >
-                                    Change Password
-                                </button>
-
+                                <span>🔒</span>
+                                <div><strong>Password</strong><p>Your password is protected and cannot be viewed here.</p></div>
+                                <button type="button" onClick={() => navigate("/admin/change-password")}>Change Password</button>
                             </div>
 
-
-                            {/* MESSAGES */}
-
-                            {message && (
-
-                                <div className="profile-success">
-                                    ✓ {message}
-                                </div>
-
-                            )}
-
-
-                            {error && (
-
-                                <div className="profile-error">
-                                    ⚠ {error}
-                                </div>
-
-                            )}
-
-
-                            {/* BUTTON */}
+                            {message && <div className="profile-success">✓ {message}</div>}
+                            {error && <div className="profile-error">⚠ {error}</div>}
 
                             <div className="profile-form-actions">
-
-                                <button
-                                    type="button"
-                                    className="cancel-profile-btn"
-                                    onClick={() =>
-                                        navigate(
-                                            "/admin/dashboard"
-                                        )
-                                    }
-                                >
-                                    Cancel
-                                </button>
-
-                                <button
-                                    type="submit"
-                                    className="save-profile-btn"
-                                    disabled={saving}
-                                >
-                                    {saving
-                                        ? "Saving..."
-                                        : "Save Changes"
-                                    }
-                                </button>
-
+                                <button type="button" className="cancel-profile-btn" onClick={() => navigate("/admin/dashboard")}>Cancel</button>
+                                <button type="submit" className="save-profile-btn" disabled={saving}>{saving ? "Saving..." : "Save Changes"}</button>
                             </div>
-
                         </form>
-
                     </div>
-
-                    <button
-                        className="back-dashboard-btn"
-                        onClick={() =>
-                            navigate("/admin/dashboard")
-                        }
-                    >
-                        ← Dashboard
-                    </button>
-
-
-                    {/* ACCOUNT INFORMATION */}
-
-                    <div className="admin-account-card">
-
-                        <div className="account-card-icon">
-                            🛡️
-                        </div>
-
-                        <h3>
-                            Account Information
-                        </h3>
-
-                        <div className="account-info-row">
-
-                            <span>
-                                Admin ID
-                            </span>
-
-                            <strong>
-                                #{admin.id}
-                            </strong>
-
-                        </div>
-
-                        <div className="account-info-row">
-
-                            <span>
-                                Role
-                            </span>
-
-                            <strong>
-                                Administrator
-                            </strong>
-
-                        </div>
-
-                        <div className="account-info-row">
-
-                            <span>
-                                Account Status
-                            </span>
-
-                            <strong className="active-status">
-                                Active
-                            </strong>
-
-                        </div>
-
-                    </div>
-
+                    <button className="back-dashboard-btn" onClick={() => navigate("/admin/dashboard")}>← Dashboard</button>
                 </section>
 
-
-                {/* FOOTER */}
-
                 <footer className="admin-profile-footer">
-
-                    <span>
-                        © 2026 Hostel Management System
-                    </span>
-
-                    <span>
-                        Admin Panel
-                    </span>
-
+                    <span>© 2026 Hostel Management System</span>
+                    <span>Admin Panel</span>
                 </footer>
-
             </main>
-
         </div>
-
     );
-
 }
 
 export default AdminProfile;
