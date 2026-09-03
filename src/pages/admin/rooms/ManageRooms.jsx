@@ -2,51 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ManageRooms.css";
 
-const AdminRoomSidebar = ({ navigate, mobileMenuOpen, setMobileMenuOpen }) => {
-    const closeMenu = () => setMobileMenuOpen(false);
-
-    const handleLogout = () => {
-        localStorage.removeItem("adminToken");
-        localStorage.removeItem("admin");
-        closeMenu();
-        navigate("/admin/login");
-    };
-
-    return (
-        <>
-            <aside className={`admin-room-sidebar ${mobileMenuOpen ? "mobile-open" : ""}`}>
-                <div className="admin-room-sidebar-brand">
-                    <div className="admin-room-brand-icon">🏠</div>
-                    <div>
-                        <strong>Hostel</strong>
-                        <span>Admin Panel</span>
-                    </div>
-                </div>
-                <nav className="admin-room-sidebar-nav">
-                    <button onClick={() => { closeMenu(); navigate("/admin/dashboard"); }}>📊 Dashboard</button>
-                    <button onClick={() => { closeMenu(); navigate("/admin/students"); }}>🎓 Students</button>
-                    <button className="active" onClick={closeMenu}>🛏️ Rooms</button>
-                    <button onClick={() => { closeMenu(); navigate("/admin/fees"); }}>💳 Fees</button>
-                    <button onClick={() => { closeMenu(); navigate("/admin/complaints"); }}>📝 Complaints</button>
-                    <button onClick={() => { closeMenu(); navigate("/admin/cricket-box"); }}>🏏 Cricket Box</button>
-                    <button onClick={() => { closeMenu(); navigate("/admin/announcements"); }}>📢 Announcements</button>
-                    <button onClick={() => { closeMenu(); navigate("/admin/reports"); }}>📊 Reports</button>
-                    <button onClick={() => { closeMenu(); navigate("/admin/profile"); }}>👤 Profile</button>
-                </nav>
-                <button className="admin-room-sidebar-logout" onClick={handleLogout}>🚪 Logout</button>
-            </aside>
-            {mobileMenuOpen && (
-                <div className="admin-room-mobile-overlay" onClick={() => setMobileMenuOpen(false)} />
-            )}
-        </>
-    );
-};
-
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const ManageRooms = () => {
     const navigate = useNavigate();
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const [rooms, setRooms] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -54,6 +13,7 @@ const ManageRooms = () => {
     const [search, setSearch] = useState("");
     const [selectedBlock, setSelectedBlock] = useState("All");
     const [deletingId, setDeletingId] = useState(null);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     useEffect(() => {
         fetchRooms();
@@ -383,58 +343,63 @@ const ManageRooms = () => {
         );
     };
 
+    const closeMobileMenu = () => {
+        setMobileMenuOpen(false);
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem("adminToken");
+        localStorage.removeItem("admin");
+        navigate("/admin/login", { replace: true });
+    };
+
     return (
-        <div className="admin-room-layout">
-            <AdminRoomSidebar navigate={navigate} mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
-            <main className="admin-room-main">
-                <div className="admin-room-mobile-header">
-                    <div className="admin-room-mobile-left">
-                        <button className="admin-room-mobile-menu-btn" onClick={() => setMobileMenuOpen(true)} aria-label="Open menu">☰</button>
-                        <div className="admin-room-mobile-brand">
-                            <div className="admin-room-mobile-brand-icon">🏠</div>
-                            <div>
-                                <strong>Hostel</strong>
-                                <span>Admin Panel</span>
-                            </div>
+        <div className="admin-dashboard manage-rooms-dashboard">
+            <aside className={`admin-sidebar ${mobileMenuOpen ? "mobile-open" : ""}`}>
+                <div className="admin-sidebar-brand">
+                    <div className="admin-brand-icon">🏠</div>
+                    <div>
+                        <strong>Hostel</strong>
+                        <span>Admin Panel</span>
+                    </div>
+                </div>
+                <nav className="admin-sidebar-nav">
+                    <button className="sidebar-item" onClick={() => { closeMobileMenu(); navigate("/admin/dashboard"); }}><span>📊</span>Dashboard</button>
+                    <button className="sidebar-item" onClick={() => { closeMobileMenu(); navigate("/admin/students"); }}><span>🎓</span>Students</button>
+                    <button className="sidebar-item active" onClick={closeMobileMenu}><span>🛏️</span>Rooms</button>
+                    <button className="sidebar-item" onClick={() => { closeMobileMenu(); navigate("/admin/fees"); }}><span>💳</span>Fees</button>
+                    <button className="sidebar-item" onClick={() => { closeMobileMenu(); navigate("/admin/complaints"); }}><span>📝</span>Complaints</button>
+                    <button className="sidebar-item" onClick={() => { closeMobileMenu(); navigate("/admin/cricket-box"); }}><span>🏏</span>Cricket Box</button>
+                    <button className="sidebar-item" onClick={() => { closeMobileMenu(); navigate("/admin/announcements"); }}><span>📢</span>Announcements</button>
+                    <button className="sidebar-item" onClick={() => { closeMobileMenu(); navigate("/admin/reports"); }}><span>📊</span>Reports</button>
+                    <button className="sidebar-item" onClick={() => { closeMobileMenu(); navigate("/admin/profile"); }}><span>👤</span>Profile</button>
+                </nav>
+                <button className="admin-logout" onClick={handleLogout}><span>🚪</span>Logout</button>
+            </aside>
+
+            {mobileMenuOpen && <div className="admin-mobile-overlay" onClick={closeMobileMenu} />}
+
+            <div className="manage-rooms-main">
+                <div className="admin-mobile-header">
+                    <div className="admin-mobile-left">
+                        <button className="admin-mobile-menu-btn" onClick={() => setMobileMenuOpen(true)} aria-label="Open menu">☰</button>
+                        <div className="admin-mobile-brand">
+                            <div className="admin-mobile-brand-icon">🏠</div>
+                            <div><strong>Hostel</strong><span>Admin Panel</span></div>
                         </div>
                     </div>
-                    <button className="admin-room-mobile-profile-btn" onClick={() => navigate("/admin/profile")} aria-label="Admin profile">👤</button>
-                </div>
-                <div className="manage-rooms-page">
-
-            {/* HEADER */}
-
-            <div className="manage-rooms-header">
-
-                <div>
-
-                    <span className="manage-rooms-label">
-                        ADMIN PANEL
-                    </span>
-
-                    <h1>
-                        Manage Rooms
-                    </h1>
-
-                    <p>
-                        Manage hostel rooms,
-                        blocks and bed allocation.
-                    </p>
-
+                    <button className="admin-mobile-profile-btn" onClick={() => navigate("/admin/profile")} aria-label="Admin profile">👤</button>
                 </div>
 
-                <button
-                    className="manage-rooms-add-btn"
-                    onClick={() =>
-                        navigate(
-                            "/admin/rooms/add"
-                        )
-                    }
-                >
-                    + Add Room
-                </button>
-
-            </div>
+                <main className="manage-rooms-page">
+                    {/* HEADER */}
+                    <div className="manage-rooms-header">
+                        <div>
+                            <span className="manage-rooms-label">ADMIN PANEL</span>
+                            <h1>Manage Rooms</h1>
+                            <p>Manage hostel rooms, blocks and bed allocation.</p>
+                        </div>
+                    </div>
 
             {/* ERROR */}
 
@@ -635,12 +600,11 @@ const ManageRooms = () => {
                     )}
 
                 </div>
-
                 <button
-                    className="manage-rooms-refresh-btn"
-                    onClick={fetchRooms}
+                    className="manage-rooms-filter-add-btn"
+                    onClick={() => navigate("/admin/rooms/add")}
                 >
-                    ↻ Refresh
+                    + Add Room
                 </button>
 
             </div>
@@ -950,9 +914,8 @@ const ManageRooms = () => {
                 )}
 
             </div>
-
-                </div>
-            </main>
+                </main>
+            </div>
         </div>
     );
 };
