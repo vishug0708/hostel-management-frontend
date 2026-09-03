@@ -5,6 +5,11 @@ import {
     Navigate
 } from "react-router-dom";
 
+
+// =====================================================
+// ADMIN
+// =====================================================
+
 import Index from "./pages/index";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -33,6 +38,9 @@ import AddStaff from "./pages/admin/staff/AddStaff";
 import EditStaff from "./pages/admin/staff/EditStaff";
 
 
+// =====================================================
+// RECTOR
+// =====================================================
 
 import RectorLogin from "./pages/rector/RectorLogin";
 import RectorDashboard from "./pages/rector/RectorDashboard";
@@ -42,6 +50,10 @@ import RoomAllocation from "./pages/rector/rooms/RoomAllocation";
 import RoomDeallocation from "./pages/rector/rooms/RoomDeallocation";
 import GatePass from "./pages/rector/gatepass/GatePass";
 
+
+// =====================================================
+// STUDENTS
+// =====================================================
 
 import StudentLogin from "./pages/student/StudentLogin";
 import StudentDashboard from "./pages/student/StudentDashboard";
@@ -53,6 +65,18 @@ import ApplyGatePass from "./pages/student/gatepass/ApplyGatePass";
 import ViewGatePass from "./pages/student/gatepass/ViewGatePass";
 import VerifyOtp from "./pages/student/gatepass/VerifyOtp";
 
+
+// =====================================================
+// STAFF
+// =====================================================
+
+import StaffLogin from "./pages/StaffLogin";
+import StaffDashboard from "./pages/StaffDashboard";
+
+
+// =====================================================
+// SECURITY
+// =====================================================
 
 import SecurityLogin from "./pages/security/SecurityLogin";
 import SecurityDashboard from "./pages/security/SecurityDashboard";
@@ -319,6 +343,14 @@ function App() {
                     path="/student/gatepass/verify-otp/:gatePassId"
                     element={<VerifyOtp />}
                 />
+
+
+
+                <Route path="/staff/login" element={<StaffLogin />} />
+                <Route path="/staff/dashboard" element={<StaffDashboard />} />
+
+
+
 
 
 
