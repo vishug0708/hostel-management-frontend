@@ -43,6 +43,59 @@ function ViewComplaints() {
         fetchAdminProfile();
     }, []);
 
+    const fetchComplaints = async () => {
+        try {
+            setLoading(true);
+            setError("");
+
+            const token = localStorage.getItem("adminToken");
+
+            if (!token) {
+                navigate("/admin/login", {
+                    replace: true
+                });
+                return;
+            }
+
+            const response = await fetch(
+                `${API_URL}/api/admin/complaints`,
+                {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(
+                    data.message ||
+                    "Failed to fetch complaints."
+                );
+            }
+
+            setComplaints(
+                Array.isArray(data.complaints)
+                    ? data.complaints
+                    : []
+            );
+        } catch (err) {
+            console.error(
+                "Fetch Complaints Error:",
+                err
+            );
+
+            setError(
+                err.message ||
+                "Unable to load complaints."
+            );
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const fetchAdminProfile = async () => {
         const token = localStorage.getItem("adminToken");
 
