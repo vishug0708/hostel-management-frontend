@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AdminProfile.css";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 function AdminProfile() {
 
     const navigate = useNavigate();
@@ -40,7 +42,7 @@ function AdminProfile() {
             try {
 
                 const response = await fetch(
-                    "http://localhost:5000/api/admin/profile",
+                    `${API_URL}/api/admin/profile`,
                     {
                         method: "GET",
 
@@ -142,7 +144,7 @@ function AdminProfile() {
 
 
             const response = await fetch(
-                "http://localhost:5000/api/admin/profile",
+                `${API_URL}/api/admin/profile"`,
                 {
                     method: "PUT",
 
