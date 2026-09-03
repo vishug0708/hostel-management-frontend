@@ -7,6 +7,8 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 function ViewStudent() {
 
     const navigate = useNavigate();
+
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const { id } = useParams();
 
     const [student, setStudent] = useState(null);
@@ -121,7 +123,12 @@ function ViewStudent() {
 
     if (loading) {
 
-        return (
+        const closeMobileMenu = () => {
+        setMobileMenuOpen(false);
+    };
+
+
+    return (
 
             <div className="view-student-loading">
 
@@ -190,7 +197,7 @@ function ViewStudent() {
                 SIDEBAR
             ================================================= */}
 
-            <aside className="view-student-sidebar">
+            <aside className={`view-student-sidebar ${mobileMenuOpen ? "mobile-open" : ""}`}>
 
 
                 <div className="view-student-brand">
@@ -216,52 +223,78 @@ function ViewStudent() {
 
                 <nav className="view-student-nav">
 
-
                     <button
-                        onClick={() =>
-                            navigate("/admin/dashboard")
-                        }
+                        onClick={() => {{
+                            closeMobileMenu();
+                            navigate("/admin/dashboard");
+                        }}}
                     >
                         📊 Dashboard
                     </button>
 
-
-                    <button className="active">
+                    <button className="active" onClick={() => closeMobileMenu()}>
                         🎓 Students
                     </button>
 
-
                     <button
-                        onClick={() =>
-                            navigate("/admin/students")
-                        }
-                    >
-                        👥 Manage Students
-                    </button>
-
-
-                    <button
-                        onClick={() =>
-                            navigate("/admin/students/add")
-                        }
-                    >
-                        ➕ Add Student
-                    </button>
-
-
-                    <button
-                        onClick={() =>
-                            navigate("/admin/rooms")
-                        }
+                        onClick={() => {{
+                            closeMobileMenu();
+                            navigate("/admin/rooms");
+                        }}}
                     >
                         🛏️ Rooms
                     </button>
 
+                    <button
+                        onClick={() => {{
+                            closeMobileMenu();
+                            navigate("/admin/fees");
+                        }}}
+                    >
+                        💳 Fees
+                    </button>
 
                     <button
-                        onClick={() =>
-                            navigate("/admin/profile")
-                        }
+                        onClick={() => {{
+                            closeMobileMenu();
+                            navigate("/admin/complaints");
+                        }}}
+                    >
+                        📝 Complaints
+                    </button>
+
+                    <button
+                        onClick={() => {{
+                            closeMobileMenu();
+                            navigate("/admin/cricket-box");
+                        }}}
+                    >
+                        🏏 Cricket Box
+                    </button>
+
+                    <button
+                        onClick={() => {{
+                            closeMobileMenu();
+                            navigate("/admin/announcements");
+                        }}}
+                    >
+                        📢 Announcements
+                    </button>
+
+                    <button
+                        onClick={() => {{
+                            closeMobileMenu();
+                            navigate("/admin/reports");
+                        }}}
+                    >
+                        📊 Reports
+                    </button>
+
+                    <button
+                        onClick={() => {{
+                            closeMobileMenu();
+                            navigate("/admin/profile");
+                        }}}
                     >
                         👤 Profile
                     </button>
@@ -279,11 +312,55 @@ function ViewStudent() {
             </aside>
 
 
+            {mobileMenuOpen && (
+                <div
+                    className="admin-mobile-overlay"
+                    onClick={() => setMobileMenuOpen(false)}
+                />
+            )}
+
+
             {/* =================================================
                 MAIN
             ================================================= */}
 
             <main className="view-student-main">
+
+
+                <div className="admin-mobile-header">
+
+                    <div className="admin-mobile-left">
+
+                        <button
+                            className="admin-mobile-menu-btn"
+                            onClick={() => setMobileMenuOpen(true)}
+                        >
+                            ☰
+                        </button>
+
+                        <div className="admin-mobile-brand">
+
+                            <div className="admin-mobile-brand-icon">
+                                🏠
+                            </div>
+
+                            <div>
+                                <strong>Hostel</strong>
+                                <span>Admin Panel</span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <button
+                        className="admin-mobile-profile-btn"
+                        onClick={() => navigate("/admin/profile")}
+                    >
+                        👤
+                    </button>
+
+                </div>
 
 
                 {/* =================================================

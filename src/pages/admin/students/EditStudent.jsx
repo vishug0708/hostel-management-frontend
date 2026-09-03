@@ -9,6 +9,8 @@ function EditStudent() {
     const navigate = useNavigate();
     const { id } = useParams();
 
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -279,7 +281,12 @@ function EditStudent() {
 
     if (loading) {
 
-        return (
+        const closeMobileMenu = () => {
+        setMobileMenuOpen(false);
+    };
+
+
+    return (
 
             <div className="edit-student-loading">
 
@@ -311,7 +318,7 @@ function EditStudent() {
                 SIDEBAR
             ================================================= */}
 
-            <aside className="edit-student-sidebar">
+            <aside className={`edit-student-sidebar ${mobileMenuOpen ? "mobile-open" : ""}`}>
 
                 <div className="edit-student-brand">
 
@@ -337,45 +344,77 @@ function EditStudent() {
                 <nav className="edit-student-nav">
 
                     <button
-                        onClick={() =>
-                            navigate("/admin/dashboard")
-                        }
+                        onClick={() => {{
+                            closeMobileMenu();
+                            navigate("/admin/dashboard");
+                        }}}
                     >
                         📊 Dashboard
                     </button>
 
-                    <button className="active">
+                    <button className="active" onClick={() => closeMobileMenu()}>
                         🎓 Students
                     </button>
 
                     <button
-                        onClick={() =>
-                            navigate("/admin/students")
-                        }
-                    >
-                        👥 Manage Students
-                    </button>
-
-                    <button
-                        onClick={() =>
-                            navigate("/admin/students/add")
-                        }
-                    >
-                        ➕ Add Student
-                    </button>
-
-                    <button
-                        onClick={() =>
-                            navigate("/admin/rooms")
-                        }
+                        onClick={() => {{
+                            closeMobileMenu();
+                            navigate("/admin/rooms");
+                        }}}
                     >
                         🛏️ Rooms
                     </button>
 
                     <button
-                        onClick={() =>
-                            navigate("/admin/profile")
-                        }
+                        onClick={() => {{
+                            closeMobileMenu();
+                            navigate("/admin/fees");
+                        }}}
+                    >
+                        💳 Fees
+                    </button>
+
+                    <button
+                        onClick={() => {{
+                            closeMobileMenu();
+                            navigate("/admin/complaints");
+                        }}}
+                    >
+                        📝 Complaints
+                    </button>
+
+                    <button
+                        onClick={() => {{
+                            closeMobileMenu();
+                            navigate("/admin/cricket-box");
+                        }}}
+                    >
+                        🏏 Cricket Box
+                    </button>
+
+                    <button
+                        onClick={() => {{
+                            closeMobileMenu();
+                            navigate("/admin/announcements");
+                        }}}
+                    >
+                        📢 Announcements
+                    </button>
+
+                    <button
+                        onClick={() => {{
+                            closeMobileMenu();
+                            navigate("/admin/reports");
+                        }}}
+                    >
+                        📊 Reports
+                    </button>
+
+                    <button
+                        onClick={() => {{
+                            closeMobileMenu();
+                            navigate("/admin/profile");
+                        }}}
                     >
                         👤 Profile
                     </button>
@@ -393,11 +432,55 @@ function EditStudent() {
             </aside>
 
 
+            {mobileMenuOpen && (
+                <div
+                    className="admin-mobile-overlay"
+                    onClick={() => setMobileMenuOpen(false)}
+                />
+            )}
+
+
             {/* =================================================
                 MAIN
             ================================================= */}
 
             <main className="edit-student-main">
+
+
+                <div className="admin-mobile-header">
+
+                    <div className="admin-mobile-left">
+
+                        <button
+                            className="admin-mobile-menu-btn"
+                            onClick={() => setMobileMenuOpen(true)}
+                        >
+                            ☰
+                        </button>
+
+                        <div className="admin-mobile-brand">
+
+                            <div className="admin-mobile-brand-icon">
+                                🏠
+                            </div>
+
+                            <div>
+                                <strong>Hostel</strong>
+                                <span>Admin Panel</span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <button
+                        className="admin-mobile-profile-btn"
+                        onClick={() => navigate("/admin/profile")}
+                    >
+                        👤
+                    </button>
+
+                </div>
 
 
                 {/* HEADER */}

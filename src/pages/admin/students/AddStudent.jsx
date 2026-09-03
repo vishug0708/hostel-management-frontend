@@ -8,6 +8,8 @@ function AddStudent() {
 
     const navigate = useNavigate();
 
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -209,6 +211,11 @@ function AddStudent() {
     };
 
 
+    const closeMobileMenu = () => {
+        setMobileMenuOpen(false);
+    };
+
+
     return (
 
         <div className="add-student-page">
@@ -218,7 +225,7 @@ function AddStudent() {
                 SIDEBAR
             ================================================= */}
 
-            <aside className="add-student-sidebar">
+            <aside className={`add-student-sidebar ${mobileMenuOpen ? "mobile-open" : ""}`}>
 
                 <div className="add-student-brand">
 
@@ -242,37 +249,77 @@ function AddStudent() {
                 <nav className="add-student-nav">
 
                     <button
-                        onClick={() =>
-                            navigate("/admin/dashboard")
-                        }
+                        onClick={() => {{
+                            closeMobileMenu();
+                            navigate("/admin/dashboard");
+                        }}}
                     >
                         📊 Dashboard
                     </button>
 
-                    <button className="active">
+                    <button className="active" onClick={() => closeMobileMenu()}>
                         🎓 Students
                     </button>
 
                     <button
-                        onClick={() =>
-                            navigate("/admin/rooms")
-                        }
+                        onClick={() => {{
+                            closeMobileMenu();
+                            navigate("/admin/rooms");
+                        }}}
                     >
                         🛏️ Rooms
                     </button>
 
                     <button
-                        onClick={() =>
-                            navigate("/admin/fees")
-                        }
+                        onClick={() => {{
+                            closeMobileMenu();
+                            navigate("/admin/fees");
+                        }}}
                     >
                         💳 Fees
                     </button>
 
                     <button
-                        onClick={() =>
-                            navigate("/admin/profile")
-                        }
+                        onClick={() => {{
+                            closeMobileMenu();
+                            navigate("/admin/complaints");
+                        }}}
+                    >
+                        📝 Complaints
+                    </button>
+
+                    <button
+                        onClick={() => {{
+                            closeMobileMenu();
+                            navigate("/admin/cricket-box");
+                        }}}
+                    >
+                        🏏 Cricket Box
+                    </button>
+
+                    <button
+                        onClick={() => {{
+                            closeMobileMenu();
+                            navigate("/admin/announcements");
+                        }}}
+                    >
+                        📢 Announcements
+                    </button>
+
+                    <button
+                        onClick={() => {{
+                            closeMobileMenu();
+                            navigate("/admin/reports");
+                        }}}
+                    >
+                        📊 Reports
+                    </button>
+
+                    <button
+                        onClick={() => {{
+                            closeMobileMenu();
+                            navigate("/admin/profile");
+                        }}}
                     >
                         👤 Profile
                     </button>
@@ -304,11 +351,55 @@ function AddStudent() {
             </aside>
 
 
+            {mobileMenuOpen && (
+                <div
+                    className="admin-mobile-overlay"
+                    onClick={() => setMobileMenuOpen(false)}
+                />
+            )}
+
+
             {/* =================================================
                 MAIN
             ================================================= */}
 
             <main className="add-student-main">
+
+
+                <div className="admin-mobile-header">
+
+                    <div className="admin-mobile-left">
+
+                        <button
+                            className="admin-mobile-menu-btn"
+                            onClick={() => setMobileMenuOpen(true)}
+                        >
+                            ☰
+                        </button>
+
+                        <div className="admin-mobile-brand">
+
+                            <div className="admin-mobile-brand-icon">
+                                🏠
+                            </div>
+
+                            <div>
+                                <strong>Hostel</strong>
+                                <span>Admin Panel</span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <button
+                        className="admin-mobile-profile-btn"
+                        onClick={() => navigate("/admin/profile")}
+                    >
+                        👤
+                    </button>
+
+                </div>
 
 
                 {/* HEADER */}
