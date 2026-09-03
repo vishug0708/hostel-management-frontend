@@ -658,30 +658,18 @@
         display: block;
     }
 
-    .admin-sidebar-nav {
-        display: grid;
-
-        grid-template-columns:
-            repeat(2, 1fr);
-
-        margin-top: 15px;
-    }
-
     .admin-logout {
         margin-top: 15px;
     }
 
     .admin-main {
         width: 100%;
-
         margin-left: 0;
-
         padding: 20px 15px;
     }
 
     .admin-topbar {
         align-items: flex-start;
-
         flex-direction: column;
     }
 
@@ -691,7 +679,6 @@
 
     .admin-welcome {
         padding: 25px;
-
         min-height: 160px;
     }
 
@@ -709,9 +696,7 @@
 
     .admin-dashboard-footer {
         flex-direction: column;
-
         gap: 8px;
-
         text-align: center;
     }
 
@@ -849,6 +834,17 @@
     .admin-dashboard{
         width:100%;
         min-width:0;
+    }
+
+    .admin-sidebar-nav{
+        display:flex;
+        flex-direction:column;
+        grid-template-columns:none;
+        gap:5px;
+    }
+
+    .admin-sidebar .sidebar-item{
+        width:100%;
     }
 }
 
