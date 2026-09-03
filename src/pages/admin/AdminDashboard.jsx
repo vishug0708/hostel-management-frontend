@@ -8,6 +8,7 @@ function AdminDashboard() {
     const navigate = useNavigate();
 
     const [admin, setAdmin] = useState(null);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
 
     // =====================================================
@@ -55,6 +56,7 @@ function AdminDashboard() {
     // =====================================================
 
     const handleLogout = () => {
+        setMobileMenuOpen(false);
 
         localStorage.removeItem("adminToken");
         localStorage.removeItem("admin");
@@ -62,7 +64,6 @@ function AdminDashboard() {
         navigate("/admin/login", {
             replace: true
         });
-
     };
 
 
@@ -122,6 +123,15 @@ function AdminDashboard() {
 
     ];
 
+    // =====================================================
+    // MOBILE MENU
+    // =====================================================
+
+    const closeMobileMenu = () => {
+        setMobileMenuOpen(false);
+    };
+
+
 
     return (
 
@@ -132,7 +142,7 @@ function AdminDashboard() {
                 SIDEBAR
             ================================================= */}
 
-            <aside className="admin-sidebar">
+            <aside className={`admin-sidebar ${mobileMenuOpen ? "mobile-open" : ""}`}>
 
                 <div className="admin-sidebar-brand">
 
@@ -157,13 +167,17 @@ function AdminDashboard() {
 
                 {/* NAVIGATION */}
 
+
+
                 <nav className="admin-sidebar-nav">
+
 
                     <button
                         className="sidebar-item active"
-                        onClick={() =>
-                            navigate("/admin/dashboard")
-                        }
+                        onClick={() => {
+                            setMobileMenuOpen(false);
+                            navigate("/admin/dashboard");
+                        }}
                     >
                         <span>📊</span>
                         Dashboard
@@ -172,9 +186,10 @@ function AdminDashboard() {
 
                     <button
                         className="sidebar-item"
-                        onClick={() =>
-                            navigate("/admin/students")
-                        }
+                        onClick={() => {
+                            setMobileMenuOpen(false);
+                            navigate("/admin/students");
+                        }}
                     >
                         <span>🎓</span>
                         Students
@@ -183,9 +198,10 @@ function AdminDashboard() {
 
                     <button
                         className="sidebar-item"
-                        onClick={() =>
-                            navigate("/admin/rooms")
-                        }
+                        onClick={() => {
+                            setMobileMenuOpen(false);
+                            navigate("/admin/rooms");
+                        }}
                     >
                         <span>🛏️</span>
                         Rooms
@@ -194,9 +210,10 @@ function AdminDashboard() {
 
                     <button
                         className="sidebar-item"
-                        onClick={() =>
-                            navigate("/admin/fees")
-                        }
+                        onClick={() => {
+                            setMobileMenuOpen(false);
+                            navigate("/admin/fees");
+                        }}
                     >
                         <span>💳</span>
                         Fees
@@ -205,9 +222,10 @@ function AdminDashboard() {
 
                     <button
                         className="sidebar-item"
-                        onClick={() =>
-                            navigate("/admin/complaints")
-                        }
+                        onClick={() => {
+                            setMobileMenuOpen(false);
+                            navigate("/admin/complaints");
+                        }}
                     >
                         <span>📝</span>
                         Complaints
@@ -216,9 +234,10 @@ function AdminDashboard() {
 
                     <button
                         className="sidebar-item"
-                        onClick={() =>
-                            navigate("/admin/cricket-box")
-                        }
+                        onClick={() => {
+                            setMobileMenuOpen(false);
+                            navigate("/admin/cricket-box");
+                        }}
                     >
                         <span>🏏</span>
                         Cricket Box
@@ -227,9 +246,10 @@ function AdminDashboard() {
 
                     <button
                         className="sidebar-item"
-                        onClick={() =>
-                            navigate("/admin/announcements")
-                        }
+                        onClick={() => {
+                            setMobileMenuOpen(false);
+                            navigate("/admin/announcements");
+                        }}
                     >
                         <span>📢</span>
                         Announcements
@@ -238,9 +258,10 @@ function AdminDashboard() {
 
                     <button
                         className="sidebar-item"
-                        onClick={() =>
-                            navigate("/admin/reports")
-                        }
+                        onClick={() => {
+                            setMobileMenuOpen(false);
+                            navigate("/admin/reports");
+                        }}
                     >
                         <span>📊</span>
                         Reports
@@ -249,9 +270,10 @@ function AdminDashboard() {
 
                     <button
                         className="sidebar-item"
-                        onClick={() =>
-                            navigate("/admin/profile")
-                        }
+                        onClick={() => {
+                            setMobileMenuOpen(false);
+                            navigate("/admin/profile");
+                        }}
                     >
                         <span>👤</span>
                         Profile
@@ -277,11 +299,51 @@ function AdminDashboard() {
             </aside>
 
 
+            {mobileMenuOpen && (
+                <div
+                    className="admin-mobile-overlay"
+                    onClick={() => setMobileMenuOpen(false)}
+                />
+            )}
+
+
             {/* =================================================
                 MAIN CONTENT
             ================================================= */}
 
             <main className="admin-main">
+
+                {/* MOBILE TOP HEADER */}
+                <div className="admin-mobile-header">
+                    <div className="admin-mobile-left">
+                        <button
+                            className="admin-mobile-menu-btn"
+                            onClick={() => setMobileMenuOpen(true)}
+                            aria-label="Open menu"
+                        >
+                            ☰
+                        </button>
+
+                        <div className="admin-mobile-brand">
+                            <div className="admin-mobile-brand-icon">
+                                🏠
+                            </div>
+
+                            <div>
+                                <strong>Hostel</strong>
+                                <span>Admin Panel</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button
+                        className="admin-mobile-profile-btn"
+                        onClick={() => navigate("/admin/profile")}
+                        aria-label="Open profile"
+                    >
+                        👤
+                    </button>
+                </div>
 
 
                 {/* TOPBAR */}
