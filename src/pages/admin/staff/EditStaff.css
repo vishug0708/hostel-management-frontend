@@ -11,6 +11,13 @@
     font-size: 17px;
 }
 
+/* Hide mobile header elements on desktop */
+.edit-staff-mobile-header,
+.edit-staff-hamburger,
+.edit-staff-mobile-profile {
+    display: none;
+}
+
 .edit-staff-sidebar {
     position: fixed;
     top: 0;
