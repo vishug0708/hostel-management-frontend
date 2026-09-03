@@ -138,7 +138,7 @@ function EditStudent() {
             return value;
         }
 
-        const normalized = value.replace(/^\\/+/, "");
+        const normalized = value.replace(/^\/+/, "");
 
         if (normalized.startsWith("uploads/")) {
             return `${API_URL}/${normalized}`;
@@ -349,16 +349,15 @@ function EditStudent() {
     };
 
 
+    const closeMobileMenu = () => {
+        setMobileMenuOpen(false);
+    };
+
     // =====================================================
     // LOADING
     // =====================================================
 
     if (loading) {
-
-        const closeMobileMenu = () => {
-        setMobileMenuOpen(false);
-    };
-
 
     return (
 

@@ -120,7 +120,7 @@ function ManageStudents() {
             return value;
         }
 
-        const normalized = value.replace(/^\\/+/, "");
+        const normalized = value.replace(/^\/+/, "");
 
         if (normalized.startsWith("uploads/")) {
             return `${API_URL}/${normalized}`;
