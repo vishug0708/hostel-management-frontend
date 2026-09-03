@@ -6,6 +6,7 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const ManageRooms = () => {
     const navigate = useNavigate();
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const [rooms, setRooms] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -244,7 +245,7 @@ const ManageRooms = () => {
                 );
 
             const response = await fetch(
-                `http://localhost:5000/api/admin/rooms/${room.id}`,
+                `${API_URL}/api/admin/rooms/${room.id}`,
                 {
                     method: "DELETE",
                     headers: {
