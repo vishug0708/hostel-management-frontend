@@ -36,21 +36,11 @@ function ViewComplaints() {
     const [search, setSearch] = useState("");
     const [statusFilter, setStatusFilter] = useState("All");
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [adminPhoto, setAdminPhoto] = useState("");
+    const [admin, setAdmin] = useState(null);
 
     useEffect(() => {
         fetchComplaints();
-
-        const savedAdmin = localStorage.getItem("admin");
-
-        if (savedAdmin) {
-            try {
-                const admin = JSON.parse(savedAdmin);
-                setAdminPhoto(admin?.photo || "");
-            } catch (error) {
-                console.error("Admin photo error:", error);
-            }
-        }
+        fetchAdminProfile();
     }, []);
 
     const fetchAdminProfile = async () => {
@@ -400,7 +390,7 @@ function ViewComplaints() {
                 </button>
             </aside>
 
-            
+
 
             {mobileMenuOpen && (
                 <div
