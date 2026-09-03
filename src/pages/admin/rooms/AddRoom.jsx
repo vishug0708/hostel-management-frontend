@@ -3,6 +3,46 @@ import { useNavigate } from "react-router-dom";
 import "./AddRoom.css";
 
 
+const AdminRoomSidebar = ({ navigate, mobileMenuOpen, setMobileMenuOpen }) => {
+    const closeMenu = () => setMobileMenuOpen(false);
+
+    const handleLogout = () => {
+        localStorage.removeItem("adminToken");
+        localStorage.removeItem("admin");
+        closeMenu();
+        navigate("/admin/login");
+    };
+
+    return (
+        <>
+            <aside className={`admin-room-sidebar ${mobileMenuOpen ? "mobile-open" : ""}`}>
+                <div className="admin-room-sidebar-brand">
+                    <div className="admin-room-brand-icon">🏠</div>
+                    <div>
+                        <strong>Hostel</strong>
+                        <span>Admin Panel</span>
+                    </div>
+                </div>
+                <nav className="admin-room-sidebar-nav">
+                    <button onClick={() => { closeMenu(); navigate("/admin/dashboard"); }}>📊 Dashboard</button>
+                    <button onClick={() => { closeMenu(); navigate("/admin/students"); }}>🎓 Students</button>
+                    <button className="active" onClick={closeMenu}>🛏️ Rooms</button>
+                    <button onClick={() => { closeMenu(); navigate("/admin/fees"); }}>💳 Fees</button>
+                    <button onClick={() => { closeMenu(); navigate("/admin/complaints"); }}>📝 Complaints</button>
+                    <button onClick={() => { closeMenu(); navigate("/admin/cricket-box"); }}>🏏 Cricket Box</button>
+                    <button onClick={() => { closeMenu(); navigate("/admin/announcements"); }}>📢 Announcements</button>
+                    <button onClick={() => { closeMenu(); navigate("/admin/reports"); }}>📊 Reports</button>
+                    <button onClick={() => { closeMenu(); navigate("/admin/profile"); }}>👤 Profile</button>
+                </nav>
+                <button className="admin-room-sidebar-logout" onClick={handleLogout}>🚪 Logout</button>
+            </aside>
+            {mobileMenuOpen && (
+                <div className="admin-room-mobile-overlay" onClick={() => setMobileMenuOpen(false)} />
+            )}
+        </>
+    );
+};
+
 const API_URL =
     import.meta.env.VITE_API_URL ||
     "http://localhost:5000";
@@ -20,6 +60,7 @@ const BLOCKS = [
 
 const AddRoom = () => {
     const navigate = useNavigate();
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const [formData, setFormData] = useState({
         block: "",
@@ -277,7 +318,23 @@ const AddRoom = () => {
     };
 
     return (
-        <div className="add-room-page">
+        <div className="admin-room-layout">
+            <AdminRoomSidebar navigate={navigate} mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
+            <main className="admin-room-main">
+                <div className="admin-room-mobile-header">
+                    <div className="admin-room-mobile-left">
+                        <button className="admin-room-mobile-menu-btn" onClick={() => setMobileMenuOpen(true)} aria-label="Open menu">☰</button>
+                        <div className="admin-room-mobile-brand">
+                            <div className="admin-room-mobile-brand-icon">🏠</div>
+                            <div>
+                                <strong>Hostel</strong>
+                                <span>Admin Panel</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button className="admin-room-mobile-profile-btn" onClick={() => navigate("/admin/profile")} aria-label="Admin profile">👤</button>
+                </div>
+                <div className="add-room-page">
 
             <div className="add-room-container">
 
@@ -685,6 +742,8 @@ const AddRoom = () => {
 
             </div>
 
+                </div>
+            </main>
         </div>
     );
 };
