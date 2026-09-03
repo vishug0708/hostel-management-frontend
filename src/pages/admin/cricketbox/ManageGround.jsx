@@ -31,7 +31,7 @@ function ManageGround() {
             setError("");
 
             const response = await fetch(
-                `${API_URL}/api/admin/cricket-grounds/${id}`,
+                `${API_URL}/api/admin/cricket-grounds`,
                 {
                     method: "GET",
                     headers: {
@@ -365,27 +365,27 @@ function ManageGround() {
                         {" Grounds"}
                     </div>
 
-                      <button
-                            className="manage-ground-add"
-                            onClick={() =>
-                                navigate(
-                                    "/admin/cricket-box/booking-history"
-                                )
-                            }
-                        >
-                            📋 Booking History
-                        </button>
+                    <button
+                        className="manage-ground-add"
+                        onClick={() =>
+                            navigate(
+                                "/admin/cricket-box/booking-history"
+                            )
+                        }
+                    >
+                        📋 Booking History
+                    </button>
 
-                        <button
-                            className="manage-ground-add"
-                            onClick={() =>
-                                navigate(
-                                    "/admin/cricket-box/reports"
-                                )
-                            }
-                        >
-                            📝 Reports
-                        </button>
+                    <button
+                        className="manage-ground-add"
+                        onClick={() =>
+                            navigate(
+                                "/admin/cricket-box/reports"
+                            )
+                        }
+                    >
+                        📝 Reports
+                    </button>
 
                 </section>
 
