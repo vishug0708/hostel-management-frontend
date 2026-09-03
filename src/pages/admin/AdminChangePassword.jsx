@@ -11,15 +11,13 @@ function AdminChangePassword() {
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-
     const [showCurrent, setShowCurrent] = useState(false);
     const [showNew, setShowNew] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
-
     const [loading, setLoading] = useState(false);
-
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
 
     // =====================================================
@@ -198,6 +196,10 @@ function AdminChangePassword() {
 
     };
 
+    const closeMobileMenu = () => {
+        setMobileMenuOpen(false);
+    };
+
 
     return (
 
@@ -208,7 +210,7 @@ function AdminChangePassword() {
                 SIDEBAR
             ================================================= */}
 
-            <aside className="change-password-sidebar">
+            <aside className={`change-password-sidebar ${mobileMenuOpen ? "mobile-open" : ""}`}>
 
                 <div className="change-password-brand">
 
@@ -234,51 +236,87 @@ function AdminChangePassword() {
                 <nav className="change-password-nav">
 
                     <button
-                        onClick={() =>
-                            navigate("/admin/dashboard")
-                        }
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/admin/dashboard");
+                        }}
                     >
                         📊 Dashboard
                     </button>
 
                     <button
-                        onClick={() =>
-                            navigate("/admin/students")
-                        }
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/admin/students");
+                        }}
                     >
                         🎓 Students
                     </button>
 
                     <button
-                        onClick={() =>
-                            navigate("/admin/rooms")
-                        }
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/admin/rooms");
+                        }}
                     >
                         🛏️ Rooms
                     </button>
 
                     <button
-                        onClick={() =>
-                            navigate("/admin/fees")
-                        }
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/admin/fees");
+                        }}
                     >
                         💳 Fees
                     </button>
 
                     <button
-                        onClick={() =>
-                            navigate("/admin/profile")
-                        }
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/admin/complaints");
+                        }}
+                    >
+                        📝 Complaints
+                    </button>
+
+                    <button
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/admin/cricket-box");
+                        }}
+                    >
+                        🏏 Cricket Box
+                    </button>
+
+                    <button
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/admin/announcements");
+                        }}
+                    >
+                        📢 Announcements
+                    </button>
+
+                    <button
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/admin/reports");
+                        }}
+                    >
+                        📊 Reports
+                    </button>
+
+                    <button
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/admin/profile");
+                        }}
                     >
                         👤 Profile
                     </button>
 
-                    <button className="active">
-                        🔐 Change Password
-                    </button>
-
                 </nav>
-
 
                 <button
                     className="change-password-logout"
@@ -303,12 +341,54 @@ function AdminChangePassword() {
 
             </aside>
 
+            {mobileMenuOpen && (
+                <div
+                    className="admin-mobile-overlay"
+                    onClick={() => setMobileMenuOpen(false)}
+                />
+            )}
+
 
             {/* =================================================
                 MAIN CONTENT
             ================================================= */}
 
             <main className="change-password-main">
+
+                <div className="admin-mobile-header">
+
+                    <div className="admin-mobile-left">
+
+                        <button
+                            className="admin-mobile-menu-btn"
+                            onClick={() => setMobileMenuOpen(true)}
+                        >
+                            ☰
+                        </button>
+
+                        <div className="admin-mobile-brand">
+
+                            <div className="admin-mobile-brand-icon">
+                                🏠
+                            </div>
+
+                            <div>
+                                <strong>Hostel</strong>
+                                <span>Admin Panel</span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <button
+                        className="admin-mobile-profile-btn"
+                        onClick={() => navigate("/admin/profile")}
+                    >
+                        👤
+                    </button>
+
+                </div>
 
 
                 {/* HEADER */}

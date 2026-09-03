@@ -7,17 +7,12 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 function AdminProfile() {
 
     const navigate = useNavigate();
-
     const [admin, setAdmin] = useState(null);
-
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [loading, setLoading] = useState(true);
-
     const [saving, setSaving] = useState(false);
-
     const [message, setMessage] = useState("");
-
     const [error, setError] = useState("");
-
 
     // =====================================================
     // GET ADMIN PROFILE
@@ -317,6 +312,10 @@ function AdminProfile() {
 
     }
 
+    const closeMobileMenu = () => {
+        setMobileMenuOpen(false);
+    };
+
 
     // =====================================================
     // PAGE
@@ -331,7 +330,7 @@ function AdminProfile() {
                 SIDEBAR
             ================================================= */}
 
-            <aside className="admin-profile-sidebar">
+            <aside className={`admin-profile-sidebar ${mobileMenuOpen ? "mobile-open" : ""}`}>
 
                 <div className="admin-profile-brand">
 
@@ -355,41 +354,82 @@ function AdminProfile() {
                 <nav className="admin-profile-nav">
 
                     <button
-                        onClick={() =>
-                            navigate("/admin/dashboard")
-                        }
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/admin/dashboard");
+                        }}
                     >
                         📊 Dashboard
                     </button>
 
                     <button
-                        onClick={() =>
-                            navigate("/admin/students")
-                        }
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/admin/students");
+                        }}
                     >
                         🎓 Students
                     </button>
 
                     <button
-                        onClick={() =>
-                            navigate("/admin/rooms")
-                        }
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/admin/rooms");
+                        }}
                     >
                         🛏️ Rooms
                     </button>
 
                     <button
-                        onClick={() =>
-                            navigate("/admin/fees")
-                        }
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/admin/fees");
+                        }}
                     >
                         💳 Fees
                     </button>
 
-                    
+                    <button
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/admin/complaints");
+                        }}
+                    >
+                        📝 Complaints
+                    </button>
+
+                    <button
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/admin/cricket-box");
+                        }}
+                    >
+                        🏏 Cricket Box
+                    </button>
+
+                    <button
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/admin/announcements");
+                        }}
+                    >
+                        📢 Announcements
+                    </button>
+
+                    <button
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/admin/reports");
+                        }}
+                    >
+                        📊 Reports
+                    </button>
 
                     <button
                         className="active"
+                        onClick={() => {
+                            closeMobileMenu();
+                        }}
                     >
                         👤 Profile
                     </button>
@@ -406,12 +446,54 @@ function AdminProfile() {
 
             </aside>
 
+            {mobileMenuOpen && (
+                <div
+                    className="admin-mobile-overlay"
+                    onClick={() => setMobileMenuOpen(false)}
+                />
+            )}
+
 
             {/* =================================================
                 MAIN CONTENT
             ================================================= */}
 
             <main className="admin-profile-main">
+
+                <div className="admin-mobile-header">
+
+                    <div className="admin-mobile-left">
+
+                        <button
+                            className="admin-mobile-menu-btn"
+                            onClick={() => setMobileMenuOpen(true)}
+                        >
+                            ☰
+                        </button>
+
+                        <div className="admin-mobile-brand">
+
+                            <div className="admin-mobile-brand-icon">
+                                🏠
+                            </div>
+
+                            <div>
+                                <strong>Hostel</strong>
+                                <span>Admin Panel</span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <button
+                        className="admin-mobile-profile-btn"
+                        onClick={() => navigate("/admin/profile")}
+                    >
+                        👤
+                    </button>
+
+                </div>
 
 
                 {/* HEADER */}
