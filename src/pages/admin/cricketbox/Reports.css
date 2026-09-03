@@ -483,3 +483,231 @@
         gap: 5px;
     }
 }
+
+/* =====================================================
+   SHARED ADMIN HEADER / PHOTO / MOBILE MENU
+===================================================== */
+
+.cricket-reports-page {
+    font-size: 17px;
+}
+
+.cricket-reports-nav button {
+    font-size: 13px !important;
+}
+
+.cricket-reports-sidebar {
+    width: 255px !important;
+    padding: 22px 15px !important;
+    background: #0f172a !important;
+}
+
+.cricket-reports-main {
+    width: calc(100% - 255px) !important;
+    margin-left: 255px !important;
+}
+
+.admin-page-user {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.admin-page-user-button {
+    width: 52px;
+    height: 52px;
+    padding: 2px;
+    border: 1px solid #dbe3ea;
+    border-radius: 50%;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    box-shadow: 0 3px 12px rgba(15,23,42,.08);
+}
+
+.admin-page-user-button img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.admin-page-user-button span {
+    font-size: 24px;
+}
+
+.admin-mobile-header {
+    display: none;
+}
+
+.admin-mobile-overlay {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .cricket-reports-page {
+        display: block;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .cricket-reports-sidebar {
+        position: fixed !important;
+        top: 0;
+        left: 0;
+        width: 270px !important;
+        height: 100vh !important;
+        z-index: 1100 !important;
+        transform: translateX(-100%);
+        transition: transform .28s ease;
+        box-shadow: 8px 0 30px rgba(0,0,0,.18);
+        overflow-y: auto;
+    }
+
+    .cricket-reports-sidebar.mobile-open {
+        transform: translateX(0);
+    }
+
+    .cricket-reports-main {
+        width: 100% !important;
+        margin-left: 0 !important;
+        padding: 20px 15px;
+    }
+
+    .admin-mobile-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: calc(100% + 30px);
+        min-height: 64px;
+        padding: 10px 16px;
+        margin: -20px -15px 20px;
+        background: #ffffff;
+        border-bottom: 1px solid #e5e7eb;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-sizing: border-box;
+    }
+
+    .admin-mobile-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+    }
+
+    .admin-mobile-menu-btn {
+        width: 42px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        border-radius: 10px;
+        background: #0f766e;
+        color: #ffffff;
+        font-size: 23px;
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+
+    .admin-mobile-brand {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        min-width: 0;
+    }
+
+    .admin-mobile-brand-icon {
+        width: 38px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        background: #0f766e;
+        font-size: 19px;
+        flex-shrink: 0;
+    }
+
+    .admin-mobile-brand strong {
+        display: block;
+        font-size: 15px;
+        line-height: 18px;
+        color: #111827;
+        white-space: nowrap;
+    }
+
+    .admin-mobile-brand span {
+        display: block;
+        font-size: 11px;
+        line-height: 14px;
+        color: #6b7280;
+        white-space: nowrap;
+    }
+
+    .admin-mobile-profile-btn {
+        width: 44px;
+        height: 44px;
+        padding: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #dbe3ea;
+        border-radius: 50%;
+        background: #f8fafc;
+        font-size: 21px;
+        cursor: pointer;
+        flex-shrink: 0;
+        overflow: hidden;
+    }
+
+    .admin-mobile-profile-btn img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    .admin-mobile-overlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 1050;
+        background: rgba(0,0,0,.42);
+    }
+
+    .cricket-reports-header {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .admin-page-user {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-mobile-header {
+        min-height: 60px;
+        padding: 8px 12px;
+    }
+
+    .admin-mobile-menu-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 22px;
+    }
+
+    .admin-mobile-profile-btn {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+.cricket-reports-refresh, .cricket-reports-refresh-btn, .report-refresh-btn, .booking-history-refresh, .manage-ground-refresh { display:none !important; }
