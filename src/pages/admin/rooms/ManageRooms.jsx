@@ -13,7 +13,6 @@ const ManageRooms = () => {
     const [search, setSearch] = useState("");
     const [selectedBlock, setSelectedBlock] = useState("All");
     const [deletingId, setDeletingId] = useState(null);
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     useEffect(() => {
         fetchRooms();
@@ -245,7 +244,7 @@ const ManageRooms = () => {
                 );
 
             const response = await fetch(
-                `${API_URL}/api/admin/rooms/${room.id}`,
+                `http://localhost:5000/api/admin/rooms/${room.id}`,
                 {
                     method: "DELETE",
                     headers: {
@@ -377,7 +376,9 @@ const ManageRooms = () => {
                 <button className="admin-logout" onClick={handleLogout}><span>🚪</span>Logout</button>
             </aside>
 
-            {mobileMenuOpen && <div className="admin-mobile-overlay" onClick={closeMobileMenu} />}
+            {mobileMenuOpen && (
+                <div className="admin-mobile-overlay" onClick={closeMobileMenu} />
+            )}
 
             <div className="manage-rooms-main">
                 <div className="admin-mobile-header">
@@ -392,14 +393,29 @@ const ManageRooms = () => {
                 </div>
 
                 <main className="manage-rooms-page">
-                    {/* HEADER */}
-                    <div className="manage-rooms-header">
-                        <div>
-                            <span className="manage-rooms-label">ADMIN PANEL</span>
-                            <h1>Manage Rooms</h1>
-                            <p>Manage hostel rooms, blocks and bed allocation.</p>
-                        </div>
-                    </div>
+
+            {/* HEADER */}
+
+            <div className="manage-rooms-header">
+
+                <div>
+
+                    <span className="manage-rooms-label">
+                        ADMIN PANEL
+                    </span>
+
+                    <h1>
+                        Manage Rooms
+                    </h1>
+
+                    <p>
+                        Manage hostel rooms,
+                        blocks and bed allocation.
+                    </p>
+
+                </div>
+
+            </div>
 
             {/* ERROR */}
 
@@ -600,7 +616,9 @@ const ManageRooms = () => {
                     )}
 
                 </div>
+
                 <button
+                    type="button"
                     className="manage-rooms-filter-add-btn"
                     onClick={() => navigate("/admin/rooms/add")}
                 >
@@ -914,6 +932,7 @@ const ManageRooms = () => {
                 )}
 
             </div>
+
                 </main>
             </div>
         </div>
