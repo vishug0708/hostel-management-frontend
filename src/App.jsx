@@ -70,8 +70,8 @@ import VerifyOtp from "./pages/student/gatepass/VerifyOtp";
 // STAFF
 // =====================================================
 
-import StaffLogin from "./pages/StaffLogin";
-import StaffDashboard from "./pages/StaffDashboard";
+import StaffLogin from "./pages/staff/StaffLogin";
+import StaffDashboard from "./pages/staff/StaffDashboard";
 
 
 // =====================================================
@@ -137,9 +137,6 @@ function App() {
                     element={<AdminLogin />}
                 />
 
-                {/* =========================================
-                    ADMIN DASHBOARD
-                    ========================================= */}
 
                 <Route
                     path="/admin/dashboard"
@@ -264,6 +261,10 @@ function App() {
                 />
 
 
+                {/* =========================================
+                    RECTOE DASHBOARD
+                    ========================================= */}
+
 
                 <Route
                     path="/rector/login"
@@ -300,6 +301,10 @@ function App() {
                     element={<GatePass />}
                 />
 
+
+                {/* =========================================
+                    STUDENT DASHBOARD
+                    ========================================= */}
 
 
                 <Route
@@ -346,13 +351,18 @@ function App() {
 
 
 
+                {/* =========================================
+                    STAFF DASHBOARD
+                    ========================================= */}
+
                 <Route path="/staff/login" element={<StaffLogin />} />
                 <Route path="/staff/dashboard" element={<StaffDashboard />} />
 
 
 
-
-
+                {/* =========================================
+                    SECURITY DASHBOARD
+                    ========================================= */}
 
                 <Route
                     path="/security/login"
