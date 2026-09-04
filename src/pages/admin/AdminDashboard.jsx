@@ -321,7 +321,7 @@ function AdminDashboard() {
                         className="sidebar-item"
                         onClick={() => {
                             setMobileMenuOpen(false);
-                            navigate("/admin/rector");
+                            navigate("/admin/rectors");
                         }}
                     >
                         <span>🧑‍💻</span>
