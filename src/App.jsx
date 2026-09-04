@@ -36,6 +36,9 @@ import Reports from "./pages/admin/cricketbox/Reports";
 import ManageStaff from "./pages/admin/staff/ManageStaff";
 import AddStaff from "./pages/admin/staff/AddStaff";
 import EditStaff from "./pages/admin/staff/EditStaff";
+import AddRector from "./pages/admin/rector/AddRector";
+import ManageRector from "./pages/admin/rector/ManageRector";
+import EditRector from "./pages/admin/rector/EditRector";
 
 
 // =====================================================
@@ -261,6 +264,10 @@ function App() {
                     path="/admin/staff/edit/:id"
                     element={<EditStaff />}
                 />
+
+                <Route path="/admin/rectors" element={<ManageRector />} />
+                <Route path="/admin/rectors/add" element={<AddRector />} />
+                <Route path="/admin/rectors/edit/:id" element={<EditRector />} />
 
 
                 {/* =========================================
