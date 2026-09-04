@@ -30,7 +30,6 @@ export default function AddRector() {
         email: "",
         phone: "",
         password: "",
-        role: "Rector",
         status: "active",
         salary: ""
     });
@@ -78,7 +77,7 @@ export default function AddRector() {
         e.preventDefault();
         setError("");
 
-        if (!form.rector_id.trim() || !form.name.trim() || !form.email.trim() || !form.password.trim() || !form.role.trim() || form.salary === "") {
+        if (!form.rector_id.trim() || !form.name.trim() || !form.email.trim() || !form.password.trim() || form.salary === "") {
             setError("Please fill all required fields.");
             return;
         }
@@ -92,7 +91,6 @@ export default function AddRector() {
             body.append("email", form.email.trim());
             body.append("phone", form.phone.trim());
             body.append("password", form.password);
-            body.append("role", form.role.trim());
             body.append("status", form.status);
             body.append("salary", form.salary);
 
@@ -216,11 +214,6 @@ export default function AddRector() {
                             <label>
                                 Password <b>*</b>
                                 <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="Enter password" required />
-                            </label>
-
-                            <label>
-                                Role <b>*</b>
-                                <input name="role" value={form.role} onChange={handleChange} placeholder="Enter rector role" required />
                             </label>
 
                             <label>
