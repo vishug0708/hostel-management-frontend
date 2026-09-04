@@ -195,14 +195,46 @@ function StaffProfile() {
                     <div><strong>Hostel</strong><span>Staff Panel</span></div>
                 </div>
                 <nav className="staff-profile-nav">
-                    <button onClick={() => { closeMobileMenu(); navigate("/staff/dashboard"); }}>📊 Dashboard</button>
-                    <button onClick={() => { closeMobileMenu(); navigate("/staff/students"); }}>🎓 Students</button>
-                    <button onClick={() => { closeMobileMenu(); navigate("/staff/rooms"); }}>🛏️ Rooms</button>
-                    <button onClick={() => { closeMobileMenu(); navigate("/staff/fees"); }}>💳 Fees</button>
-                    <button onClick={() => { closeMobileMenu(); navigate("/staff/complaints"); }}>📝 Complaints</button>
-                    <button onClick={() => { closeMobileMenu(); navigate("/staff/cricket-box"); }}>🏏 Cricket Box</button>
-                    <button onClick={() => { closeMobileMenu(); navigate("/staff/announcements"); }}>📢 Announcements</button>
-                    <button onClick={() => { closeMobileMenu(); navigate("/staff/reports"); }}>📊 Reports</button>
+                    <button
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/staff/dashboard");
+                        }}>
+                        <span>📊</span>Dashboard
+                    </button>
+
+                    <button
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/staff/attendance");
+                        }}>
+                        <span>📅</span>Attendance
+                    </button>
+
+                    <button
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/staff/complaints");
+                        }}>
+                        <span>📝</span>Complaints
+                    </button>
+
+                    <button
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/staff/announcements");
+                        }}>
+                        <span>📢</span>Announcements
+                    </button>
+
+                    <button
+                        onClick={() => {
+                            closeMobileMenu();
+                            navigate("/staff/change-password");
+                        }}>
+                        <span>🔐</span>Change Password
+                    </button>
+
                     <button className="active" onClick={closeMobileMenu}>👤 Profile</button>
                 </nav>
                 <button className="profile-logout" onClick={handleLogout}>🚪 Logout</button>
