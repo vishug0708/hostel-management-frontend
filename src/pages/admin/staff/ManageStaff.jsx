@@ -249,15 +249,6 @@ function ManageStaff() {
                     <button className="manage-staff-sidebar-item" onClick={() => { closeMobileMenu(); navigate("/admin/reports"); }}>
                         <span>📊</span>Reports
                     </button>
-                    <button className="manage-staff-sidebar-item active" onClick={() => { closeMobileMenu(); navigate("/admin/staff"); }}>
-                        <span>👨‍💼</span>Staff Management
-                    </button>
-                    <button className="manage-staff-sidebar-item" onClick={() => { closeMobileMenu(); navigate("/admin/rector"); }}>
-                        <span>👨‍🏫</span>Rector Management
-                    </button>
-                    <button className="manage-staff-sidebar-item" onClick={() => { closeMobileMenu(); navigate("/admin/salary"); }}>
-                        <span>💰</span>Salary Management
-                    </button>
                     <button className="manage-staff-sidebar-item" onClick={() => { closeMobileMenu(); navigate("/admin/profile"); }}>
                         <span>👤</span>Profile
                     </button>
