@@ -38,7 +38,6 @@ function EditRector() {
         email: "",
         mobile: "",
         password: "",
-        role: "Rector",
         status: "active",
         salary: ""
     });
@@ -85,9 +84,8 @@ function EditRector() {
                 rector_id: rector.rector_id || "",
                 name: rector.name || "",
                 email: rector.email || "",
-                mobile: rector.mobile || "",
+                mobile: rector.phone || rector.mobile || "",
                 password: "",
-                role: rector.role || "Rector",
                 status: String(rector.status || "active").toLowerCase(),
                 salary: rector.salary ?? ""
             });
@@ -136,7 +134,7 @@ function EditRector() {
         setError("");
         setSuccess("");
 
-        if (!form.rector_id.trim() || !form.name.trim() || !form.email.trim() || !form.role.trim() || form.salary === "") {
+        if (!form.rector_id.trim() || !form.name.trim() || !form.email.trim() || form.salary === "") {
             setError("Please fill all required fields.");
             return;
         }
@@ -148,8 +146,7 @@ function EditRector() {
             body.append("rector_id", form.rector_id.trim());
             body.append("name", form.name.trim());
             body.append("email", form.email.trim());
-            body.append("mobile", form.mobile.trim());
-            body.append("role", form.role.trim());
+            body.append("phone", form.mobile.trim());
             body.append("status", form.status);
             body.append("salary", form.salary);
 
@@ -184,7 +181,6 @@ function EditRector() {
                     name: data.rector.name ?? previous.name,
                     email: data.rector.email ?? previous.email,
                     mobile: data.rector.mobile ?? previous.mobile,
-                    role: data.rector.role ?? previous.role,
                     status: data.rector.status ?? previous.status,
                     salary: data.rector.salary ?? previous.salary,
                     password: ""
@@ -269,6 +265,23 @@ function EditRector() {
 
                 <section className="rector-card">
                     <form onSubmit={handleSubmit}>
+
+                        <div className="rector-edit-photo-box">
+                            <div className="rector-edit-photo-preview">
+                                {photoPreview ? <img src={photoPreview} alt="Rector preview" /> : <span>👨‍🏫</span>}
+                            </div>
+                            <div className="rector-edit-photo-info">
+                                <strong>Rector Photo</strong>
+                                <label className="rector-file-btn">
+                                    Choose File
+                                    <input id="rector-photo" type="file" accept="image/jpeg,image/jpg,image/png,image/webp" onChange={handlePhotoChange} />
+                                </label>
+                                <span>{photo ? photo.name : "No file chosen"}</span>
+                            </div>
+                        </div>
+
+                        <div className="rector-line rector-photo-line" />
+
                         <div className="rector-form-grid">
                             <label>
                                 Rector ID *
@@ -296,11 +309,6 @@ function EditRector() {
                             </label>
 
                             <label>
-                                Role *
-                                <input name="role" value={form.role} onChange={handleChange} required />
-                            </label>
-
-                            <label>
                                 Status
                                 <select name="status" value={form.status} onChange={handleChange}>
                                     <option value="active">Active</option>
@@ -312,18 +320,6 @@ function EditRector() {
                                 Monthly Salary *
                                 <input name="salary" type="number" min="0" step="0.01" value={form.salary} onChange={handleChange} required />
                             </label>
-
-                            <label className="full">
-                                Rector Photo
-                                <input id="rector-photo" type="file" accept="image/jpeg,image/jpg,image/png,image/webp" onChange={handlePhotoChange} />
-                            </label>
-
-                            {photoPreview && (
-                                <div className="rector-edit-photo-wrap">
-                                    <span>Current Photo</span>
-                                    <img className="rector-edit-photo" src={photoPreview} alt="Rector preview" />
-                                </div>
-                            )}
                         </div>
 
                         {error && <div className="rector-error">{error}</div>}

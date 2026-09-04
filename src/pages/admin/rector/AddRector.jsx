@@ -217,6 +217,11 @@ export default function AddRector() {
                             </label>
 
                             <label>
+                                Confirm Password <b>*</b>
+                                <input name="confirmPassword" type="password" value={form.confirmPassword} onChange={handleChange} placeholder="Confirm password" required />
+                            </label>
+
+                            <label>
                                 Status
                                 <div className="rector-status">Active</div>
                             </label>

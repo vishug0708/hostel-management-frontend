@@ -77,3 +77,16 @@
 .rector-file-btn{margin-right:7px}
 .rector-photo-file-row>span{display:inline;font-size:12px}
 }
+
+.rector-photo-box{justify-content:center;text-align:center;flex-direction:column;gap:12px;padding:20px}
+.rector-photo-preview{width:105px;height:105px;border-radius:16px}
+.rector-photo-info{display:flex;flex-direction:column;align-items:center;width:100%}
+.rector-photo-info strong{margin-bottom:9px}
+.rector-photo-file-row{justify-content:center}
+.rector-form-grid{row-gap:19px}
+.rector-confirm-password{position:relative}
+@media(max-width:768px){
+.rector-photo-box{align-items:center;justify-content:center}
+.rector-photo-info{width:100%}
+.rector-photo-file-row{justify-content:center}
+}
