@@ -1,79 +1,79 @@
 *{box-sizing:border-box}
-.rector-page{min-height:100vh;display:flex;background:#f1f5f9;color:#0f172a;font-family:Arial,Helvetica,sans-serif;font-size:17px}
-.rector-page-sidebar{position:fixed;inset:0 auto 0 0;width:255px;padding:22px 15px;background:#0f172a;color:#fff;z-index:1100;display:flex;flex-direction:column}
-.rector-page-brand{display:flex;align-items:center;gap:11px;padding:5px 10px 25px;border-bottom:1px solid #1e293b}
-.rector-brand-icon{width:43px;height:43px;display:flex;align-items:center;justify-content:center;border-radius:11px;background:#0f766e;font-size:21px}
-.rector-page-brand strong{display:block;font-size:17px}
-.rector-page-brand span{display:block;margin-top:3px;color:#94a3b8;font-size:11px}
-.rector-page-sidebar nav{display:flex;flex-direction:column;gap:5px;margin-top:25px;overflow:auto}
-.rector-page-sidebar nav button,.rector-page-logout{width:100%;display:flex;align-items:center;gap:12px;padding:12px 13px;border:0;border-radius:9px;background:transparent;color:#94a3b8;text-align:left;font-size:13px;cursor:pointer}
-.rector-page-sidebar nav button:hover,.rector-page-sidebar nav button.active{background:#134e4a;color:#fff}
-.rector-page-logout{margin-top:auto;border:1px solid #334155;color:#fca5a5}
-.rector-page main{width:calc(100% - 255px);margin-left:255px;min-height:100vh;padding:30px 38px}
-.rector-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:27px}
-.rector-header span{color:#0f766e;font-size:10px;font-weight:800;letter-spacing:1.7px}
-.rector-header h1{margin:6px 0 5px;font-size:28px;line-height:1.2}
-.rector-header p{margin:0;color:#64748b;font-size:13px}
-.rector-top-profile{width:58px;height:58px;padding:3px;border:1px solid #dbe3ea;border-radius:50%;background:#fff;font-size:25px;overflow:hidden;cursor:pointer}
-.rector-top-profile img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-.rector-card{max-width:1180px;margin:0 auto;background:#fff;border:1px solid #e2e8f0;border-radius:17px;box-shadow:0 8px 25px rgba(15,23,42,.05);padding:27px 27px 24px}
-.rector-photo-section{min-height:132px;border:1px solid #e2e8f0;border-radius:15px;background:#f8fafc;display:flex;align-items:center;gap:20px;padding:19px 20px}
-.rector-photo-preview{width:92px;height:92px;border-radius:15px;background:#e0f2fe;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
+.rector-page{min-height:100vh;background:#f3f7fb;color:#10233f;font-family:Arial,Helvetica,sans-serif;font-size:17px}
+.rector-page-sidebar{position:fixed;left:0;top:0;bottom:0;width:275px;padding:24px 16px;background:#0d172b;color:#fff;z-index:1200;display:flex;flex-direction:column}
+.rector-page-brand{display:flex;align-items:center;gap:12px;padding:2px 11px 26px;border-bottom:1px solid #1d293d}
+.rector-brand-icon{width:47px;height:47px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:#0d817b;font-size:23px}
+.rector-page-brand strong{display:block;font-size:18px;color:#fff}
+.rector-page-brand span{display:block;margin-top:4px;color:#a5b2c5;font-size:11px}
+.rector-page-sidebar nav{display:flex;flex-direction:column;gap:4px;margin-top:27px;overflow:auto}
+.rector-page-sidebar nav button,.rector-page-logout{width:100%;height:45px;display:flex;align-items:center;gap:13px;padding:0 16px;border:0;border-radius:9px;background:transparent;color:#a9b6c9;text-align:left;font-size:13px;cursor:pointer}
+.rector-page-sidebar nav button:hover,.rector-page-sidebar nav button.active{background:#125d59;color:#fff}
+.rector-page-logout{margin-top:auto;border:1px solid #304057;color:#ff9b9b}
+.rector-page main{min-height:100vh;margin-left:275px;padding:0 34px 34px}
+.rector-mobile-header{display:none}
+.rector-page-intro{max-width:1185px;margin:0 auto;padding:34px 0 28px;display:flex;align-items:center;justify-content:space-between}
+.rector-page-intro>div span{color:#087d78;font-size:10px;font-weight:800;letter-spacing:1.7px}
+.rector-page-intro h1{margin:7px 0 5px;font-size:27px;line-height:1.2;color:#10233f}
+.rector-page-intro p{margin:0;color:#617086;font-size:13px}
+.rector-top-profile{width:59px;height:59px;padding:3px;border:1px solid #d9e1ea;border-radius:50%;background:#fff;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer}
+.rector-top-profile img{width:100%;height:100%;border-radius:50%;object-fit:cover}
+.rector-card{max-width:1185px;margin:0 auto;background:#fff;border:1px solid #dfe7ef;border-radius:16px;box-shadow:0 8px 26px rgba(15,23,42,.045);padding:27px}
+.rector-photo-box{min-height:134px;border:1px solid #dce5ee;border-radius:15px;background:#f8fafc;display:flex;align-items:center;gap:20px;padding:19px 20px}
+.rector-photo-preview{width:92px;height:92px;border-radius:15px;background:#dff1fc;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
 .rector-photo-preview span{font-size:42px}
 .rector-photo-preview img{width:100%;height:100%;object-fit:cover}
-.rector-photo-content{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.rector-photo-content strong{width:100%;font-size:14px;color:#0f172a}
-.rector-file-button{height:32px;display:inline-flex;align-items:center;justify-content:center;padding:0 10px;border:1px solid #94a3b8;border-radius:5px;background:#fff;color:#111827;font-size:13px;font-weight:500;cursor:pointer}
-.rector-file-button input{display:none}
-.rector-file-name{color:#475569;font-size:13px}
-.rector-divider,.rector-bottom-divider{height:1px;background:#e2e8f0}
-.rector-divider{margin:26px 0 25px}
-.rector-bottom-divider{margin-top:27px}
-.rector-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:20px;row-gap:18px}
-.rector-form-grid label{display:flex;flex-direction:column;gap:8px;color:#0f172a;font-size:13px;font-weight:700}
-.rector-form-grid label em{font-style:normal;color:#ef4444;margin-left:3px}
-.rector-form-grid input{width:100%;height:48px;padding:0 14px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;color:#334155;font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s}
-.rector-form-grid input::placeholder{color:#94a3b8}
-.rector-form-grid input:focus{border-color:#0f766e;box-shadow:0 0 0 3px rgba(15,118,110,.09)}
-.rector-status-box{height:48px;display:flex;align-items:center;padding:0 14px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;color:#15803d;font-size:15px;font-weight:700}
-.rector-error{margin-top:18px;padding:12px 13px;border:1px solid #fecaca;border-radius:8px;background:#fef2f2;color:#b91c1c;font-size:13px}
+.rector-photo-info{min-width:0}
+.rector-photo-info strong{display:block;margin-bottom:9px;font-size:14px;color:#10233f}
+.rector-photo-file-row{display:flex;align-items:center;gap:8px}
+.rector-file-btn{height:32px;padding:0 10px;display:inline-flex;align-items:center;justify-content:center;border:1px solid #94a3b8;border-radius:4px;background:#fff;color:#172033;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap}
+.rector-file-btn input{display:none}
+.rector-photo-file-row>span{font-size:13px;color:#475569;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rector-line{height:1px;background:#e3e9f0}
+.rector-line:first-of-type{margin:26px 0 23px}
+.rector-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:20px;row-gap:17px}
+.rector-form-grid label{display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:700;color:#10233f}
+.rector-form-grid label b{color:#e53935;margin-left:3px}
+.rector-form-grid input{width:100%;height:48px;padding:0 14px;border:1px solid #ccd8e5;border-radius:9px;background:#fff;color:#172033;font-size:14px;outline:none}
+.rector-form-grid input::placeholder{color:#8a98aa}
+.rector-form-grid input:focus{border-color:#168a83;box-shadow:0 0 0 3px rgba(22,138,131,.09)}
+.rector-status{height:48px;padding:0 14px;display:flex;align-items:center;border:1px solid #ccd8e5;border-radius:9px;background:#fff;color:#13823a;font-size:15px;font-weight:700}
+.rector-error{margin-top:18px;padding:11px 12px;border:1px solid #fecaca;border-radius:7px;background:#fff1f1;color:#c62828;font-size:13px}
+.rector-bottom-line{margin-top:27px}
 .rector-actions{display:flex;justify-content:flex-end;gap:10px;padding-top:20px}
-.rector-actions button{min-width:104px;height:46px;padding:0 18px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;color:#334155;font-size:13px;font-weight:700;cursor:pointer}
-.rector-actions button:last-child{min-width:135px;background:#0f8b83;color:#fff;border-color:#0f8b83}
-.rector-actions button:hover{opacity:.94}
+.rector-actions button{height:46px;padding:0 18px;border:1px solid #ccd8e5;border-radius:9px;background:#fff;color:#26364d;font-size:13px;font-weight:700;cursor:pointer}
+.rector-actions button:last-child{min-width:135px;background:#0d817b;border-color:#0d817b;color:#fff}
+.rector-actions button:hover{opacity:.93}
 .rector-actions button:disabled{opacity:.6;cursor:not-allowed}
-.rector-mobile-header{display:none}
-.rector-mobile-brand{display:flex;flex-direction:column;line-height:1.05}
-.rector-mobile-brand strong{font-size:16px}
-.rector-mobile-brand span{margin-top:3px;color:#64748b;font-size:10px}
 @media(max-width:900px){
-.rector-page main{padding:25px 20px}
-.rector-form-grid{column-gap:15px}
+.rector-page-sidebar{width:255px}
+.rector-page main{margin-left:255px;padding:0 22px 28px}
+.rector-page-intro{padding-top:27px}
+.rector-form-grid{column-gap:14px}
 }
 @media(max-width:768px){
 .rector-page-sidebar{width:270px;transform:translateX(-100%);transition:transform .25s}
 .rector-page-sidebar.mobile-open{transform:translateX(0)}
-.rector-overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:1050}
-.rector-page main{width:100%;margin-left:0;padding:0 15px 30px}
-.rector-mobile-header{height:64px;margin:0 -15px 20px;padding:10px 15px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:1000}
-.rector-mobile-header>button:first-child{width:42px;height:42px;border:0;border-radius:10px;background:#0f766e;color:#fff;font-size:22px;cursor:pointer}
-.rector-mobile-header>button:last-child{width:42px;height:42px;padding:0;border:1px solid #dbe3ea;border-radius:50%;background:#fff;overflow:hidden;font-size:20px;cursor:pointer}
-.rector-mobile-header>button:last-child img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-.rector-header{margin-bottom:20px}
-.rector-header h1{font-size:24px}
-.rector-header .rector-top-profile{display:none}
+.rector-overlay{position:fixed;inset:0;background:rgba(10,20,38,.48);z-index:1150}
+.rector-page main{margin-left:0;padding:0 15px 28px}
+.rector-mobile-header{height:64px;margin:0 -15px;display:flex;align-items:center;justify-content:space-between;padding:10px 15px;background:#fff;border-bottom:1px solid #dfe7ef;position:sticky;top:0;z-index:1000}
+.rector-mobile-menu{width:42px;height:42px;border:0;border-radius:9px;background:#0d817b;color:#fff;font-size:22px;cursor:pointer}
+.rector-mobile-title{font-size:16px;font-weight:700;color:#10233f}
+.rector-mobile-profile{width:42px;height:42px;padding:0;border:1px solid #d9e1ea;border-radius:50%;background:#fff;overflow:hidden;font-size:19px}
+.rector-mobile-profile img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.rector-page-intro{padding:25px 0 20px}
+.rector-page-intro h1{font-size:24px}
+.rector-top-profile{display:none}
 .rector-card{padding:20px 16px}
-.rector-photo-section{padding:15px;gap:14px}
-.rector-photo-preview{width:76px;height:76px}
-.rector-photo-content{gap:7px}
 .rector-form-grid{grid-template-columns:1fr;row-gap:16px}
-.rector-actions{padding-top:18px}
+.rector-photo-box{padding:15px;gap:14px}
+.rector-photo-preview{width:76px;height:76px}
+.rector-photo-file-row{flex-wrap:wrap}
 .rector-actions button{flex:1}
 }
 @media(max-width:420px){
-.rector-photo-section{align-items:flex-start}
-.rector-photo-content{display:block}
-.rector-photo-content strong{margin-bottom:9px}
-.rector-file-button{margin-right:7px}
-.rector-header h1{font-size:22px}
+.rector-photo-box{align-items:flex-start}
+.rector-photo-info{width:calc(100% - 90px)}
+.rector-photo-file-row{display:block}
+.rector-file-btn{margin-right:7px}
+.rector-photo-file-row>span{display:inline;font-size:12px}
 }

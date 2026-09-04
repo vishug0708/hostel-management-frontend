@@ -7,12 +7,9 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const getAdminPhotoUrl = (photo) => {
     if (!photo) return "";
     const value = String(photo).trim();
-    if (
-        value.startsWith("data:") ||
-        value.startsWith("blob:") ||
-        value.startsWith("http://") ||
-        value.startsWith("https://")
-    ) return value;
+    if (value.startsWith("data:") || value.startsWith("blob:") || value.startsWith("http://") || value.startsWith("https://")) {
+        return value;
+    }
     const normalized = value.replace(/^\/+/, "");
     if (normalized.startsWith("uploads/")) return `${API_URL}/${normalized}`;
     return `${API_URL}/uploads/admins/${normalized}`;
@@ -20,7 +17,6 @@ const getAdminPhotoUrl = (photo) => {
 
 export default function AddRector() {
     const navigate = useNavigate();
-
     const [admin, setAdmin] = useState(null);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [file, setFile] = useState(null);
@@ -32,7 +28,7 @@ export default function AddRector() {
         rector_id: "",
         name: "",
         email: "",
-        mobile: "",
+        phone: "",
         password: "",
         role: "Rector",
         status: "active",
@@ -41,14 +37,12 @@ export default function AddRector() {
 
     useEffect(() => {
         const token = localStorage.getItem("adminToken");
-
         if (!token) {
             navigate("/admin/login", { replace: true });
             return;
         }
 
         const savedAdmin = localStorage.getItem("admin");
-
         if (savedAdmin) {
             try {
                 setAdmin(JSON.parse(savedAdmin));
@@ -58,10 +52,8 @@ export default function AddRector() {
         }
     }, [navigate]);
 
-    const closeMobileMenu = () => setMobileMenuOpen(false);
-
     const nav = (path) => {
-        closeMobileMenu();
+        setMobileMenuOpen(false);
         navigate(path);
     };
 
@@ -71,39 +63,22 @@ export default function AddRector() {
         navigate("/admin/login", { replace: true });
     };
 
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-
-        setForm((previous) => ({
-            ...previous,
-            [name]: value
-        }));
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setForm((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handlePhotoChange = (event) => {
-        const selectedFile = event.target.files?.[0] || null;
-
-        setFile(selectedFile);
-
-        if (selectedFile) {
-            setPhotoPreview(URL.createObjectURL(selectedFile));
-        } else {
-            setPhotoPreview("");
-        }
+    const handlePhotoChange = (e) => {
+        const selected = e.target.files?.[0] || null;
+        setFile(selected);
+        setPhotoPreview(selected ? URL.createObjectURL(selected) : "");
     };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         setError("");
 
-        if (
-            !form.rector_id.trim() ||
-            !form.name.trim() ||
-            !form.email.trim() ||
-            !form.password.trim() ||
-            !form.role.trim() ||
-            form.salary === ""
-        ) {
+        if (!form.rector_id.trim() || !form.name.trim() || !form.email.trim() || !form.password.trim() || !form.role.trim() || form.salary === "") {
             setError("Please fill all required fields.");
             return;
         }
@@ -112,19 +87,16 @@ export default function AddRector() {
             setSaving(true);
 
             const body = new FormData();
-
             body.append("rector_id", form.rector_id.trim());
             body.append("name", form.name.trim());
             body.append("email", form.email.trim());
-            body.append("mobile", form.mobile.trim());
+            body.append("phone", form.phone.trim());
             body.append("password", form.password);
             body.append("role", form.role.trim());
             body.append("status", form.status);
             body.append("salary", form.salary);
 
-            if (file) {
-                body.append("photo", file);
-            }
+            if (file) body.append("photo", file);
 
             const response = await fetch(`${API_URL}/api/admin/rectors`, {
                 method: "POST",
@@ -175,207 +147,100 @@ export default function AddRector() {
                     <button onClick={() => nav("/admin/profile")}>👤 Profile</button>
                 </nav>
 
-                <button className="rector-page-logout" onClick={handleLogout}>
-                    🚪 Logout
-                </button>
+                <button className="rector-page-logout" onClick={handleLogout}>🚪 Logout</button>
             </aside>
 
-            {mobileMenuOpen && (
-                <div className="rector-overlay" onClick={closeMobileMenu} />
-            )}
+            {mobileMenuOpen && <div className="rector-overlay" onClick={() => setMobileMenuOpen(false)} />}
 
             <main>
                 <div className="rector-mobile-header">
-                    <button
-                        onClick={() => setMobileMenuOpen(true)}
-                        aria-label="Open menu"
-                    >
-                        ☰
-                    </button>
-
-                    <div className="rector-mobile-brand">
-                        <strong>Hostel</strong>
-                        <span>Admin Panel</span>
-                    </div>
-
-                    <button
-                        onClick={() => navigate("/admin/profile")}
-                        aria-label="Open profile"
-                    >
-                        {admin?.photo ? (
-                            <img
-                                src={getAdminPhotoUrl(admin.photo)}
-                                alt="Admin"
-                                onError={(e) => {
-                                    e.currentTarget.style.display = "none";
-                                }}
-                            />
-                        ) : (
-                            "👤"
-                        )}
+                    <button className="rector-mobile-menu" onClick={() => setMobileMenuOpen(true)}>☰</button>
+                    <div className="rector-mobile-title">Add Rector</div>
+                    <button className="rector-mobile-profile" onClick={() => navigate("/admin/profile")}>
+                        {admin?.photo ? <img src={getAdminPhotoUrl(admin.photo)} alt="Admin" /> : "👤"}
                     </button>
                 </div>
 
-                <header className="rector-header">
+                <div className="rector-page-intro">
                     <div>
                         <span>RECTOR INFORMATION</span>
                         <h1>Add New Rector</h1>
                         <p>Create a new rector account for the hostel.</p>
                     </div>
-
-                    <button
-                        className="rector-top-profile"
-                        onClick={() => navigate("/admin/profile")}
-                        aria-label="Open admin profile"
-                    >
-                        {admin?.photo ? (
-                            <img
-                                src={getAdminPhotoUrl(admin.photo)}
-                                alt="Admin profile"
-                                onError={(e) => {
-                                    e.currentTarget.style.display = "none";
-                                }}
-                            />
-                        ) : (
-                            "👤"
-                        )}
+                    <button className="rector-top-profile" onClick={() => navigate("/admin/profile")}>
+                        {admin?.photo ? <img src={getAdminPhotoUrl(admin.photo)} alt="Admin profile" /> : "👤"}
                     </button>
-                </header>
+                </div>
 
                 <section className="rector-card">
                     <form onSubmit={handleSubmit}>
-                        <div className="rector-photo-section">
+                        <div className="rector-photo-box">
                             <div className="rector-photo-preview">
-                                {photoPreview ? (
-                                    <img src={photoPreview} alt="Rector preview" />
-                                ) : (
-                                    <span>👨‍🏫</span>
-                                )}
+                                {photoPreview ? <img src={photoPreview} alt="Rector" /> : <span>👨‍🏫</span>}
                             </div>
-
-                            <div className="rector-photo-content">
+                            <div className="rector-photo-info">
                                 <strong>Rector Photo</strong>
-                                <label className="rector-file-button">
-                                    Choose File
-                                    <input
-                                        id="rector-photo"
-                                        type="file"
-                                        accept="image/jpeg,image/jpg,image/png,image/webp"
-                                        onChange={handlePhotoChange}
-                                    />
-                                </label>
-                                <span className="rector-file-name">
-                                    {file ? file.name : "No file chosen"}
-                                </span>
+                                <div className="rector-photo-file-row">
+                                    <label className="rector-file-btn">
+                                        Choose File
+                                        <input type="file" accept="image/jpeg,image/jpg,image/png,image/webp" onChange={handlePhotoChange} />
+                                    </label>
+                                    <span>{file ? file.name : "No file chosen"}</span>
+                                </div>
                             </div>
                         </div>
 
-                        <div className="rector-divider" />
+                        <div className="rector-line" />
 
                         <div className="rector-form-grid">
                             <label>
-                                Rector ID <em>*</em>
-                                <input
-                                    name="rector_id"
-                                    value={form.rector_id}
-                                    onChange={handleChange}
-                                    placeholder="Enter rector ID"
-                                    required
-                                />
+                                Rector ID <b>*</b>
+                                <input name="rector_id" value={form.rector_id} onChange={handleChange} placeholder="Enter rector ID" required />
                             </label>
 
                             <label>
-                                Name <em>*</em>
-                                <input
-                                    name="name"
-                                    value={form.name}
-                                    onChange={handleChange}
-                                    placeholder="Enter rector name"
-                                    required
-                                />
+                                Name <b>*</b>
+                                <input name="name" value={form.name} onChange={handleChange} placeholder="Enter rector name" required />
                             </label>
 
                             <label>
-                                Email <em>*</em>
-                                <input
-                                    name="email"
-                                    type="email"
-                                    value={form.email}
-                                    onChange={handleChange}
-                                    placeholder="Enter rector email"
-                                    required
-                                />
+                                Email <b>*</b>
+                                <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="Enter rector email" required />
                             </label>
 
                             <label>
                                 Mobile
-                                <input
-                                    name="mobile"
-                                    value={form.mobile}
-                                    onChange={handleChange}
-                                    placeholder="Enter mobile number"
-                                />
+                                <input name="phone" value={form.phone} onChange={handleChange} placeholder="Enter mobile number" />
                             </label>
 
                             <label>
-                                Password <em>*</em>
-                                <input
-                                    name="password"
-                                    type="password"
-                                    value={form.password}
-                                    onChange={handleChange}
-                                    placeholder="Enter password"
-                                    required
-                                />
+                                Password <b>*</b>
+                                <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="Enter password" required />
                             </label>
 
                             <label>
-                                Role <em>*</em>
-                                <input
-                                    name="role"
-                                    value={form.role}
-                                    onChange={handleChange}
-                                    placeholder="Enter rector role"
-                                    required
-                                />
+                                Role <b>*</b>
+                                <input name="role" value={form.role} onChange={handleChange} placeholder="Enter rector role" required />
                             </label>
 
                             <label>
                                 Status
-                                <div className="rector-status-box">Active</div>
+                                <div className="rector-status">Active</div>
                             </label>
 
                             <label>
-                                Monthly Salary <em>*</em>
-                                <input
-                                    name="salary"
-                                    type="number"
-                                    min="0"
-                                    step="0.01"
-                                    value={form.salary}
-                                    onChange={handleChange}
-                                    placeholder="Enter monthly salary"
-                                    required
-                                />
+                                Monthly Salary <b>*</b>
+                                <input name="salary" type="number" min="0" step="0.01" value={form.salary} onChange={handleChange} placeholder="Enter monthly salary" required />
                             </label>
                         </div>
 
                         {error && <div className="rector-error">{error}</div>}
 
-                        <div className="rector-bottom-divider" />
+                        <div className="rector-line rector-bottom-line" />
 
                         <div className="rector-actions">
-                            <button
-                                type="button"
-                                onClick={() => navigate("/admin/rectors")}
-                                disabled={saving}
-                            >
-                                Cancel
-                            </button>
-
-                            <button type="submit" disabled={saving}>
-                                {saving ? "Adding..." : "Add Rector"}
-                            </button>
+                            <button type="button" onClick={() => navigate("/admin/rectors")} disabled={saving}>Cancel</button>
+                            <button type="submit" disabled={saving}>{saving ? "Adding..." : "Add Rector"}</button>
                         </div>
                     </form>
                 </section>
