@@ -275,7 +275,7 @@ function StaffChangePassword() {
                         <span>📢</span>Announcements
                     </button>
 
-                    <button 
+                    <button className="active"
                         onClick={() => {
                             closeMobileMenu();
                             navigate("/staff/change-password");

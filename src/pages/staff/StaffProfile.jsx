@@ -203,6 +203,8 @@ function StaffProfile() {
                         <span>📊</span>Dashboard
                     </button>
 
+                    <button className="active" onClick={closeMobileMenu}>👤 Profile</button>
+
                     <button
                         onClick={() => {
                             closeMobileMenu();
@@ -235,7 +237,7 @@ function StaffProfile() {
                         <span>🔐</span>Change Password
                     </button>
 
-                    <button className="active" onClick={closeMobileMenu}>👤 Profile</button>
+                    
                 </nav>
                 <button className="profile-logout" onClick={handleLogout}>🚪 Logout</button>
             </aside>
