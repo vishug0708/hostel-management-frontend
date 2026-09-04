@@ -72,6 +72,8 @@ import VerifyOtp from "./pages/student/gatepass/VerifyOtp";
 
 import StaffLogin from "./pages/staff/StaffLogin";
 import StaffDashboard from "./pages/staff/StaffDashboard";
+import StaffChangePassword from "./pages/staff/StaffChangePassword";
+import StaffProfile from "./pages/staff/StaffProfile";
 
 
 // =====================================================
@@ -357,6 +359,8 @@ function App() {
 
                 <Route path="/staff/login" element={<StaffLogin />} />
                 <Route path="/staff/dashboard" element={<StaffDashboard />} />
+                <Route path="/staff/change-password" element={<StaffChangePassword />} />
+                <Route path="/staff/profile" element={<StaffProfile />} />
 
 
 
