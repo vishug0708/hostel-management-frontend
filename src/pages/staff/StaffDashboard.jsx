@@ -62,11 +62,13 @@ function StaffDashboard() {
             const data = await response.json();
 
             if (response.ok && data.success) {
-                setStaff(data.staff);
-                localStorage.setItem("staff", JSON.stringify(data.staff));
+                const saved = JSON.parse(localStorage.getItem("staff") || "{}");
+                const mergedStaff = { ...saved, ...data.staff, photo: data.staff?.photo || saved.photo || localStorage.getItem("staffPhoto") || "" };
+                setStaff(mergedStaff);
+                localStorage.setItem("staff", JSON.stringify(mergedStaff));
 
-                if (data.staff?.photo) {
-                    localStorage.setItem("staffPhoto", getPhotoUrl(data.staff.photo));
+                if (mergedStaff.photo) {
+                    localStorage.setItem("staffPhoto", getPhotoUrl(mergedStaff.photo));
                 }
             }
         } catch (error) {
@@ -111,6 +113,9 @@ function StaffDashboard() {
                     </button>
                     <button className="staff-dashboard-nav-item" onClick={() => { closeMobileMenu(); navigate("/staff/announcements"); }}>
                         <span>📢</span>Announcements
+                    </button>
+                    <button className="staff-dashboard-nav-item" onClick={() => { closeMobileMenu(); navigate("/staff/change-password"); }}>
+                        <span>🔐</span>Change Password
                     </button>
                 </nav>
 

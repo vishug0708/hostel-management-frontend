@@ -1,294 +1,396 @@
+/* =====================================================
+   ADMIN LOGIN PAGE
+===================================================== */
+
 .staff-login-page {
     min-height: 100vh;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    background: #f1f5f9;
-    color: #0f172a;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 17px;
-}
 
-.staff-login-left {
-    min-height: 100vh;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 60px 9%;
-    background: #0f172a;
-    color: white;
-}
-
-.staff-login-brand {
-    position: absolute;
-    top: 32px;
-    left: 6%;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.staff-login-logo {
-    width: 45px;
-    height: 45px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 12px;
-    background: #0f766e;
-    font-size: 22px;
+
+    padding: 30px 20px;
+
+    background:
+        radial-gradient(
+            circle at top left,
+            rgba(20, 184, 166, 0.18),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at bottom right,
+            rgba(245, 158, 11, 0.12),
+            transparent 35%
+        ),
+        #f1f5f9;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
 }
 
-.staff-login-brand strong {
-    display: block;
-    font-size: 17px;
-}
 
-.staff-login-brand span {
-    display: block;
-    margin-top: 3px;
-    color: #94a3b8;
-    font-size: 11px;
-}
-
-.staff-login-intro > span {
-    color: #5eead4;
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 1.8px;
-}
-
-.staff-login-intro h1 {
-    margin: 9px 0 13px;
-    font-size: 46px;
-    line-height: 1.08;
-}
-
-.staff-login-intro p {
-    max-width: 500px;
-    margin: 0;
-    color: #cbd5e1;
-    font-size: 15px;
-    line-height: 1.7;
-}
-
-.staff-login-features {
-    display: grid;
-    gap: 13px;
-    margin-top: 34px;
-}
-
-.staff-login-features div {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    color: #e2e8f0;
-    font-size: 13px;
-}
-
-.staff-login-features b {
-    width: 27px;
-    height: 27px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: #134e4a;
-    color: #5eead4;
-}
-
-.staff-login-right {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 35px;
-    box-sizing: border-box;
-}
+/* =====================================================
+   LOGIN CARD
+===================================================== */
 
 .staff-login-card {
     width: 100%;
-    max-width: 450px;
-    padding: 38px;
-    box-sizing: border-box;
+    max-width: 440px;
+
+    background: #ffffff;
+
+    border-radius: 22px;
+
+    overflow: hidden;
+
     border: 1px solid #e2e8f0;
-    border-radius: 18px;
-    background: white;
-    box-shadow: 0 15px 40px rgba(15, 23, 42, .08);
+
+    box-shadow:
+        0 25px 60px
+        rgba(15, 23, 42, 0.14);
 }
 
-.staff-login-mobile-logo {
-    width: 52px;
-    height: 52px;
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.staff-login-header {
+    position: relative;
+
+    padding: 40px 35px 34px;
+
+    text-align: center;
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0f172a 0%,
+            #134e4a 55%,
+            #0f766e 100%
+        );
+}
+
+
+/* Gold top accent */
+
+.staff-login-header::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 4px;
+
+    background: #f59e0b;
+}
+
+
+/* =====================================================
+   ADMIN ICON
+===================================================== */
+
+.staff-login-icon {
+    width: 72px;
+    height: 72px;
+
+    margin: 0 auto 18px;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 20px;
-    border-radius: 14px;
-    background: #ccfbf1;
-    font-size: 25px;
+
+    border-radius: 18px;
+
+    background:
+        rgba(255, 255, 255, 0.12);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.18);
+
+    font-size: 32px;
+
+    box-shadow:
+        0 10px 25px
+        rgba(0, 0, 0, 0.15);
 }
 
-.staff-login-label {
-    color: #0f766e;
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 1.6px;
-}
 
-.staff-login-card h2 {
-    margin: 7px 0 6px;
-    font-size: 28px;
-}
+/* =====================================================
+   HEADER TEXT
+===================================================== */
 
-.staff-login-subtitle {
-    margin: 0 0 25px;
-    color: #64748b;
-    font-size: 13px;
-    line-height: 1.6;
-}
+.staff-login-header h1 {
+    margin: 0;
 
-.staff-login-error {
-    margin-bottom: 18px;
-    padding: 11px 13px;
-    border: 1px solid #fecaca;
-    border-radius: 8px;
-    background: #fef2f2;
-    color: #b91c1c;
-    font-size: 12px;
-}
+    font-size: 29px;
 
-.staff-login-field {
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-    margin-bottom: 18px;
-}
-
-.staff-login-field label {
-    color: #334155;
-    font-size: 13px;
     font-weight: 700;
+
+    letter-spacing: -0.5px;
 }
 
-.staff-login-field input {
+.staff-login-header p {
+    margin: 9px 0 0;
+
+    color: #ccfbf1;
+
+    font-size: 14px;
+}
+
+
+/* =====================================================
+   FORM
+===================================================== */
+
+.staff-login-form {
+    padding: 38px 36px;
+}
+
+
+/* =====================================================
+   FORM GROUP
+===================================================== */
+
+.staff-form-group {
+    margin-bottom: 21px;
+}
+
+.staff-form-group label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #334155;
+
+    font-size: 14px;
+
+    font-weight: 600;
+}
+
+
+/* =====================================================
+   INPUT
+===================================================== */
+
+.staff-form-group input {
     width: 100%;
-    height: 46px;
+
     box-sizing: border-box;
-    padding: 0 13px;
-    border: 1px solid #cbd5e1;
-    border-radius: 9px;
+
+    padding: 14px 15px;
+
+    border:
+        1px solid #cbd5e1;
+
+    border-radius: 11px;
+
     outline: none;
-    color: #334155;
-    background: white;
+
+    background: #f8fafc;
+
+    color: #0f172a;
+
     font-size: 14px;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
 }
 
-.staff-login-field input:focus {
+.staff-form-group input:hover {
+    border-color: #94a3b8;
+}
+
+.staff-form-group input:focus {
     border-color: #0f766e;
-    box-shadow: 0 0 0 3px rgba(15, 118, 110, .08);
+
+    background: #ffffff;
+
+    box-shadow:
+        0 0 0 4px
+        rgba(20, 184, 166, 0.12);
 }
 
-.staff-login-password {
-    position: relative;
+.staff-form-group input::placeholder {
+    color: #94a3b8;
 }
 
-.staff-login-password input {
-    padding-right: 48px;
-}
 
-.staff-login-password button {
-    position: absolute;
-    top: 50%;
-    right: 7px;
-    width: 34px;
-    height: 34px;
-    transform: translateY(-50%);
-    border: none;
-    border-radius: 7px;
-    background: transparent;
-    cursor: pointer;
-}
+/* =====================================================
+   LOGIN BUTTON
+===================================================== */
 
-.staff-login-submit {
+.staff-login-button {
     width: 100%;
-    height: 46px;
-    margin-top: 5px;
-    border: 1px solid #0f766e;
-    border-radius: 9px;
-    background: #0f766e;
-    color: white;
-    font-size: 14px;
+
+    margin-top: 8px;
+
+    padding: 14px;
+
+    border: none;
+
+    border-radius: 11px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0f766e,
+            #115e59
+        );
+
+    color: #ffffff;
+
+    font-size: 15px;
+
     font-weight: 700;
+
     cursor: pointer;
+
+    box-shadow:
+        0 8px 20px
+        rgba(15, 118, 110, 0.22);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
 }
 
-.staff-login-submit:hover {
-    background: #115e59;
+.staff-login-button:hover {
+    transform: translateY(-2px);
+
+    background:
+        linear-gradient(
+            135deg,
+            #0d9488,
+            #0f766e
+        );
+
+    box-shadow:
+        0 12px 25px
+        rgba(15, 118, 110, 0.28);
 }
 
-.staff-login-submit:disabled {
-    opacity: .65;
+.staff-login-button:active {
+    transform: translateY(0);
+}
+
+.staff-login-button:disabled {
+    opacity: 0.65;
+
     cursor: not-allowed;
+
+    transform: none;
 }
 
-.staff-login-back {
-    width: 100%;
-    margin-top: 16px;
-    border: none;
-    background: transparent;
-    color: #64748b;
-    font-size: 12px;
-    cursor: pointer;
+
+/* =====================================================
+   MESSAGE
+===================================================== */
+
+.staff-login-message {
+    margin-top: 18px;
+
+    padding: 12px 15px;
+
+    border-radius: 9px;
+
+    text-align: center;
+
+    color: #047857;
+
+    background: #ecfdf5;
+
+    border:
+        1px solid #a7f3d0;
+
+    font-size: 14px;
+
+    line-height: 1.5;
 }
 
-.staff-login-back:hover {
+
+/* =====================================================
+   BACK TO HOME
+===================================================== */
+
+.staff-back-home {
+    margin-top: 25px;
+
+    padding-top: 20px;
+
+    border-top:
+        1px solid #e2e8f0;
+
+    text-align: center;
+}
+
+.staff-back-home a {
     color: #0f766e;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    transition: color 0.2s ease;
 }
 
-@media (max-width: 850px) {
+.staff-back-home a:hover {
+    color: #0d9488;
+
+    text-decoration: underline;
+}
+
+.success-message {
+    color: #047857;
+    background: #ecfdf5;
+    border-color: #a7f3d0;
+}
+
+.error-message {
+    color: #b91c1c;
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 500px) {
+
     .staff-login-page {
-        grid-template-columns: 1fr;
+        padding: 15px;
     }
 
-    .staff-login-left {
-        min-height: 270px;
-        padding: 100px 30px 35px;
+    .staff-login-header {
+        padding: 34px 25px 29px;
     }
 
-    .staff-login-brand {
-        top: 25px;
-        left: 30px;
+    .staff-login-form {
+        padding: 28px 24px;
     }
 
-    .staff-login-intro h1 {
-        font-size: 35px;
+    .staff-login-header h1 {
+        font-size: 25px;
     }
 
-    .staff-login-features {
-        display: none;
+    .staff-login-icon {
+        width: 64px;
+        height: 64px;
+
+        font-size: 28px;
     }
 
-    .staff-login-right {
-        min-height: auto;
-        padding: 30px 18px 45px;
-    }
-}
-
-@media (max-width: 480px) {
-    .staff-login-left {
-        padding: 90px 20px 30px;
-    }
-
-    .staff-login-brand {
-        left: 20px;
-    }
-
-    .staff-login-card {
-        padding: 25px 20px;
-    }
-
-    .staff-login-card h2 {
-        font-size: 24px;
-    }
 }
