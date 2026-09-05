@@ -328,6 +328,17 @@ function AdminDashboard() {
                         Rector
                     </button>
 
+                    <button
+                        className="sidebar-item"
+                        onClick={() => {
+                            setMobileMenuOpen(false);
+                            navigate("/admin/salary");
+                        }}
+                    >
+                        <span>💰</span>
+                        Salary Management
+                    </button>
+
 
                 </nav>
 
