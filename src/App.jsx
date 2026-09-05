@@ -39,6 +39,7 @@ import EditStaff from "./pages/admin/staff/EditStaff";
 import AddRector from "./pages/admin/rector/AddRector";
 import ManageRector from "./pages/admin/rector/ManageRector";
 import EditRector from "./pages/admin/rector/EditRector";
+import SalaryManagement from "./pages/admin/salary/SalaryManagement";
 
 
 // =====================================================
@@ -89,6 +90,10 @@ import ScanGatePass from "./pages/security/gatepass/ScanGatePass";
 import AllowExit from "./pages/security/gatepass/AllowExit";
 import AllowEntry from "./pages/security/gatepass/AllowEntry";
 
+
+
+
+import MySalary from "./pages/salary/MySalary";
 
 // =====================================================
 // PROTECTED ROUTE
@@ -269,9 +274,44 @@ function App() {
                 <Route path="/admin/rectors/add" element={<AddRector />} />
                 <Route path="/admin/rectors/edit/:id" element={<EditRector />} />
 
+                <Route
+                    path="/admin/salary/staff"
+                    element={<SalaryManagement />}
+                />
+
+                <Route
+                    path="/admin/salary/rector"
+                    element={<SalaryManagement />}
+                />
+
+                <Route
+                    path="/admin/salary/pending"
+                    element={<SalaryManagement />}
+                />
+
+                <Route
+                    path="/admin/salary/history"
+                    element={<SalaryManagement />}
+                />
+
+                <Route
+                    path="/admin/salary/slips"
+                    element={<SalaryManagement />}
+                />
+
+                <Route
+                    path="/admin/salary"
+                    element={
+                        <Navigate
+                            to="/admin/salary/staff"
+                            replace
+                        />
+                    }
+                />
+
 
                 {/* =========================================
-                    RECTOE DASHBOARD
+                    RECTOR DASHBOARD
                     ========================================= */}
 
 
@@ -308,6 +348,11 @@ function App() {
                 <Route
                     path="/rector/gatepass"
                     element={<GatePass />}
+                />
+
+                <Route
+                    path="/rector/salary"
+                    element={<MySalary />}
                 />
 
 
@@ -368,6 +413,11 @@ function App() {
                 <Route path="/staff/dashboard" element={<StaffDashboard />} />
                 <Route path="/staff/change-password" element={<StaffChangePassword />} />
                 <Route path="/staff/profile" element={<StaffProfile />} />
+
+                <Route
+                    path="/staff/salary"
+                    element={<MySalary />}
+                />
 
 
 
