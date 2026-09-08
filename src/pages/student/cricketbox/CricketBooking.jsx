@@ -220,25 +220,25 @@ function CricketBooking() {
     };
 
     useEffect(() => {
-    const updateSlots = () => {
-        if (!selectedDate || allSlots.length === 0) {
-            return;
-        }
+        const updateSlots = () => {
+            if (!selectedDate || allSlots.length === 0) {
+                return;
+            }
 
-        setSlots(
-            filterSlotsByRealTime(
-                allSlots,
-                selectedDate
-            )
-        );
-    };
+            setSlots(
+                filterSlotsByRealTime(
+                    allSlots,
+                    selectedDate
+                )
+            );
+        };
 
-    updateSlots();
+        updateSlots();
 
-    const interval = setInterval(updateSlots, 30000);
+        const interval = setInterval(updateSlots, 30000);
 
-    return () => clearInterval(interval);
-}, [selectedDate, allSlots]);
+        return () => clearInterval(interval);
+    }, [selectedDate, allSlots]);
 
     const selectedGroundData = useMemo(() => {
         return grounds.find(
@@ -253,6 +253,22 @@ function CricketBooking() {
     }, [slots, selectedSlot]);
 
     const addPlayer = () => {
+        const capacity = Number(selectedGroundData?.capacity || 0);
+
+        if (!selectedGround) {
+            setError("Please select a cricket ground first.");
+            return;
+        }
+
+        if (capacity > 0 && players.length >= capacity) {
+            setError(
+                `This cricket box has a maximum capacity of ${capacity} students.`
+            );
+            return;
+        }
+
+        setError("");
+
         setPlayers((prev) => [
             ...prev,
             {
@@ -281,6 +297,62 @@ function CricketBooking() {
                     : player
             )
         );
+    };
+
+    const searchStudent = async (index, name) => {
+        updatePlayer(index, "student_name", name);
+
+        if (!name.trim() || name.trim().length < 2) {
+            updatePlayer(index, "student_id", "");
+            updatePlayer(index, "mobile", "");
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `${API_URL}/api/student/cricket/students/search?name=${encodeURIComponent(
+                    name.trim()
+                )}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                return;
+            }
+
+            const students = Array.isArray(data)
+                ? data
+                : data.students || data.data || [];
+
+            if (students.length === 1) {
+                const foundStudent = students[0];
+
+                updatePlayer(
+                    index,
+                    "student_id",
+                    foundStudent.student_id ||
+                    foundStudent.roll_no ||
+                    foundStudent.registration_no ||
+                    ""
+                );
+
+                updatePlayer(
+                    index,
+                    "mobile",
+                    foundStudent.mobile ||
+                    foundStudent.phone ||
+                    ""
+                );
+            }
+        } catch (error) {
+            console.error("Student search error:", error);
+        }
     };
 
     const totalAmount = Number(
@@ -885,11 +957,9 @@ function CricketBooking() {
                                                         player.student_name
                                                     }
                                                     onChange={(event) =>
-                                                        updatePlayer(
+                                                        searchStudent(
                                                             actualIndex,
-                                                            "student_name",
-                                                            event.target
-                                                                .value
+                                                            event.target.value
                                                         )
                                                     }
                                                 />
@@ -903,17 +973,8 @@ function CricketBooking() {
                                                 <input
                                                     type="text"
                                                     placeholder="Student ID"
-                                                    value={
-                                                        player.student_id
-                                                    }
-                                                    onChange={(event) =>
-                                                        updatePlayer(
-                                                            actualIndex,
-                                                            "student_id",
-                                                            event.target
-                                                                .value
-                                                        )
-                                                    }
+                                                    value={player.student_id || ""}
+                                                    readOnly
                                                 />
                                             </div>
 
@@ -923,17 +984,8 @@ function CricketBooking() {
                                                 <input
                                                     type="text"
                                                     placeholder="Mobile number"
-                                                    value={
-                                                        player.mobile
-                                                    }
-                                                    onChange={(event) =>
-                                                        updatePlayer(
-                                                            actualIndex,
-                                                            "mobile",
-                                                            event.target
-                                                                .value
-                                                        )
-                                                    }
+                                                    value={player.mobile || ""}
+                                                    readOnly
                                                 />
                                             </div>
                                         </div>
@@ -957,9 +1009,21 @@ function CricketBooking() {
                                 type="button"
                                 className="add-player-btn"
                                 onClick={addPlayer}
+                                disabled={
+                                    !selectedGround ||
+                                    (
+                                        Number(selectedGroundData?.capacity || 0) > 0 &&
+                                        players.length >= Number(selectedGroundData?.capacity)
+                                    )
+                                }
                             >
-                                + Add Another Player
+                                {selectedGroundData?.capacity &&
+                                    players.length >= Number(selectedGroundData.capacity)
+                                    ? `Maximum ${selectedGroundData.capacity} Students`
+                                    : "+ Add Another Player"}
                             </button>
+
+
                         </section>
 
                         <aside className="booking-summary-card">
