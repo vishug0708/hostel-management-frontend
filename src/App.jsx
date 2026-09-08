@@ -388,7 +388,7 @@ function App() {
                 <Route path="/student/room" element={<MyRoom />} />
 
                 <Route
-                    path="/student/cricket-box"
+                    path="/student/cricketbox"
                     element={<CricketBox />}
                 />
 
