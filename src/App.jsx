@@ -64,6 +64,10 @@ import StudentDashboard from "./pages/student/StudentDashboard";
 import MyProfile from "./pages/student/profile/MyProfile";
 import EditProfile from "./pages/student/profile/EditProfile";
 import MyRoom from "./pages/student/room/MyRoom";
+import CricketBox from "./pages/student/cricketbox/CricketBox";
+import CricketBooking from "./pages/student/cricketbox/CricketBooking";
+import CricketBookingDetails from "./pages/student/cricketbox/CricketBookingDetails";
+import MyCricketBookings from "./pages/student/cricketbox/MyCricketBookings";
 import MyGatePass from "./pages/student/gatepass/MyGatePass";
 import ApplyGatePass from "./pages/student/gatepass/ApplyGatePass";
 import ViewGatePass from "./pages/student/gatepass/ViewGatePass";
@@ -382,6 +386,32 @@ function App() {
                 />
 
                 <Route path="/student/room" element={<MyRoom />} />
+
+                <Route
+                    path="/student/cricket-box"
+                    element={<CricketBox />}
+                />
+
+                <Route
+                    path="/student/cricket-box/book"
+                    element={<CricketBooking />}
+                />
+
+                <Route
+                    path="/student/cricket-box/bookings"
+                    element={<MyCricketBookings />}
+                />
+
+                <Route
+                    path="/student/cricket-box/bookings/:id"
+                    element={<CricketBookingDetails />}
+                />
+
+                <Route
+                    path="/student/cricket-box/bookings"
+                    element={<MyCricketBookings />}
+                />
+
 
                 <Route
                     path="/student/gatepass"
