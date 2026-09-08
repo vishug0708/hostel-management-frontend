@@ -150,17 +150,24 @@ function CricketBookingDetails() {
     };
 
     const formatDate = (date) => {
-        if (!date) return "-";
+    if (!date) return "-";
 
-        return new Date(`${date}T00:00:00`).toLocaleDateString(
-            "en-IN",
-            {
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-            }
-        );
-    };
+    const value = String(date).trim();
+
+    const parsedDate = value.includes("T")
+        ? new Date(value)
+        : new Date(`${value}T00:00:00`);
+
+    if (Number.isNaN(parsedDate.getTime())) {
+        return "-";
+    }
+
+    return parsedDate.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+    });
+};
 
     const formatTime = (time) => {
         if (!time) return "-";
