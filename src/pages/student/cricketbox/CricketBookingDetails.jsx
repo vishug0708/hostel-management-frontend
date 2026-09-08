@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { QRCodeSVG } from "qrcode.react";
 import "./CricketBookingDetails.css";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
@@ -55,9 +56,9 @@ function CricketBookingDetails() {
 
     const studentPhoto = getPhotoUrl(
         student.photo ||
-            student.profile_photo ||
-            student.student_photo ||
-            student.image
+        student.profile_photo ||
+        student.student_photo ||
+        student.image
     );
 
     useEffect(() => {
@@ -83,7 +84,7 @@ function CricketBookingDetails() {
             if (!response.ok) {
                 throw new Error(
                     data.message ||
-                        "Unable to load booking details"
+                    "Unable to load booking details"
                 );
             }
 
@@ -104,7 +105,7 @@ function CricketBookingDetails() {
         } catch (err) {
             setError(
                 err.message ||
-                    "Unable to load booking details"
+                "Unable to load booking details"
             );
         } finally {
             setLoading(false);
@@ -203,7 +204,7 @@ function CricketBookingDetails() {
             if (!orderResponse.ok || !orderData.success) {
                 throw new Error(
                     orderData.message ||
-                        "Unable to create Razorpay payment order."
+                    "Unable to create Razorpay payment order."
                 );
             }
 
@@ -259,7 +260,7 @@ function CricketBookingDetails() {
                         if (!verifyResponse.ok || !verifyData.success) {
                             throw new Error(
                                 verifyData.message ||
-                                    "Payment verification failed."
+                                "Payment verification failed."
                             );
                         }
 
@@ -270,7 +271,7 @@ function CricketBookingDetails() {
                     } catch (verifyError) {
                         setError(
                             verifyError.message ||
-                                "Payment verification failed."
+                            "Payment verification failed."
                         );
                     } finally {
                         setPaymentLoading(false);
@@ -290,7 +291,7 @@ function CricketBookingDetails() {
                 setPaymentLoading(false);
                 setError(
                     response?.error?.description ||
-                        "Razorpay payment failed."
+                    "Razorpay payment failed."
                 );
             });
 
@@ -299,7 +300,7 @@ function CricketBookingDetails() {
             console.error("Razorpay Payment Error:", paymentError);
             setError(
                 paymentError.message ||
-                    "Unable to start Razorpay payment."
+                "Unable to start Razorpay payment."
             );
             setPaymentLoading(false);
         }
@@ -320,24 +321,24 @@ function CricketBookingDetails() {
     };
 
     const formatDate = (date) => {
-    if (!date) return "-";
+        if (!date) return "-";
 
-    const value = String(date).trim();
+        const value = String(date).trim();
 
-    const parsedDate = value.includes("T")
-        ? new Date(value)
-        : new Date(`${value}T00:00:00`);
+        const parsedDate = value.includes("T")
+            ? new Date(value)
+            : new Date(`${value}T00:00:00`);
 
-    if (Number.isNaN(parsedDate.getTime())) {
-        return "-";
-    }
+        if (Number.isNaN(parsedDate.getTime())) {
+            return "-";
+        }
 
-    return parsedDate.toLocaleDateString("en-IN", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-    });
-};
+        return parsedDate.toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+        });
+    };
 
     const formatTime = (time) => {
         if (!time) return "-";
@@ -392,11 +393,10 @@ function CricketBookingDetails() {
             )}
 
             <aside
-                className={`cricket-details-sidebar ${
-                    sidebarOpen
+                className={`cricket-details-sidebar ${sidebarOpen
                         ? "cricket-details-sidebar-open"
                         : ""
-                }`}
+                    }`}
             >
                 <div className="cricket-details-brand">
                     <div className="cricket-details-brand-icon">
@@ -625,10 +625,10 @@ function CricketBookingDetails() {
                                             Created{" "}
                                             {booking.created_at
                                                 ? new Date(
-                                                      booking.created_at
-                                                  ).toLocaleDateString(
-                                                      "en-IN"
-                                                  )
+                                                    booking.created_at
+                                                ).toLocaleDateString(
+                                                    "en-IN"
+                                                )
                                                 : "-"}
                                         </p>
                                     </div>
@@ -770,7 +770,7 @@ function CricketBookingDetails() {
                                                 ₹
                                                 {Number(
                                                     booking.total_amount ||
-                                                        0
+                                                    0
                                                 ).toFixed(2)}
                                             </strong>
                                         </div>
@@ -811,9 +811,9 @@ function CricketBookingDetails() {
                                                     {paymentLoading
                                                         ? "Processing Payment..."
                                                         : `Pay ₹${Number(
-                                                              booking.total_amount ||
-                                                                  0
-                                                          ).toFixed(2)} with Razorpay`}
+                                                            booking.total_amount ||
+                                                            0
+                                                        ).toFixed(2)} with Razorpay`}
                                                 </button>
                                                 <small>
                                                     Test Mode • No real money will be deducted.
@@ -939,6 +939,15 @@ function CricketBookingDetails() {
                                                 available for
                                                 verification.
                                             </p>
+
+                                            <div className="booking-qr-display">
+                                                <QRCodeSVG
+                                                    value={qr.qr_token}
+                                                    size={220}
+                                                    level="H"
+                                                    includeMargin={true}
+                                                />
+                                            </div>
 
                                             <div className="qr-status-row">
                                                 <span>
