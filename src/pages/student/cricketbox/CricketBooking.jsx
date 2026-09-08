@@ -348,30 +348,30 @@ function CricketBooking() {
         .toUpperCase();
 
     return (
-        <div className="student-cricket-layout">
+        <div className="cricket-booking-layout">
             {sidebarOpen && (
                 <div
-                    className="student-mobile-overlay"
+                    className="cricket-booking-overlay"
                     onClick={() => setSidebarOpen(false)}
                 />
             )}
 
             <aside
-                className={`student-sidebar ${
-                    sidebarOpen ? "student-sidebar-open" : ""
+                className={`cricket-booking-sidebar ${
+                    sidebarOpen ? "cricket-booking-sidebar-open" : ""
                 }`}
             >
-                <div className="student-sidebar-brand">
-                    <div className="student-brand-icon">🏠</div>
+                <div className="cricket-booking-brand">
+                    <div className="cricket-booking-brand-icon">🏠</div>
                     <div>
                         <h2>Hostel</h2>
                         <span>Student Portal</span>
                     </div>
                 </div>
 
-                <nav className="student-nav">
+                <nav className="cricket-booking-nav">
                     <button
-                        className="student-nav-item"
+                        className="cricket-booking-nav-item"
                         onClick={() => goTo("/student/dashboard")}
                     >
                         <span>📊</span>
@@ -379,7 +379,7 @@ function CricketBooking() {
                     </button>
 
                     <button
-                        className="student-nav-item"
+                        className="cricket-booking-nav-item"
                         onClick={() => goTo("/student/profile")}
                     >
                         <span>👤</span>
@@ -387,7 +387,7 @@ function CricketBooking() {
                     </button>
 
                     <button
-                        className="student-nav-item"
+                        className="cricket-booking-nav-item"
                         onClick={() => goTo("/student/room")}
                     >
                         <span>🛏️</span>
@@ -395,15 +395,23 @@ function CricketBooking() {
                     </button>
 
                     <button
-                        className="student-nav-item"
-                        onClick={() => goTo("/student/leave")}
+                        className="cricket-booking-nav-item"
+                        onClick={() => goTo("/student/leaves")}
                     >
-                        <span>📅</span>
+                        <span>📝</span>
                         <span>My Leave</span>
                     </button>
 
                     <button
-                        className="student-nav-item"
+                        className="cricket-booking-nav-item"
+                        onClick={() => goTo("/student/apply-leave")}
+                    >
+                        <span>➕</span>
+                        <span>Apply Leave</span>
+                    </button>
+
+                    <button
+                        className="cricket-booking-nav-item"
                         onClick={() => goTo("/student/gatepass")}
                     >
                         <span>🎫</span>
@@ -411,7 +419,7 @@ function CricketBooking() {
                     </button>
 
                     <button
-                        className="student-nav-item"
+                        className="cricket-booking-nav-item"
                         onClick={() => goTo("/student/complaints")}
                     >
                         <span>📝</span>
@@ -419,7 +427,7 @@ function CricketBooking() {
                     </button>
 
                     <button
-                        className="student-nav-item"
+                        className="cricket-booking-nav-item"
                         onClick={() => goTo("/student/fees")}
                     >
                         <span>💰</span>
@@ -427,7 +435,7 @@ function CricketBooking() {
                     </button>
 
                     <button
-                        className="student-nav-item"
+                        className="cricket-booking-nav-item"
                         onClick={() => goTo("/student/notifications")}
                     >
                         <span>🔔</span>
@@ -435,8 +443,8 @@ function CricketBooking() {
                     </button>
 
                     <button
-                        className="student-nav-item active"
-                        onClick={() => goTo("/student/cricket-box")}
+                        className="cricket-booking-nav-item active"
+                        onClick={() => goTo("/student/cricketbox")}
                     >
                         <span>🏏</span>
                         <span>Cricket Box</span>
@@ -444,7 +452,7 @@ function CricketBooking() {
                 </nav>
 
                 <button
-                    className="student-logout"
+                    className="cricket-booking-logout"
                     onClick={handleLogout}
                 >
                     <span>🚪</span>
@@ -452,10 +460,10 @@ function CricketBooking() {
                 </button>
             </aside>
 
-            <div className="student-cricket-main">
-                <header className="student-topbar">
+            <div className="cricket-booking-main">
+                <header className="cricket-booking-topbar">
                     <button
-                        className="student-hamburger"
+                        className="cricket-booking-hamburger"
                         onClick={() =>
                             setSidebarOpen((prev) => !prev)
                         }
@@ -466,37 +474,29 @@ function CricketBooking() {
                         <span />
                     </button>
 
-                    <div className="student-panel-title">
+                    <div className="cricket-booking-panel-title">
                         <strong>Hostel Student Panel</strong>
                         <span>Cricket Box Booking</span>
                     </div>
 
-                    <div className="student-profile-mini">
+                    <div className="cricket-booking-profile">
                         {studentPhoto ? (
                             <img
                                 src={studentPhoto}
-                                alt={studentName}
+                                alt="Student"
                                 onError={(event) => {
-                                    event.currentTarget.style.display =
-                                        "none";
-                                    event.currentTarget.nextSibling.style.display =
-                                        "flex";
+                                    event.currentTarget.style.display = "none";
+                                    event.currentTarget.nextSibling.style.display = "flex";
                                 }}
                             />
                         ) : null}
-
                         <div
-                            className="student-avatar-fallback"
+                            className="cricket-booking-photo-fallback"
                             style={{
                                 display: studentPhoto ? "none" : "flex",
                             }}
                         >
                             {initials || "ST"}
-                        </div>
-
-                        <div className="student-profile-info">
-                            <strong>{studentName}</strong>
-                            <span>Student</span>
                         </div>
                     </div>
                 </header>

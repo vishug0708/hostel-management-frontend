@@ -266,11 +266,21 @@ function CricketBookingDetails() {
                     <button
                         className="cricket-details-nav-item"
                         onClick={() =>
-                            goTo("/student/leave")
+                            goTo("/student/leaves")
                         }
                     >
-                        <span>📅</span>
+                        <span>📝</span>
                         <span>My Leave</span>
+                    </button>
+
+                    <button
+                        className="cricket-details-nav-item"
+                        onClick={() =>
+                            goTo("/student/apply-leave")
+                        }
+                    >
+                        <span>➕</span>
+                        <span>Apply Leave</span>
                     </button>
 
                     <button
@@ -316,7 +326,7 @@ function CricketBookingDetails() {
                     <button
                         className="cricket-details-nav-item active"
                         onClick={() =>
-                            goTo("/student/cricket-box")
+                            goTo("/student/cricketbox")
                         }
                     >
                         <span>🏏</span>
@@ -342,9 +352,7 @@ function CricketBookingDetails() {
                         }
                         aria-label="Toggle menu"
                     >
-                        <span />
-                        <span />
-                        <span />
+                        ☰
                     </button>
 
                     <div className="cricket-details-panel-title">

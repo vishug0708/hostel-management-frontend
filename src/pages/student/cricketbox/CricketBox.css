@@ -477,3 +477,44 @@
         flex-direction: column;
     }
 }
+
+/* STUDENT DASHBOARD STYLE SHELL */
+.student-cricket-sidebar { width:255px; height:100vh; position:fixed; left:0; top:0; bottom:0; background:#0f172a; color:#fff; display:flex; flex-direction:column; z-index:1100; box-sizing:border-box; }
+.student-cricket-brand { height:82px; flex-shrink:0; display:flex; align-items:center; gap:12px; padding:0 20px; border-bottom:1px solid rgba(255,255,255,0.08); box-sizing:border-box; }
+.student-cricket-brand h2 { margin:0; color:#fff; font-size:17px; font-weight:700; }
+.student-cricket-brand p,.student-cricket-brand span { margin:3px 0 0; color:#94a3b8; font-size:11px; }
+.student-cricket-brand-icon { width:40px; height:40px; flex-shrink:0; border-radius:10px; background:#0f766e; display:flex; align-items:center; justify-content:center; font-size:20px; }
+.student-cricket-nav { flex:1; padding:16px 12px; overflow-y:auto; box-sizing:border-box; }
+.student-cricket-nav-item { width:100%; min-height:42px; border:none; background:transparent; color:#cbd5e1; padding:11px 13px; margin-bottom:4px; border-radius:7px; display:flex; align-items:center; gap:12px; font-size:13px; font-family:inherit; cursor:pointer; text-align:left; transition:background .2s ease,color .2s ease; box-sizing:border-box; }
+.student-cricket-nav-item:hover,.student-cricket-nav-item.active { background:#134e4a; color:#fff; }
+.student-cricket-nav-item span:first-child { width:20px; flex-shrink:0; text-align:center; font-size:15px; }
+.student-cricket-logout { width:calc(100% - 24px); margin:12px; flex-shrink:0; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.04); color:#cbd5e1; border-radius:7px; padding:11px 13px; display:flex; align-items:center; gap:12px; font-size:13px; font-family:inherit; cursor:pointer; text-align:left; box-sizing:border-box; }
+.student-cricket-logout:hover { background:#7f1d1d; color:#fff; }
+.student-cricket-main { width:calc(100% - 255px); min-height:100vh; margin-left:255px; box-sizing:border-box; }
+.student-cricket-topbar { width:100%; height:72px; position:sticky; top:0; z-index:1000; background:#fff; border-bottom:1px solid #e2e8f0; display:flex; align-items:center; justify-content:center; padding:0 28px; box-sizing:border-box; }
+.student-cricket-hamburger { display:none; position:absolute; left:18px; width:42px; height:42px; border:none; border-radius:10px; background:#0f766e; color:#fff; font-size:23px; line-height:1; align-items:center; justify-content:center; cursor:pointer; }
+.student-cricket-panel-title { text-align:center; line-height:1.2; }
+.student-cricket-panel-title strong { display:block; color:#0f172a; font-size:17px; font-weight:700; }
+.student-cricket-panel-title span { display:block; margin-top:3px; color:#64748b; font-size:10px; }
+.student-cricket-profile { position:absolute; right:28px; top:50%; transform:translateY(-50%); width:42px; height:42px; }
+.student-cricket-profile img,.student-cricket-photo-fallback { width:42px; height:42px; display:flex; border-radius:50%; object-fit:cover; border:2px solid #dbeafe; box-sizing:border-box; }
+.student-cricket-photo-fallback { align-items:center; justify-content:center; background:#0f766e; color:#fff; font-size:17px; }
+.student-cricket-overlay { display:none; }
+@media (max-width:700px) {
+    .student-cricket-sidebar { width:270px; transform:translateX(-100%); transition:transform .25s ease; overflow-y:auto; }
+    .student-cricket-sidebar.student-cricket-sidebar-open { transform:translateX(0); }
+    .student-cricket-overlay { display:block; position:fixed; inset:0; background:rgba(15,23,42,.45); z-index:1050; }
+    .student-cricket-main { width:100%; margin-left:0; min-height:100vh; }
+    .student-cricket-topbar { height:64px; padding:0 58px; }
+    .student-cricket-hamburger { display:flex; }
+    .student-cricket-panel-title strong { font-size:15px; }
+    .student-cricket-profile { right:15px; }
+}
+@media (max-width:480px) {
+    .student-cricket-topbar { padding:0 54px; }
+    .student-cricket-hamburger { left:12px; }
+    .student-cricket-profile { right:10px; }
+    .student-cricket-panel-title strong { font-size:13px; }
+    .student-cricket-panel-title span { font-size:9px; }
+}
+

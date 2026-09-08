@@ -209,11 +209,21 @@ function MyCricketBookings() {
                     <button
                         className="my-cricket-nav-item"
                         onClick={() =>
-                            goTo("/student/leave")
+                            goTo("/student/leaves")
                         }
                     >
-                        <span>📅</span>
+                        <span>📝</span>
                         <span>My Leave</span>
+                    </button>
+
+                    <button
+                        className="my-cricket-nav-item"
+                        onClick={() =>
+                            goTo("/student/apply-leave")
+                        }
+                    >
+                        <span>➕</span>
+                        <span>Apply Leave</span>
                     </button>
 
                     <button
@@ -259,7 +269,7 @@ function MyCricketBookings() {
                     <button
                         className="my-cricket-nav-item active"
                         onClick={() =>
-                            goTo("/student/cricket-box")
+                            goTo("/student/cricketbox")
                         }
                     >
                         <span>🏏</span>
@@ -285,9 +295,7 @@ function MyCricketBookings() {
                         }
                         aria-label="Toggle menu"
                     >
-                        <span />
-                        <span />
-                        <span />
+                        ☰
                     </button>
 
                     <div className="my-cricket-panel-title">
@@ -328,7 +336,7 @@ function MyCricketBookings() {
                             className="new-cricket-booking"
                             onClick={() =>
                                 navigate(
-                                    "/student/cricket-box"
+                                    "/student/cricketbox"
                                 )
                             }
                         >
