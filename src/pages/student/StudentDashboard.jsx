@@ -214,10 +214,10 @@ const StudentDashboard = () => {
 
                     <button
                         onClick={() =>
-                            navigate("/student/cricketbox")
+                            navigate("/student/cricketbox/bookings")
                         }
                     >
-                        💰 Cricket Box
+                        🏏 Cricket Box
                     </button>
 
                     <button
