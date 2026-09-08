@@ -170,7 +170,7 @@ function RectorDashboard() {
                     <button
                         onClick={() =>
                             navigate(
-                                "/rector/cricket-box"
+                                "/rector/cricketbox"
                             )
                         }
                     >

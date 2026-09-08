@@ -1,0 +1,54 @@
+* { box-sizing: border-box; }
+.rector-cricket-bookings-page { min-height: 100vh; background: #f8fafc; color: #0f172a; }
+.rector-cricket-bookings-sidebar { position: fixed; inset: 0 auto 0 0; width: 255px; background: #0f172a; color: #fff; z-index: 1000; display: flex; flex-direction: column; }
+.rector-cricket-bookings-brand { height: 76px; padding: 0 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,.08); }
+.rector-cricket-bookings-brand > div { width: 38px; height: 38px; border-radius: 10px; background: #134e4a; display: flex; align-items: center; justify-content: center; }
+.rector-cricket-bookings-brand strong,.rector-cricket-bookings-brand span { display: block; }
+.rector-cricket-bookings-brand span { color: #94a3b8; font-size: 11px; margin-top: 3px; }
+.rector-cricket-bookings-sidebar nav { padding: 18px 12px; display: flex; flex-direction: column; gap: 5px; }
+.rector-cricket-bookings-sidebar nav button,.rector-cricket-bookings-logout { border: 0; background: transparent; color: #cbd5e1; text-align: left; padding: 12px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+.rector-cricket-bookings-sidebar nav button:hover,.rector-cricket-bookings-sidebar nav button.active { background: #134e4a; color: #fff; }
+.rector-cricket-bookings-logout { margin: auto 12px 18px; color: #fca5a5; }
+.rector-cricket-bookings-main { margin-left: 255px; min-height: 100vh; }
+.rector-cricket-bookings-topbar { height: 76px; background: #fff; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; position: relative; }
+.rector-cricket-bookings-topbar h1 { margin: 0; font-size: 20px; }
+.rector-cricket-bookings-photo { position: absolute; right: 30px; width: 42px; height: 42px; border-radius: 50%; overflow: hidden; background: #e2e8f0; display: flex; align-items: center; justify-content: center; }
+.rector-cricket-bookings-photo img { width: 100%; height: 100%; object-fit: cover; }
+.rector-cricket-bookings-menu { display: none; }
+.rector-cricket-bookings-content { padding: 30px; max-width: 1500px; margin: auto; }
+.rector-cricket-bookings-title { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 22px; }
+.rector-cricket-bookings-title span { color: #0f766e; font-size: 11px; font-weight: 800; letter-spacing: .12em; }
+.rector-cricket-bookings-title h2 { margin: 5px 0; font-size: 28px; }
+.rector-cricket-bookings-title p { margin: 0; color: #64748b; font-size: 14px; }
+.rector-cricket-bookings-title > button { border: 1px solid #cbd5e1; background: #fff; padding: 11px 15px; border-radius: 8px; cursor: pointer; }
+.rector-cricket-bookings-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+.rector-cricket-bookings-filters button { border: 1px solid #cbd5e1; background: #fff; color: #475569; padding: 9px 13px; border-radius: 7px; cursor: pointer; font-size: 12px; }
+.rector-cricket-bookings-filters button.selected { background: #134e4a; border-color: #134e4a; color: #fff; }
+.rector-cricket-bookings-error { padding: 12px 15px; background: #fef2f2; color: #b91c1c; border-radius: 8px; margin-bottom: 15px; font-size: 13px; }
+.rector-cricket-bookings-table-wrap { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: auto; }
+.rector-cricket-bookings-table-wrap table { width: 100%; border-collapse: collapse; min-width: 1050px; }
+.rector-cricket-bookings-table-wrap th { background: #f8fafc; color: #64748b; font-size: 10px; text-transform: uppercase; padding: 13px; text-align: left; white-space: nowrap; }
+.rector-cricket-bookings-table-wrap td { padding: 14px 13px; border-top: 1px solid #f1f5f9; font-size: 12px; white-space: nowrap; }
+.rector-cricket-bookings-table-wrap td small { display: block; color: #94a3b8; margin-top: 3px; }
+.status-badge { display: inline-block; padding: 5px 8px; border-radius: 999px; background: #f1f5f9; color: #475569; font-size: 10px; font-weight: 700; }
+.status-badge.pending-approval,.status-badge.pending { background: #fff7ed; color: #c2410c; }
+.status-badge.confirmed,.status-badge.paid { background: #ecfdf5; color: #047857; }
+.status-badge.rejected { background: #fef2f2; color: #b91c1c; }
+.status-badge.completed { background: #eff6ff; color: #1d4ed8; }
+.view-btn { border: 0; background: #134e4a; color: #fff; padding: 7px 11px; border-radius: 6px; cursor: pointer; }
+.rector-cricket-bookings-empty { padding: 50px 20px; text-align: center; color: #64748b; font-size: 13px; }
+.rector-cricket-bookings-overlay { display: none; }
+@media (max-width: 768px) {
+.rector-cricket-bookings-sidebar { width: 270px; transform: translateX(-100%); transition: transform .25s ease; }
+.rector-cricket-bookings-sidebar.mobile-open { transform: translateX(0); }
+.rector-cricket-bookings-overlay { display: block; position: fixed; inset: 0; background: rgba(15,23,42,.45); z-index: 900; }
+.rector-cricket-bookings-main { margin-left: 0; }
+.rector-cricket-bookings-topbar { height: 64px; padding: 0 55px; }
+.rector-cricket-bookings-topbar h1 { font-size: 16px; white-space: nowrap; }
+.rector-cricket-bookings-menu { display: flex; position: absolute; left: 15px; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; align-items: center; justify-content: center; border: 0; background: transparent; font-size: 24px; cursor: pointer; }
+.rector-cricket-bookings-photo { right: 15px; width: 36px; height: 36px; }
+.rector-cricket-bookings-content { padding: 20px 15px; }
+.rector-cricket-bookings-title { align-items: flex-start; flex-direction: column; }
+.rector-cricket-bookings-title h2 { font-size: 23px; }
+.rector-cricket-bookings-title > button { width: 100%; }
+}

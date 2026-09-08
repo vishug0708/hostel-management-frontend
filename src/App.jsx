@@ -52,6 +52,9 @@ import RectorManageRooms from "./pages/rector/rooms/ManageRooms";
 import RectorViewRoom from "./pages/rector/rooms/ViewRoom";
 import RoomAllocation from "./pages/rector/rooms/RoomAllocation";
 import RoomDeallocation from "./pages/rector/rooms/RoomDeallocation";
+import RectorCricketBox from "./pages/rector/cricketbox/RectorCricketBox";
+import RectorCricketBookings from "./pages/rector/cricketbox/RectorCricketBookings";
+import RectorCricketBookingDetails from "./pages/rector/cricketbox/RectorCricketBookingDetails";
 import GatePass from "./pages/rector/gatepass/GatePass";
 
 
@@ -347,6 +350,21 @@ function App() {
                 <Route
                     path="/rector/rooms/deallocation"
                     element={<RoomDeallocation />}
+                />
+
+                <Route
+                    path="/rector/cricket-box"
+                    element={<RectorCricketBox />}
+                />
+
+                <Route
+                    path="/rector/cricket-box/bookings"
+                    element={<RectorCricketBookings />}
+                />
+
+                <Route
+                    path="/rector/cricket-box/bookings/:id"
+                    element={<RectorCricketBookingDetails />}
                 />
 
                 <Route
