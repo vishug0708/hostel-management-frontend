@@ -87,40 +87,42 @@ function StaffLogin() {
             }
 
 
-            // =================================================
-            // SAVE ADMIN JWT
-            // =================================================
-
             localStorage.setItem(
                 "staffToken",
                 data.token
             );
-
-
-            // =================================================
-            // SAVE ADMIN INFORMATION
-            // =================================================
 
             localStorage.setItem(
                 "admin",
                 JSON.stringify(data.staff)
             );
 
-
-            // =================================================
-            // SUCCESS MESSAGE
-            // =================================================
-
-            setMessage(
-                "Staff login successful! Redirecting..."
+            localStorage.setItem(
+                "staff",
+                JSON.stringify(data.staff)
             );
 
+            if (
+                data.staff &&
+                String(data.staff.role || "").trim().toLowerCase() ===
+                "cricketbox qr handler"
+            ) {
+                setMessage(
+                    "CricketBox QR Handler login successful! Redirecting..."
+                );
 
-            // =================================================
-            // REDIRECT TO ADMIN DASHBOARD
-            // =================================================
+                navigate("/staff/cricket-box", {
+                    replace: true
+                });
+            } else {
+                setMessage(
+                    "Staff login successful! Redirecting..."
+                );
 
-            navigate("/staff/dashboard");
+                navigate("/staff/dashboard", {
+                    replace: true
+                });
+            }
 
 
         } catch (error) {
