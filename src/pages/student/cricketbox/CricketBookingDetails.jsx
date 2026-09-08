@@ -37,6 +37,8 @@ function CricketBookingDetails() {
     const [qr, setQr] = useState(null);
 
     const [loading, setLoading] = useState(true);
+    const [paymentLoading, setPaymentLoading] = useState(false);
+    const [paymentMessage, setPaymentMessage] = useState("");
     const [error, setError] = useState("");
 
     let student = {};
@@ -135,6 +137,174 @@ function CricketBookingDetails() {
             fetchQr();
         }
     }, [booking]);
+
+    const loadRazorpayScript = () => {
+        return new Promise((resolve) => {
+            if (window.Razorpay) {
+                resolve(true);
+                return;
+            }
+
+            const existingScript = document.querySelector(
+                'script[src="https://checkout.razorpay.com/v1/checkout.js"]'
+            );
+
+            if (existingScript) {
+                existingScript.addEventListener("load", () => resolve(true), {
+                    once: true
+                });
+                existingScript.addEventListener("error", () => resolve(false), {
+                    once: true
+                });
+                return;
+            }
+
+            const script = document.createElement("script");
+            script.src = "https://checkout.razorpay.com/v1/checkout.js";
+            script.async = true;
+            script.onload = () => resolve(true);
+            script.onerror = () => resolve(false);
+            document.body.appendChild(script);
+        });
+    };
+
+
+    const handlePayment = async () => {
+        if (!booking || paymentLoading) return;
+
+        setPaymentMessage("");
+        setError("");
+
+        if (booking.booking_status !== "Confirmed") {
+            setError("Payment is available only after Rector approval.");
+            return;
+        }
+
+        if (booking.payment_status === "Paid") {
+            setPaymentMessage("This booking is already paid.");
+            return;
+        }
+
+        try {
+            setPaymentLoading(true);
+
+            const orderResponse = await fetch(
+                `${API_URL}/api/student/cricket/bookings/${id}/payment/order`,
+                {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
+            const orderData = await orderResponse.json();
+
+            if (!orderResponse.ok || !orderData.success) {
+                throw new Error(
+                    orderData.message ||
+                        "Unable to create Razorpay payment order."
+                );
+            }
+
+            const scriptLoaded = await loadRazorpayScript();
+
+            if (!scriptLoaded || !window.Razorpay) {
+                throw new Error(
+                    "Razorpay Checkout could not be loaded. Please check your internet connection."
+                );
+            }
+
+            const options = {
+                key: orderData.key_id,
+                amount: orderData.amount,
+                currency: orderData.currency || "INR",
+                name: "Hostel Management System",
+                description: `Cricket Box Booking #${id}`,
+                order_id: orderData.order_id,
+                prefill: {
+                    name: orderData.student?.name || student.name || "",
+                    email: orderData.student?.email || student.email || "",
+                    contact:
+                        orderData.student?.mobile ||
+                        student.mobile ||
+                        ""
+                },
+                theme: {
+                    color: "#134e4a"
+                },
+                handler: async (response) => {
+                    try {
+                        const verifyResponse = await fetch(
+                            `${API_URL}/api/student/cricket/bookings/${id}/payment/verify`,
+                            {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    Authorization: `Bearer ${token}`
+                                },
+                                body: JSON.stringify({
+                                    razorpay_order_id:
+                                        response.razorpay_order_id,
+                                    razorpay_payment_id:
+                                        response.razorpay_payment_id,
+                                    razorpay_signature:
+                                        response.razorpay_signature
+                                })
+                            }
+                        );
+
+                        const verifyData = await verifyResponse.json();
+
+                        if (!verifyResponse.ok || !verifyData.success) {
+                            throw new Error(
+                                verifyData.message ||
+                                    "Payment verification failed."
+                            );
+                        }
+
+                        setPaymentMessage(
+                            "Payment successful and verified."
+                        );
+                        await fetchBookingDetails();
+                    } catch (verifyError) {
+                        setError(
+                            verifyError.message ||
+                                "Payment verification failed."
+                        );
+                    } finally {
+                        setPaymentLoading(false);
+                    }
+                },
+                modal: {
+                    ondismiss: () => {
+                        setPaymentLoading(false);
+                        setPaymentMessage("Payment window closed.");
+                    }
+                }
+            };
+
+            const razorpayCheckout = new window.Razorpay(options);
+
+            razorpayCheckout.on("payment.failed", (response) => {
+                setPaymentLoading(false);
+                setError(
+                    response?.error?.description ||
+                        "Razorpay payment failed."
+                );
+            });
+
+            razorpayCheckout.open();
+        } catch (paymentError) {
+            console.error("Razorpay Payment Error:", paymentError);
+            setError(
+                paymentError.message ||
+                    "Unable to start Razorpay payment."
+            );
+            setPaymentLoading(false);
+        }
+    };
+
 
     const handleLogout = () => {
         localStorage.removeItem("token");
@@ -628,6 +798,40 @@ function CricketBookingDetails() {
                                             </div>
                                         )}
                                     </div>
+
+                                    {booking.booking_status === "Confirmed" &&
+                                        booking.payment_status !== "Paid" && (
+                                            <div className="cricket-payment-action">
+                                                <button
+                                                    type="button"
+                                                    className="cricket-pay-now-btn"
+                                                    onClick={handlePayment}
+                                                    disabled={paymentLoading}
+                                                >
+                                                    {paymentLoading
+                                                        ? "Processing Payment..."
+                                                        : `Pay ₹${Number(
+                                                              booking.total_amount ||
+                                                                  0
+                                                          ).toFixed(2)} with Razorpay`}
+                                                </button>
+                                                <small>
+                                                    Test Mode • No real money will be deducted.
+                                                </small>
+                                            </div>
+                                        )}
+
+                                    {booking.payment_status === "Paid" && (
+                                        <div className="cricket-payment-success">
+                                            ✓ Payment completed successfully.
+                                        </div>
+                                    )}
+
+                                    {paymentMessage && (
+                                        <div className="cricket-payment-message">
+                                            {paymentMessage}
+                                        </div>
+                                    )}
                                 </section>
 
                                 <section className="details-info-card">
