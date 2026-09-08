@@ -86,6 +86,10 @@ import StaffDashboard from "./pages/staff/StaffDashboard";
 import StaffChangePassword from "./pages/staff/StaffChangePassword";
 import StaffProfile from "./pages/staff/StaffProfile";
 
+import StaffCricketDashboard from "./pages/staff/cricketbox/StaffCricketDashboard";
+import StaffCricketQRScanner from "./pages/staff/cricketbox/StaffCricketQRScanner";
+import StaffCricketScanHistory from "./pages/staff/cricketbox/StaffCricketScanHistory";
+
 
 // =====================================================
 // SECURITY
@@ -466,6 +470,11 @@ function App() {
                     path="/staff/salary"
                     element={<MySalary />}
                 />
+
+
+                <Route path="/staff/cricket-box" element={<StaffCricketDashboard />} />
+                <Route path="/staff/cricket-box/scan" element={<StaffCricketQRScanner />} />
+                <Route path="/staff/cricket-box/history" element={<StaffCricketScanHistory />} />
 
 
 
