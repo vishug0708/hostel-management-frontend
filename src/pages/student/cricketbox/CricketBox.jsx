@@ -50,12 +50,29 @@ function CricketBox() {
 
     useEffect(() => {
         const fetchGrounds = async () => {
+            const token =
+                localStorage.getItem("studentToken") ||
+                localStorage.getItem("token");
+
+            if (!token) {
+                navigate("/student/login", {
+                    replace: true
+                });
+                return;
+            }
+
             try {
                 setLoading(true);
                 setError("");
 
                 const response = await fetch(
-                    `${API_URL}/api/student/cricket/grounds`
+                    `${API_URL}/api/student/cricket/grounds`,
+                    {
+                        method: "GET",
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
                 );
 
                 const data = await response.json();
@@ -121,9 +138,8 @@ function CricketBox() {
             )}
 
             <aside
-                className={`student-cricket-sidebar ${
-                    sidebarOpen ? "student-cricket-sidebar-open" : ""
-                }`}
+                className={`student-cricket-sidebar ${sidebarOpen ? "student-cricket-sidebar-open" : ""
+                    }`}
             >
                 <div className="student-cricket-brand">
                     <div className="student-cricket-brand-icon">🏠</div>
