@@ -59,6 +59,7 @@ function CricketBooking() {
 
     const [grounds, setGrounds] = useState([]);
     const [slots, setSlots] = useState([]);
+    const [allSlots, setAllSlots] = useState([]);
 
     const [selectedGround, setSelectedGround] = useState(
         queryGroundId ? Number(queryGroundId) : ""
@@ -170,7 +171,14 @@ function CricketBooking() {
                 ? data
                 : data.slots || data.data || [];
 
-            setSlots(slotList);
+            setAllSlots(slotList);
+
+            setSlots(
+                filterSlotsByRealTime(
+                    slotList,
+                    selectedDate
+                )
+            );
         } catch (err) {
             setSlots([]);
             setError(err.message || "Unable to load slots");
@@ -178,6 +186,59 @@ function CricketBooking() {
             setLoadingSlots(false);
         }
     };
+
+    const filterSlotsByRealTime = (slotList, bookingDate) => {
+        if (!bookingDate) {
+            return slotList;
+        }
+
+        const today = getToday();
+
+        if (bookingDate !== today) {
+            return slotList;
+        }
+
+        const now = new Date();
+
+        const currentMinutes =
+            now.getHours() * 60 + now.getMinutes();
+
+        return slotList.filter((slot) => {
+            if (!slot.start_time) {
+                return false;
+            }
+
+            const timeParts = String(slot.start_time)
+                .split(":")
+                .map(Number);
+
+            const slotMinutes =
+                timeParts[0] * 60 + timeParts[1];
+
+            return slotMinutes > currentMinutes;
+        });
+    };
+
+    useEffect(() => {
+    const updateSlots = () => {
+        if (!selectedDate || allSlots.length === 0) {
+            return;
+        }
+
+        setSlots(
+            filterSlotsByRealTime(
+                allSlots,
+                selectedDate
+            )
+        );
+    };
+
+    updateSlots();
+
+    const interval = setInterval(updateSlots, 30000);
+
+    return () => clearInterval(interval);
+}, [selectedDate, allSlots]);
 
     const selectedGroundData = useMemo(() => {
         return grounds.find(
@@ -214,9 +275,9 @@ function CricketBooking() {
             prev.map((player, i) =>
                 i === index
                     ? {
-                          ...player,
-                          [field]: value,
-                      }
+                        ...player,
+                        [field]: value,
+                    }
                     : player
             )
         );
@@ -224,9 +285,9 @@ function CricketBooking() {
 
     const totalAmount = Number(
         selectedSlotData?.price ??
-            selectedSlotData?.price_per_hour ??
-            selectedGroundData?.price_per_hour ??
-            0
+        selectedSlotData?.price_per_hour ??
+        selectedGroundData?.price_per_hour ??
+        0
     );
 
     const handleBooking = async () => {
@@ -289,7 +350,7 @@ function CricketBooking() {
 
             setSuccess(
                 data.message ||
-                    "Cricket box booking request submitted successfully."
+                "Cricket box booking request submitted successfully."
             );
 
             setTimeout(() => {
@@ -334,9 +395,9 @@ function CricketBooking() {
 
     const studentPhoto = getPhotoUrl(
         student.photo ||
-            student.profile_photo ||
-            student.student_photo ||
-            student.image
+        student.profile_photo ||
+        student.student_photo ||
+        student.image
     );
 
     const initials = studentName
@@ -357,9 +418,8 @@ function CricketBooking() {
             )}
 
             <aside
-                className={`cricket-booking-sidebar ${
-                    sidebarOpen ? "cricket-booking-sidebar-open" : ""
-                }`}
+                className={`cricket-booking-sidebar ${sidebarOpen ? "cricket-booking-sidebar-open" : ""
+                    }`}
             >
                 <div className="cricket-booking-brand">
                     <div className="cricket-booking-brand-icon">🏠</div>
@@ -626,10 +686,17 @@ function CricketBooking() {
                                     min={getToday()}
                                     value={selectedDate}
                                     onChange={(event) => {
-                                        setSelectedDate(
-                                            event.target.value
-                                        );
+                                        const date = event.target.value;
+
+                                        setSelectedDate(date);
                                         setSelectedSlot(null);
+
+                                        setSlots(
+                                            filterSlotsByRealTime(
+                                                allSlots,
+                                                date
+                                            )
+                                        );
                                     }}
                                 />
                             </div>
@@ -679,20 +746,19 @@ function CricketBooking() {
 
                                         const price = Number(
                                             slot.price ??
-                                                slot.price_per_hour ??
-                                                selectedGroundData?.price_per_hour ??
-                                                0
+                                            slot.price_per_hour ??
+                                            selectedGroundData?.price_per_hour ??
+                                            0
                                         );
 
                                         return (
                                             <button
                                                 key={slot.id}
                                                 type="button"
-                                                className={`slot-card ${
-                                                    isSelected
-                                                        ? "selected"
-                                                        : ""
-                                                }`}
+                                                className={`slot-card ${isSelected
+                                                    ? "selected"
+                                                    : ""
+                                                    }`}
                                                 onClick={() =>
                                                     setSelectedSlot(
                                                         slot.id
@@ -923,15 +989,15 @@ function CricketBooking() {
                                     <strong>
                                         {selectedDate
                                             ? new Date(
-                                                  `${selectedDate}T00:00:00`
-                                              ).toLocaleDateString(
-                                                  "en-IN",
-                                                  {
-                                                      day: "2-digit",
-                                                      month: "short",
-                                                      year: "numeric",
-                                                  }
-                                              )
+                                                `${selectedDate}T00:00:00`
+                                            ).toLocaleDateString(
+                                                "en-IN",
+                                                {
+                                                    day: "2-digit",
+                                                    month: "short",
+                                                    year: "numeric",
+                                                }
+                                            )
                                             : "Not selected"}
                                     </strong>
                                 </div>
@@ -941,12 +1007,12 @@ function CricketBooking() {
                                     <strong>
                                         {selectedSlotData
                                             ? `${selectedSlotData.start_time?.slice(
-                                                  0,
-                                                  5
-                                              )} - ${selectedSlotData.end_time?.slice(
-                                                  0,
-                                                  5
-                                              )}`
+                                                0,
+                                                5
+                                            )} - ${selectedSlotData.end_time?.slice(
+                                                0,
+                                                5
+                                            )}`
                                             : "Not selected"}
                                     </strong>
                                 </div>
