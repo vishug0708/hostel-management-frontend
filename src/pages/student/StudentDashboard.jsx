@@ -214,7 +214,7 @@ const StudentDashboard = () => {
 
                     <button
                         onClick={() =>
-                            navigate("/student/cricketbox/bookings")
+                            navigate("/student/cricket-box")
                         }
                     >
                         🏏 Cricket Box
