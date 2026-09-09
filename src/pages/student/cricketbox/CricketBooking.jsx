@@ -98,9 +98,10 @@ function CricketBooking() {
 
     useEffect(() => {
         if (selectedGround) {
-            fetchSlots(selectedGround);
+            fetchSlots(selectedGround, selectedDate);
         } else {
             setSlots([]);
+            setAllSlots([]);
             setSelectedSlot(null);
         }
     }, [selectedGround]);
@@ -147,14 +148,18 @@ function CricketBooking() {
         }
     };
 
-    const fetchSlots = async (groundId) => {
+    const fetchSlots = async (groundId, bookingDate = selectedDate) => {
         try {
             setLoadingSlots(true);
             setError("");
             setSelectedSlot(null);
 
+            const dateQuery = bookingDate
+                ? `?date=${encodeURIComponent(bookingDate)}`
+                : "";
+
             const response = await fetch(
-                `${API_URL}/api/student/cricket/grounds/${groundId}/slots`,
+                `${API_URL}/api/student/cricket/grounds/${groundId}/slots${dateQuery}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -177,11 +182,12 @@ function CricketBooking() {
             setSlots(
                 filterSlotsByRealTime(
                     slotList,
-                    selectedDate
+                    bookingDate
                 )
             );
         } catch (err) {
             setSlots([]);
+            setAllSlots([]);
             setError(err.message || "Unable to load slots");
         } finally {
             setLoadingSlots(false);
@@ -391,6 +397,26 @@ function CricketBooking() {
 
         if (!selectedSlot) {
             setError("Please select an available slot.");
+            return;
+        }
+
+        const currentSlot = slots.find(
+            (slot) => Number(slot.id) === Number(selectedSlot)
+        );
+
+        const currentSlotAvailable =
+            currentSlot &&
+            (
+                Number(currentSlot.is_available) === 1 ||
+                currentSlot.is_available === true ||
+                currentSlot.availability_status === "Available"
+            );
+
+        if (!currentSlotAvailable) {
+            setError(
+                "This time slot is no longer available. Please select another slot."
+            );
+            setSelectedSlot(null);
             return;
         }
 
@@ -784,12 +810,16 @@ function CricketBooking() {
                                         setSelectedDate(date);
                                         setSelectedSlot(null);
 
-                                        setSlots(
-                                            filterSlotsByRealTime(
-                                                allSlots,
-                                                date
-                                            )
-                                        );
+                                        if (selectedGround) {
+                                            fetchSlots(selectedGround, date);
+                                        } else {
+                                            setSlots(
+                                                filterSlotsByRealTime(
+                                                    allSlots,
+                                                    date
+                                                )
+                                            );
+                                        }
                                     }}
                                 />
                             </div>
@@ -834,8 +864,12 @@ function CricketBooking() {
                                 <div className="slot-grid">
                                     {slots.map((slot) => {
                                         const isSelected =
-                                            Number(selectedSlot) ===
-                                            Number(slot.id);
+                                            Number(selectedSlot) === Number(slot.id);
+
+                                        const isAvailable =
+                                            Number(slot.is_available) === 1 ||
+                                            slot.is_available === true ||
+                                            slot.availability_status === "Available";
 
                                         const price = Number(
                                             slot.price ??
@@ -848,38 +882,50 @@ function CricketBooking() {
                                             <button
                                                 key={slot.id}
                                                 type="button"
-                                                className={`slot-card ${isSelected
-                                                    ? "selected"
-                                                    : ""
+                                                disabled={!isAvailable}
+                                                className={`slot-card ${isSelected ? "selected" : ""
+                                                    } ${isAvailable
+                                                        ? "slot-available"
+                                                        : "slot-unavailable"
                                                     }`}
-                                                onClick={() =>
-                                                    setSelectedSlot(
-                                                        slot.id
-                                                    )
-                                                }
+                                                onClick={() => {
+                                                    if (!isAvailable) {
+                                                        return;
+                                                    }
+
+                                                    setSelectedSlot(slot.id);
+                                                }}
                                             >
                                                 <div className="slot-radio">
-                                                    {isSelected
-                                                        ? "✓"
-                                                        : ""}
+                                                    {isSelected ? "✓" : ""}
                                                 </div>
 
                                                 <div className="slot-time">
-                                                    {slot.start_time?.slice(
-                                                        0,
-                                                        5
-                                                    )}{" "}
+                                                    {slot.start_time?.slice(0, 5)}{" "}
                                                     -{" "}
-                                                    {slot.end_time?.slice(
-                                                        0,
-                                                        5
-                                                    )}
+                                                    {slot.end_time?.slice(0, 5)}
                                                 </div>
 
                                                 <div className="slot-price">
-                                                    ₹
-                                                    {price.toFixed(2)}
+                                                    ₹{price.toFixed(2)}
                                                 </div>
+
+                                                <div
+                                                    className={`slot-availability ${isAvailable
+                                                        ? "slot-availability-available"
+                                                        : "slot-availability-unavailable"
+                                                        }`}
+                                                >
+                                                    {isAvailable
+                                                        ? "🟢 Available"
+                                                        : "🔴 Unavailable"}
+                                                </div>
+
+                                                {!isAvailable && slot.unavailable_reason && (
+                                                    <div className="slot-unavailable-reason">
+                                                        {slot.unavailable_reason}
+                                                    </div>
+                                                )}
                                             </button>
                                         );
                                     })}

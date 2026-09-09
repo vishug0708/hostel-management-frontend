@@ -556,7 +556,8 @@ function StaffCricketQRScanner() {
 
                     <p>
                         Scan the student's QR code
-                        to verify cricket box entry.
+                        to allow entry or exit from the cricket box.
+
                     </p>
 
                     <div className="sq-grid">
@@ -644,11 +645,10 @@ function StaffCricketQRScanner() {
                             ) : (
                                 <div
                                     className={`sq-result ${result.success
-                                            ? "valid"
-                                            : "invalid"
+                                        ? "valid"
+                                        : "invalid"
                                         }`}
                                 >
-
                                     <b>
                                         {result.success
                                             ? "✓"
@@ -657,7 +657,11 @@ function StaffCricketQRScanner() {
 
                                     <h4>
                                         {result.success
-                                            ? "ENTRY ALLOWED"
+                                            ? result.action === "ENTRY"
+                                                ? "ENTRY ALLOWED"
+                                                : result.action === "EXIT"
+                                                    ? "EXIT ALLOWED"
+                                                    : "ACCESS ALLOWED"
                                             : "ENTRY DENIED"}
                                     </h4>
 
@@ -675,8 +679,7 @@ function StaffCricketQRScanner() {
 
                                                 <strong>
                                                     {
-                                                        result
-                                                            .booking
+                                                        result.booking
                                                             .student_name ||
                                                         "-"
                                                     }
@@ -690,8 +693,7 @@ function StaffCricketQRScanner() {
 
                                                 <strong>
                                                     {
-                                                        result
-                                                            .booking
+                                                        result.booking
                                                             .ground_name ||
                                                         "-"
                                                     }
@@ -705,8 +707,7 @@ function StaffCricketQRScanner() {
 
                                                 <strong>
                                                     {
-                                                        result
-                                                            .booking
+                                                        result.booking
                                                             .booking_date ||
                                                         "-"
                                                     }
@@ -719,30 +720,16 @@ function StaffCricketQRScanner() {
                                                 </span>
 
                                                 <strong>
-                                                    {result
-                                                        .booking
-                                                        .start_time
+                                                    {result.booking.start_time
                                                         ? String(
-                                                            result
-                                                                .booking
-                                                                .start_time
-                                                        ).slice(
-                                                            0,
-                                                            5
-                                                        )
-                                                        : "-"}{" "}
-                                                    -{" "}
-                                                    {result
-                                                        .booking
-                                                        .end_time
+                                                            result.booking.start_time
+                                                        ).slice(0, 5)
+                                                        : "-"}
+                                                    {" - "}
+                                                    {result.booking.end_time
                                                         ? String(
-                                                            result
-                                                                .booking
-                                                                .end_time
-                                                        ).slice(
-                                                            0,
-                                                            5
-                                                        )
+                                                            result.booking.end_time
+                                                        ).slice(0, 5)
                                                         : "-"}
                                                 </strong>
                                             </div>
@@ -754,11 +741,24 @@ function StaffCricketQRScanner() {
 
                                                 <strong>
                                                     {
-                                                        result
-                                                            .booking
+                                                        result.booking
                                                             .payment_status ||
                                                         "-"
                                                     }
+                                                </strong>
+                                            </div>
+
+                                            <div>
+                                                <span>
+                                                    Action
+                                                </span>
+
+                                                <strong>
+                                                    {result.action === "ENTRY"
+                                                        ? "🟢 Entry Allowed"
+                                                        : result.action === "EXIT"
+                                                            ? "🔵 Exit Allowed"
+                                                            : "🔴 Denied"}
                                                 </strong>
                                             </div>
 
@@ -766,13 +766,10 @@ function StaffCricketQRScanner() {
                                     )}
 
                                     <button
-                                        onClick={
-                                            scanAnother
-                                        }
+                                        onClick={scanAnother}
                                     >
                                         Scan Another QR
                                     </button>
-
                                 </div>
                             )}
 

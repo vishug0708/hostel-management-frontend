@@ -973,3 +973,36 @@
     .cricket-booking-panel-title span { font-size:9px; }
 }
 
+.slot-card.slot-available {
+    cursor: pointer;
+}
+
+.slot-card.slot-unavailable {
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+.slot-card.slot-unavailable:hover {
+    transform: none;
+}
+
+.slot-availability {
+    margin-top: 8px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.slot-availability-available {
+    color: #15803d;
+}
+
+.slot-availability-unavailable {
+    color: #dc2626;
+}
+
+.slot-unavailable-reason {
+    margin-top: 4px;
+    font-size: 10px;
+    color: #b91c1c;
+    line-height: 1.3;
+}
