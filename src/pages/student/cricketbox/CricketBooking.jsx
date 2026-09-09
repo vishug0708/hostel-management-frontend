@@ -74,11 +74,12 @@ function CricketBooking() {
                 student.student_name ||
                 student.full_name ||
                 "",
-            student_id:
-                student.student_id ||
-                student.roll_no ||
-                student.registration_no ||
-                "",
+            student_id: String(
+                student.student_id ??
+                student.roll_no ??
+                student.registration_no ??
+                ""
+            ),
             mobile: student.mobile || student.phone || "",
             isMainStudent: true,
         },
@@ -315,8 +316,8 @@ function CricketBooking() {
                 )}`,
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
+                        Authorization: `Bearer ${token}`
+                    }
                 }
             );
 
@@ -333,25 +334,37 @@ function CricketBooking() {
             if (students.length === 1) {
                 const foundStudent = students[0];
 
+                // Student database ID
+                const studentId =
+                    foundStudent.student_id ??
+                    foundStudent.id ??
+                    foundStudent.roll_no ??
+                    foundStudent.registration_no ??
+                    "";
+
+                // Student mobile number
+                const mobile =
+                    foundStudent.mobile ??
+                    foundStudent.phone ??
+                    "";
+
                 updatePlayer(
                     index,
                     "student_id",
-                    foundStudent.student_id ||
-                    foundStudent.roll_no ||
-                    foundStudent.registration_no ||
-                    ""
+                    String(studentId)
                 );
 
                 updatePlayer(
                     index,
                     "mobile",
-                    foundStudent.mobile ||
-                    foundStudent.phone ||
-                    ""
+                    String(mobile)
                 );
             }
         } catch (error) {
-            console.error("Student search error:", error);
+            console.error(
+                "Student search error:",
+                error
+            );
         }
     };
 
@@ -396,10 +409,18 @@ function CricketBooking() {
                 slot_id: Number(selectedSlot),
                 booking_date: selectedDate,
                 players: players.map((player) => ({
-                    student_name: player.student_name.trim(),
-                    student_id: player.student_id?.trim() || null,
-                    mobile: player.mobile?.trim() || null,
-                })),
+                    student_name: String(
+                        player.student_name ?? ""
+                    ).trim(),
+
+                    student_id: String(
+                        player.student_id ?? ""
+                    ).trim() || null,
+
+                    mobile: String(
+                        player.mobile ?? ""
+                    ).trim() || null
+                }))
             };
 
             const response = await fetch(
