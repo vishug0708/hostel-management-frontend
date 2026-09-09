@@ -188,11 +188,11 @@ function EditGround() {
         }
 
         if (
-            formData.opening_time >=
+            formData.opening_time ===
             formData.closing_time
         ) {
             setError(
-                "Closing time must be after opening time."
+                "Opening time and closing time cannot be the same."
             );
             return;
         }
@@ -295,7 +295,7 @@ function EditGround() {
 
     if (loading) {
 
-    return (
+        return (
             <div className="edit-ground-loading">
                 <div className="edit-ground-loading-icon">
                     🏏
@@ -442,12 +442,12 @@ function EditGround() {
 
             </aside>
 
-                {mobileMenuOpen && (
-                    <div
-                        className="admin-mobile-overlay"
-                        onClick={closeMobileMenu}
-                    />
-                )}
+            {mobileMenuOpen && (
+                <div
+                    className="admin-mobile-overlay"
+                    onClick={closeMobileMenu}
+                />
+            )}
 
             {/* MAIN */}
 
@@ -816,7 +816,7 @@ function EditGround() {
                             <label
                                 className={
                                     formData.status ===
-                                    "Active"
+                                        "Active"
                                         ? "selected"
                                         : ""
                                 }
@@ -854,7 +854,7 @@ function EditGround() {
                             <label
                                 className={
                                     formData.status ===
-                                    "Inactive"
+                                        "Inactive"
                                         ? "selected"
                                         : ""
                                 }
@@ -945,4 +945,4 @@ function EditGround() {
 }
 
 export default EditGround
-                
+
