@@ -91,40 +91,172 @@ function StaffCricketQRScanner() {
 
         try {
             setStarting(true);
+            setReady(false);
             setError("");
             setResult(null);
             setDecodedText("");
 
-            const element = document.getElementById(
-                "sc-qr-reader"
-            );
-
-            if (!element) {
+            if (!window.isSecureContext) {
                 throw new Error(
-                    "QR scanner container not found."
+                    "Camera requires HTTPS. Please open the website using HTTPS."
                 );
             }
 
-            element.innerHTML = "";
+            if (
+                !navigator.mediaDevices ||
+                !navigator.mediaDevices.getUserMedia
+            ) {
+                throw new Error(
+                    "Camera is not supported by this browser."
+                );
+            }
 
-            const scanner = new Html5Qrcode(
-                "sc-qr-reader",
-                {
-                    formatsToSupport: [
-                        Html5QrcodeSupportedFormats.QR_CODE
-                    ],
-                    verbose: false
-                }
+            const readerElement = document.getElementById(
+                "sc-qr-reader"
             );
+
+            if (!readerElement) {
+                throw new Error(
+                    "QR scanner container was not found."
+                );
+            }
+
+            readerElement.innerHTML = "";
+
+            // --------------------------------------------------
+            // STEP 1: Ask browser for camera permission
+            // --------------------------------------------------
+
+            let cameraStream;
+
+            try {
+                cameraStream =
+                    await navigator.mediaDevices.getUserMedia({
+                        video: {
+                            facingMode: {
+                                ideal: "environment"
+                            }
+                        },
+                        audio: false
+                    });
+            } catch (cameraError) {
+                console.error(
+                    "Camera Permission Error:",
+                    cameraError
+                );
+
+                if (
+                    cameraError.name ===
+                    "NotAllowedError"
+                ) {
+                    throw new Error(
+                        "Camera permission was denied. Please allow Camera permission for this website from browser settings."
+                    );
+                }
+
+                if (
+                    cameraError.name ===
+                    "NotFoundError"
+                ) {
+                    throw new Error(
+                        "No camera was found on this device."
+                    );
+                }
+
+                if (
+                    cameraError.name ===
+                    "NotReadableError"
+                ) {
+                    throw new Error(
+                        "Camera is already being used by another application. Close other camera/scanner apps and try again."
+                    );
+                }
+
+                if (
+                    cameraError.name ===
+                    "SecurityError"
+                ) {
+                    throw new Error(
+                        "Browser security blocked camera access. Please use HTTPS and allow camera permission."
+                    );
+                }
+
+                throw new Error(
+                    cameraError.message ||
+                    "Unable to access device camera."
+                );
+            }
+
+            // We only used getUserMedia to request permission.
+            // Html5Qrcode will open the camera again.
+            cameraStream
+                .getTracks()
+                .forEach((track) => track.stop());
+
+            // --------------------------------------------------
+            // STEP 2: Get available cameras
+            // --------------------------------------------------
+
+            const cameras =
+                await Html5Qrcode.getCameras();
+
+            console.log(
+                "Available cameras:",
+                cameras
+            );
+
+            if (!cameras || cameras.length === 0) {
+                throw new Error(
+                    "No camera device is available."
+                );
+            }
+
+            // --------------------------------------------------
+            // STEP 3: Select rear camera if available
+            // --------------------------------------------------
+
+            let selectedCamera = cameras[0];
+
+            const rearCamera =
+                cameras.find((camera) => {
+                    const label =
+                        String(
+                            camera.label || ""
+                        ).toLowerCase();
+
+                    return (
+                        label.includes("back") ||
+                        label.includes("rear") ||
+                        label.includes("environment")
+                    );
+                });
+
+            if (rearCamera) {
+                selectedCamera = rearCamera;
+            }
+
+            console.log(
+                "Selected camera:",
+                selectedCamera
+            );
+
+            // --------------------------------------------------
+            // STEP 4: Create QR scanner
+            // --------------------------------------------------
+
+            const scanner =
+                new Html5Qrcode(
+                    "sc-qr-reader"
+                );
 
             scannerRef.current = scanner;
 
+            // --------------------------------------------------
+            // STEP 5: Start selected camera
+            // --------------------------------------------------
+
             await scanner.start(
-                {
-                    facingMode: {
-                        ideal: "environment"
-                    }
-                },
+                selectedCamera.id,
                 {
                     fps: 10,
                     qrbox: {
@@ -144,12 +276,12 @@ function StaffCricketQRScanner() {
                         decodedText || ""
                     ).trim();
 
-                    setDecodedText(qrValue);
-
                     console.log(
                         "QR DETECTED:",
                         qrValue
                     );
+
+                    setDecodedText(qrValue);
 
                     if (!qrValue) {
                         processingRef.current = false;
@@ -159,15 +291,19 @@ function StaffCricketQRScanner() {
                     await verifyQr(qrValue);
                 },
                 (scanErrorMessage) => {
-                    // html5-qrcode continuously calls this
+                    // Ignore normal QR search errors.
+                    // html5-qrcode calls this repeatedly
                     // while searching for a QR.
-                    // Do not show these normal scan errors
-                    // on the UI.
                 }
             );
 
             isScanningRef.current = true;
+
             setReady(true);
+
+            console.log(
+                "Cricket QR Scanner started successfully."
+            );
         } catch (error) {
             console.error(
                 "QR Scanner Start Error:",
@@ -311,9 +447,8 @@ function StaffCricketQRScanner() {
             )}
 
             <aside
-                className={`sq-side ${
-                    sidebarOpen ? "open" : ""
-                }`}
+                className={`sq-side ${sidebarOpen ? "open" : ""
+                    }`}
             >
                 <div className="sq-brand">
                     🏠
@@ -508,11 +643,10 @@ function StaffCricketQRScanner() {
                                 </div>
                             ) : (
                                 <div
-                                    className={`sq-result ${
-                                        result.success
+                                    className={`sq-result ${result.success
                                             ? "valid"
                                             : "invalid"
-                                    }`}
+                                        }`}
                                 >
 
                                     <b>
@@ -589,26 +723,26 @@ function StaffCricketQRScanner() {
                                                         .booking
                                                         .start_time
                                                         ? String(
-                                                              result
-                                                                  .booking
-                                                                  .start_time
-                                                          ).slice(
-                                                              0,
-                                                              5
-                                                          )
+                                                            result
+                                                                .booking
+                                                                .start_time
+                                                        ).slice(
+                                                            0,
+                                                            5
+                                                        )
                                                         : "-"}{" "}
                                                     -{" "}
                                                     {result
                                                         .booking
                                                         .end_time
                                                         ? String(
-                                                              result
-                                                                  .booking
-                                                                  .end_time
-                                                          ).slice(
-                                                              0,
-                                                              5
-                                                          )
+                                                            result
+                                                                .booking
+                                                                .end_time
+                                                        ).slice(
+                                                            0,
+                                                            5
+                                                        )
                                                         : "-"}
                                                 </strong>
                                             </div>
