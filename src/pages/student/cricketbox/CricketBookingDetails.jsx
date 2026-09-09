@@ -99,9 +99,16 @@ function CricketBookingDetails() {
                 setPlayers(bookingData.players);
             }
 
-            if (data.qr) {
+            if (
+                data.qr &&
+                bookingData?.booking_status === "Confirmed" &&
+                bookingData?.payment_status === "Paid"
+            ) {
                 setQr(data.qr);
+            } else {
+                setQr(null);
             }
+
         } catch (err) {
             setError(
                 err.message ||
@@ -125,9 +132,17 @@ function CricketBookingDetails() {
 
             const data = await response.json();
 
-            if (response.ok) {
-                setQr(data.qr || data.data || data);
+            if (
+                response.ok &&
+                data.qr &&
+                booking?.booking_status === "Confirmed" &&
+                booking?.payment_status === "Paid"
+            ) {
+                setQr(data.qr);
+            } else {
+                setQr(null);
             }
+            
         } catch {
             // QR is optional until generated after approval/payment
         }
@@ -394,8 +409,8 @@ function CricketBookingDetails() {
 
             <aside
                 className={`cricket-details-sidebar ${sidebarOpen
-                        ? "cricket-details-sidebar-open"
-                        : ""
+                    ? "cricket-details-sidebar-open"
+                    : ""
                     }`}
             >
                 <div className="cricket-details-brand">
