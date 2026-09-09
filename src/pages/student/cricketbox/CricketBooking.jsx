@@ -179,12 +179,18 @@ function CricketBooking() {
 
             setAllSlots(slotList);
 
+            const groundData = grounds.find(
+                (ground) => Number(ground.id) === Number(groundId)
+            );
+
             setSlots(
                 filterSlotsByRealTime(
                     slotList,
-                    bookingDate
+                    bookingDate,
+                    groundData
                 )
             );
+
         } catch (err) {
             setSlots([]);
             setAllSlots([]);
@@ -194,7 +200,11 @@ function CricketBooking() {
         }
     };
 
-    const filterSlotsByRealTime = (slotList, bookingDate) => {
+    const filterSlotsByRealTime = (
+        slotList,
+        bookingDate,
+        groundData = null
+    ) => {
         if (!bookingDate) {
             return slotList;
         }
@@ -210,6 +220,27 @@ function CricketBooking() {
         const currentMinutes =
             now.getHours() * 60 + now.getMinutes();
 
+        const openingTime = groundData?.opening_time
+            ? String(groundData.opening_time).slice(0, 5)
+            : "";
+
+        const closingTime = groundData?.closing_time
+            ? String(groundData.closing_time).slice(0, 5)
+            : "";
+
+        const openingParts = openingTime
+            ? openingTime.split(":").map(Number)
+            : null;
+
+        const openingMinutes = openingParts
+            ? openingParts[0] * 60 + openingParts[1]
+            : 0;
+
+        const isOvernight =
+            openingTime &&
+            closingTime &&
+            openingTime > closingTime;
+
         return slotList.filter((slot) => {
             if (!slot.start_time) {
                 return false;
@@ -219,12 +250,20 @@ function CricketBooking() {
                 .split(":")
                 .map(Number);
 
-            const slotMinutes =
+            let slotMinutes =
                 timeParts[0] * 60 + timeParts[1];
+
+            if (
+                isOvernight &&
+                slotMinutes < openingMinutes
+            ) {
+                slotMinutes += 24 * 60;
+            }
 
             return slotMinutes > currentMinutes;
         });
     };
+
 
     useEffect(() => {
         const updateSlots = () => {
@@ -232,10 +271,16 @@ function CricketBooking() {
                 return;
             }
 
+            const groundData = grounds.find(
+                (ground) =>
+                    Number(ground.id) === Number(selectedGround)
+            );
+
             setSlots(
                 filterSlotsByRealTime(
                     allSlots,
-                    selectedDate
+                    selectedDate,
+                    groundData
                 )
             );
         };
@@ -245,7 +290,7 @@ function CricketBooking() {
         const interval = setInterval(updateSlots, 30000);
 
         return () => clearInterval(interval);
-    }, [selectedDate, allSlots]);
+    }, [selectedDate, allSlots, grounds, selectedGround]);
 
     const selectedGroundData = useMemo(() => {
         return grounds.find(
