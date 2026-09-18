@@ -527,14 +527,19 @@ function CricketBooking() {
                 ground_id: Number(selectedGround),
                 slot_id: Number(selectedSlot),
                 booking_date: selectedDate,
-                players: players.map((player) => ({
+
+                // IMPORTANT:
+                // Player 1 is the logged-in student.
+                // Backend automatically adds the logged-in student.
+                // Only additional players are sent to backend.
+                players: players.slice(1).map((player) => ({
                     student_name: String(
                         player.student_name ?? ""
                     ).trim(),
 
                     student_id: String(
                         player.student_id ?? ""
-                    ).trim() || null,
+                    ).trim(),
 
                     mobile: String(
                         player.mobile ?? ""
