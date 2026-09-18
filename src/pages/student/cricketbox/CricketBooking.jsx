@@ -473,32 +473,43 @@ function CricketBooking() {
             return;
         }
 
+        // -------------------------------------------------
+        // VALIDATE ADDITIONAL PLAYERS
+        // Main logged-in student = players[0]
+        // No student selection validation required for player 1
+        // -------------------------------------------------
+
         const usedStudentIds = new Set();
 
-        for (let i = 0; i < players.length; i++) {
+        // Logged-in student is automatically the first player
+        const mainStudentId = String(
+            players[0]?.student_id || ""
+        ).trim();
+
+        if (mainStudentId) {
+            usedStudentIds.add(mainStudentId);
+        }
+
+        // Validate only additional players
+        for (let i = 1; i < players.length; i++) {
 
             const playerName = String(
-                players[i].student_name || ""
+                players[i]?.student_name || ""
             ).trim();
 
             const playerId = String(
-                players[i].student_id || ""
+                players[i]?.student_id || ""
             ).trim();
 
-            if (!playerName) {
-                setError(
-                    `Please enter player ${i + 1} name.`
-                );
-                return;
-            }
-
-            if (!playerId) {
+            // Additional player must be selected
+            if (!playerName || !playerId) {
                 setError(
                     `Please select a valid student for player ${i + 1}.`
                 );
                 return;
             }
 
+            // Prevent duplicate student
             if (usedStudentIds.has(playerId)) {
                 setError(
                     `${playerName} is already added to this booking. Please select another student.`
