@@ -385,15 +385,11 @@ function CricketBooking() {
             if (students.length === 1) {
                 const foundStudent = students[0];
 
-                // Student database ID
                 const studentId =
-                    foundStudent.student_id ??
                     foundStudent.id ??
-                    foundStudent.roll_no ??
-                    foundStudent.registration_no ??
+                    foundStudent.student_id ??
                     "";
 
-                // Student mobile number
                 const mobile =
                     foundStudent.mobile ??
                     foundStudent.phone ??
@@ -409,6 +405,18 @@ function CricketBooking() {
                     index,
                     "mobile",
                     String(mobile)
+                );
+            } else {
+                updatePlayer(
+                    index,
+                    "student_id",
+                    ""
+                );
+
+                updatePlayer(
+                    index,
+                    "mobile",
+                    ""
                 );
             }
         } catch (error) {
@@ -465,11 +473,40 @@ function CricketBooking() {
             return;
         }
 
+        const usedStudentIds = new Set();
+
         for (let i = 0; i < players.length; i++) {
-            if (!players[i].student_name.trim()) {
-                setError(`Please enter player ${i + 1} name.`);
+
+            const playerName = String(
+                players[i].student_name || ""
+            ).trim();
+
+            const playerId = String(
+                players[i].student_id || ""
+            ).trim();
+
+            if (!playerName) {
+                setError(
+                    `Please enter player ${i + 1} name.`
+                );
                 return;
             }
+
+            if (!playerId) {
+                setError(
+                    `Please select a valid student for player ${i + 1}.`
+                );
+                return;
+            }
+
+            if (usedStudentIds.has(playerId)) {
+                setError(
+                    `${playerName} is already added to this booking. Please select another student.`
+                );
+                return;
+            }
+
+            usedStudentIds.add(playerId);
         }
 
         try {

@@ -288,8 +288,21 @@ function StaffCricketQRScanner() {
                         return;
                     }
 
-                    await verifyQr(qrValue);
+                    /*
+                     * IMPORTANT:
+                     * QR detect hone ke baad automatically
+                     * backend verification nahi hoga.
+                     *
+                     * Staff manually ALLOW ENTRY / ALLOW EXIT
+                     * button press karega.
+                     */
+
+                    await stopScanner();
+                    setReady(false);
+
+                    processingRef.current = false;
                 },
+
                 (scanErrorMessage) => {
                     // Ignore normal QR search errors.
                     // html5-qrcode calls this repeatedly
@@ -351,14 +364,31 @@ function StaffCricketQRScanner() {
         isScanningRef.current = false;
     };
 
-    const verifyQr = async (qrToken) => {
+    const verifyQr = async (action) => {
         try {
             setError("");
             setResult(null);
 
+            if (!decodedText) {
+                setError(
+                    "Please scan a QR code first."
+                );
+                return;
+            }
+
+            if (
+                action !== "ENTRY" &&
+                action !== "EXIT"
+            ) {
+                setError(
+                    "Please select Entry or Exit."
+                );
+                return;
+            }
+
             console.log(
-                "Sending QR token to backend:",
-                qrToken
+                "Sending QR action to backend:",
+                action
             );
 
             const response = await fetch(
@@ -370,7 +400,8 @@ function StaffCricketQRScanner() {
                         Authorization: `Bearer ${token}`
                     },
                     body: JSON.stringify({
-                        qr_token: qrToken
+                        qr_token: decodedText,
+                        action: action
                     })
                 }
             );
@@ -391,9 +422,9 @@ function StaffCricketQRScanner() {
                 );
             }
 
-            // Stop camera after successful detection.
             await stopScanner();
             setReady(false);
+
         } catch (error) {
             console.error(
                 "QR Verification Error:",
@@ -632,16 +663,48 @@ function StaffCricketQRScanner() {
                             </h3>
 
                             {!result ? (
-                                <div className="sq-empty">
+                                decodedText ? (
+                                    <div className="sq-manual-action">
 
-                                    📷
+                                        <div className="sq-detected-status">
+                                            <strong>QR Code Detected</strong>
 
-                                    <p>
-                                        Scan a QR code to
-                                        verify the booking.
-                                    </p>
+                                            <p>
+                                                QR code scan ho gaya hai.
+                                                Please manually select the action.
+                                            </p>
+                                        </div>
 
-                                </div>
+                                        <div className="sq-action-buttons">
+
+                                            <button
+                                                type="button"
+                                                className="sq-entry-btn"
+                                                onClick={() => verifyQr("ENTRY")}
+                                            >
+                                                🟢 Allow Entry
+                                            </button>
+
+                                            <button
+                                                type="button"
+                                                className="sq-exit-btn"
+                                                onClick={() => verifyQr("EXIT")}
+                                            >
+                                                🔵 Allow Exit
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+                                ) : (
+                                    <div className="sq-empty">
+                                        📷
+
+                                        <p>
+                                            Scan a QR code to verify the booking.
+                                        </p>
+                                    </div>
+                                )
                             ) : (
                                 <div
                                     className={`sq-result ${result.success
@@ -762,6 +825,26 @@ function StaffCricketQRScanner() {
                                                 </strong>
                                             </div>
 
+                                        </div>
+                                    )}
+
+                                    {!result && decodedText && (
+                                        <div className="sq-action-buttons">
+                                            <button
+                                                type="button"
+                                                className="sq-entry-btn"
+                                                onClick={() => verifyQr("ENTRY")}
+                                            >
+                                                🟢 Allow Entry
+                                            </button>
+
+                                            <button
+                                                type="button"
+                                                className="sq-exit-btn"
+                                                onClick={() => verifyQr("EXIT")}
+                                            >
+                                                🔵 Allow Exit
+                                            </button>
                                         </div>
                                     )}
 
