@@ -44,87 +44,6 @@ const getPhotoUrl = (photo) => {
     return `${API_URL}/uploads/staff/${normalized}`;
 };
 
-const playQrBeep = async (type = "success") => {
-    try {
-        const AudioContextClass =
-            window.AudioContext ||
-            window.webkitAudioContext;
-
-        if (!AudioContextClass) {
-            return;
-        }
-
-        if (!audioContextRef.current) {
-            audioContextRef.current =
-                new AudioContextClass();
-        }
-
-        const audioContext =
-            audioContextRef.current;
-
-        if (audioContext.state === "suspended") {
-            await audioContext.resume();
-        }
-
-        const beep = (
-            frequency,
-            startDelay = 0
-        ) => {
-            const oscillator =
-                audioContext.createOscillator();
-
-            const gainNode =
-                audioContext.createGain();
-
-            oscillator.type = "sine";
-            oscillator.frequency.value =
-                frequency;
-
-            oscillator.connect(gainNode);
-            gainNode.connect(
-                audioContext.destination
-            );
-
-            const startTime =
-                audioContext.currentTime +
-                startDelay;
-
-            gainNode.gain.setValueAtTime(
-                0.0001,
-                startTime
-            );
-
-            gainNode.gain.exponentialRampToValueAtTime(
-                0.35,
-                startTime + 0.02
-            );
-
-            gainNode.gain.exponentialRampToValueAtTime(
-                0.0001,
-                startTime + 0.18
-            );
-
-            oscillator.start(startTime);
-
-            oscillator.stop(
-                startTime + 0.2
-            );
-        };
-
-        if (type === "success") {
-            beep(880, 0);
-            beep(1100, 0.23);
-        } else {
-            beep(400, 0);
-        }
-
-    } catch (error) {
-        console.warn(
-            "QR Beep Error:",
-            error
-        );
-    }
-};
 
 
 function StaffCricketQRScanner() {
@@ -150,6 +69,65 @@ function StaffCricketQRScanner() {
         staff.staff_photo ||
         localStorage.getItem("staffPhoto")
     );
+
+    const playQrBeep = async (type = "success") => {
+        try {
+            const AudioContextClass =
+                window.AudioContext ||
+                window.webkitAudioContext;
+
+            if (!AudioContextClass) {
+                return;
+            }
+
+            if (!audioContextRef.current) {
+                audioContextRef.current =
+                    new AudioContextClass();
+            }
+
+            const audioContext =
+                audioContextRef.current;
+
+            if (audioContext.state === "suspended") {
+                await audioContext.resume();
+            }
+
+            const oscillator =
+                audioContext.createOscillator();
+
+            const gainNode =
+                audioContext.createGain();
+
+            oscillator.type = "sine";
+            oscillator.frequency.value =
+                type === "success" ? 1000 : 450;
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            const now = audioContext.currentTime;
+
+            gainNode.gain.setValueAtTime(
+                0.0001,
+                now
+            );
+
+            gainNode.gain.exponentialRampToValueAtTime(
+                0.5,
+                now + 0.02
+            );
+
+            gainNode.gain.exponentialRampToValueAtTime(
+                0.0001,
+                now + 0.25
+            );
+
+            oscillator.start(now);
+            oscillator.stop(now + 0.28);
+        } catch (error) {
+            console.warn("QR Beep Error:", error);
+        }
+    };
 
     useEffect(() => {
         if (!token) {
@@ -281,11 +259,6 @@ function StaffCricketQRScanner() {
 
             const cameras =
                 await Html5Qrcode.getCameras();
-
-            console.log(
-                "Available cameras:",
-                cameras
-            );
 
             if (!cameras || cameras.length === 0) {
                 throw new Error(
@@ -620,7 +593,7 @@ function StaffCricketQRScanner() {
                         scannerError
                     );
                 }
-            }, 1000);
+            }, 300);
 
         } catch (error) {
             console.error(
