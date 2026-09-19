@@ -54,55 +54,85 @@ const playQrBeep = async (type = "success") => {
             return;
         }
 
-        const audioContext = new AudioContextClass();
+        if (!audioContextRef.current) {
+            audioContextRef.current =
+                new AudioContextClass();
+        }
+
+        const audioContext =
+            audioContextRef.current;
 
         if (audioContext.state === "suspended") {
             await audioContext.resume();
         }
 
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
+        const beep = (
+            frequency,
+            startDelay = 0
+        ) => {
+            const oscillator =
+                audioContext.createOscillator();
 
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
+            const gainNode =
+                audioContext.createGain();
 
-        oscillator.type = "sine";
-        oscillator.frequency.value =
-            type === "success" ? 880 : 420;
+            oscillator.type = "sine";
+            oscillator.frequency.value =
+                frequency;
 
-        gainNode.gain.setValueAtTime(
-            0.0001,
-            audioContext.currentTime
-        );
+            oscillator.connect(gainNode);
+            gainNode.connect(
+                audioContext.destination
+            );
 
-        gainNode.gain.exponentialRampToValueAtTime(
-            0.25,
-            audioContext.currentTime + 0.02
-        );
+            const startTime =
+                audioContext.currentTime +
+                startDelay;
 
-        gainNode.gain.exponentialRampToValueAtTime(
-            0.0001,
-            audioContext.currentTime + 0.22
-        );
+            gainNode.gain.setValueAtTime(
+                0.0001,
+                startTime
+            );
 
-        oscillator.start();
-        oscillator.stop(
-            audioContext.currentTime + 0.22
-        );
+            gainNode.gain.exponentialRampToValueAtTime(
+                0.35,
+                startTime + 0.02
+            );
 
-        oscillator.onended = () => {
-            audioContext.close().catch(() => { });
+            gainNode.gain.exponentialRampToValueAtTime(
+                0.0001,
+                startTime + 0.18
+            );
+
+            oscillator.start(startTime);
+
+            oscillator.stop(
+                startTime + 0.2
+            );
         };
+
+        if (type === "success") {
+            beep(880, 0);
+            beep(1100, 0.23);
+        } else {
+            beep(400, 0);
+        }
+
     } catch (error) {
-        console.warn("QR Beep Error:", error);
+        console.warn(
+            "QR Beep Error:",
+            error
+        );
     }
 };
+
 
 function StaffCricketQRScanner() {
     const navigate = useNavigate();
     const scannerRef = useRef(null);
     const isScanningRef = useRef(false);
     const processingRef = useRef(false);
+    const audioContextRef = useRef(null);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [ready, setReady] = useState(false);
     const [starting, setStarting] = useState(false);
@@ -477,13 +507,44 @@ function StaffCricketQRScanner() {
                 return;
             }
 
+            // ==========================================
+            // IMPORTANT:
+            // Initialize audio immediately from button click
+            // ==========================================
+
+            const AudioContextClass =
+                window.AudioContext ||
+                window.webkitAudioContext;
+
+            if (
+                AudioContextClass &&
+                !audioContextRef.current
+            ) {
+                audioContextRef.current =
+                    new AudioContextClass();
+            }
+
+            if (
+                audioContextRef.current &&
+                audioContextRef.current.state ===
+                "suspended"
+            ) {
+                await audioContextRef.current.resume();
+            }
+
+            // ==========================================
+            // VERIFY ACTION
+            // ==========================================
+
             const response = await fetch(
                 `${API_URL}/api/staff/cricket-box/scan`,
                 {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`
+                        "Content-Type":
+                            "application/json",
+                        Authorization:
+                            `Bearer ${token}`
                     },
                     body: JSON.stringify({
                         qr_token: qrToken,
@@ -492,15 +553,26 @@ function StaffCricketQRScanner() {
                 }
             );
 
-            const data = await response.json();
+            const data =
+                await response.json();
 
             console.log(
                 "QR ACTION RESPONSE:",
                 data
             );
 
-            if (!response.ok || !data.success) {
-                setResult(data);
+            // ==========================================
+            // ERROR
+            // ==========================================
+
+            if (
+                !response.ok ||
+                !data.success
+            ) {
+                setResult({
+                    ...data,
+                    qr_token: qrToken
+                });
 
                 setError(
                     data.message ||
@@ -512,25 +584,43 @@ function StaffCricketQRScanner() {
                 return;
             }
 
-            // Successful ENTRY / EXIT
+            // ==========================================
+            // SUCCESS RESULT
+            // ==========================================
+
             setResult({
                 ...data,
                 qr_token: qrToken
             });
 
-            // 🔊 SUCCESS BEEP
+            setError("");
+
+            // ==========================================
+            // SUCCESS BEEP
+            // ==========================================
+
             await playQrBeep("success");
 
-            // Automatically open scanner again
+            // ==========================================
+            // AUTOMATICALLY OPEN SCANNER
+            // ==========================================
+
             setTimeout(async () => {
-                setError("");
-                setResult(null);
-                setDecodedText("");
+                try {
+                    setError("");
+                    setResult(null);
+                    setDecodedText("");
 
-                processingRef.current = false;
+                    processingRef.current = false;
 
-                await startScanner();
-            }, 1200);
+                    await startScanner();
+                } catch (scannerError) {
+                    console.error(
+                        "Auto Scanner Restart Error:",
+                        scannerError
+                    );
+                }
+            }, 1000);
 
         } catch (error) {
             console.error(
@@ -549,7 +639,7 @@ function StaffCricketQRScanner() {
             setVerificationLoading(false);
         }
     };
-    
+
     const scanAnother = async () => {
         setError("");
         setResult(null);
