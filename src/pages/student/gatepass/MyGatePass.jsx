@@ -12,6 +12,7 @@ const MyGatePass = () => {
     const [gatePasses, setGatePasses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [menuOpen, setMenuOpen] = useState(false);
 
     useEffect(() => {
         loadStudent();
@@ -74,6 +75,11 @@ const MyGatePass = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleNavigation = (path) => {
+        setMenuOpen(false);
+        navigate(path);
     };
 
     const handleLogout = () => {
@@ -272,10 +278,23 @@ const MyGatePass = () => {
 
     return (
         <div className="my-gatepass-page">
+            <button
+                type="button"
+                className="student-mobile-menu-button"
+                onClick={() => setMenuOpen(true)}
+                aria-label="Open student menu"
+            >
+                ☰
+            </button>
+
+            <div
+                className={`student-mobile-overlay ${menuOpen ? "show" : ""}`}
+                onClick={() => setMenuOpen(false)}
+            />
 
             {/* ================= SIDEBAR ================= */}
 
-            <aside className="student-sidebar">
+            <aside className={`student-sidebar ${menuOpen ? "mobile-open" : ""}`}>
 
                 <div className="student-sidebar-brand">
 
@@ -288,15 +307,22 @@ const MyGatePass = () => {
                         <span>Student Portal</span>
                     </div>
 
+                    <button
+                        type="button"
+                        className="student-mobile-close"
+                        onClick={() => setMenuOpen(false)}
+                        aria-label="Close student menu"
+                    >
+                        ×
+                    </button>
+
                 </div>
 
                 <nav className="student-sidebar-nav">
 
                     <button
                         className="student-nav-item"
-                        onClick={() =>
-                            navigate("/student/dashboard")
-                        }
+                        onClick={() => handleNavigation("/student/dashboard")}
                     >
                         📊
                         <span>Dashboard</span>
@@ -304,9 +330,7 @@ const MyGatePass = () => {
 
                     <button
                         className="student-nav-item"
-                        onClick={() =>
-                            navigate("/student/profile")
-                        }
+                        onClick={() => handleNavigation("/student/profile")}
                     >
                         👤
                         <span>My Profile</span>
@@ -314,9 +338,7 @@ const MyGatePass = () => {
 
                     <button
                         className="student-nav-item"
-                        onClick={() =>
-                            navigate("/student/room")
-                        }
+                        onClick={() => handleNavigation("/student/room")}
                     >
                         🛏️
                         <span>My Room</span>
@@ -324,9 +346,7 @@ const MyGatePass = () => {
 
                     <button
                         className="student-nav-item"
-                        onClick={() =>
-                            navigate("/student/leave")
-                        }
+                        onClick={() => handleNavigation("/student/leave")}
                     >
                         📄
                         <span>My Leave</span>
@@ -334,9 +354,7 @@ const MyGatePass = () => {
 
                     <button
                         className="student-nav-item active"
-                        onClick={() =>
-                            navigate("/student/gatepass")
-                        }
+                        onClick={() => handleNavigation("/student/gatepass")}
                     >
                         🎫
                         <span>Gate Pass</span>
@@ -344,9 +362,7 @@ const MyGatePass = () => {
 
                     <button
                         className="student-nav-item"
-                        onClick={() =>
-                            navigate("/student/complaints")
-                        }
+                        onClick={() => handleNavigation("/student/complaints")}
                     >
                         🛠️
                         <span>Complaints</span>
@@ -354,9 +370,7 @@ const MyGatePass = () => {
 
                     <button
                         className="student-nav-item"
-                        onClick={() =>
-                            navigate("/student/fees")
-                        }
+                        onClick={() => handleNavigation("/student/fees")}
                     >
                         💰
                         <span>My Fees</span>
@@ -364,9 +378,7 @@ const MyGatePass = () => {
 
                     <button
                         className="student-nav-item"
-                        onClick={() =>
-                            navigate("/student/notifications")
-                        }
+                        onClick={() => handleNavigation("/student/notifications")}
                     >
                         🔔
                         <span>Notifications</span>
@@ -388,6 +400,20 @@ const MyGatePass = () => {
             {/* ================= MAIN ================= */}
 
             <main className="my-gatepass-main">
+                <div className="my-mobile-topbar">
+                    <button
+                        type="button"
+                        onClick={() => setMenuOpen(true)}
+                        aria-label="Open student menu"
+                    >
+                        ☰
+                    </button>
+                    <div>
+                        <strong>Hostel</strong>
+                        <span>Student Portal</span>
+                    </div>
+                    <span>🎫</span>
+                </div>
 
                 <div className="my-gatepass-header">
 
@@ -656,6 +682,38 @@ const MyGatePass = () => {
                                                 <strong>
                                                     {gatePass.return_time ||
                                                         "—"}
+                                                </strong>
+
+                                            </div>
+
+                                            <div className="gatepass-detail-item">
+
+                                                <span>
+                                                    📧 Parent Email
+                                                </span>
+
+                                                <strong>
+                                                    {gatePass.parent_email ||
+                                                        student?.parent_email ||
+                                                        "—"}
+                                                </strong>
+
+                                            </div>
+
+                                            <div className="gatepass-detail-item">
+
+                                                <span>
+                                                    👨‍👩‍👧 Parent Verification
+                                                </span>
+
+                                                <strong className={
+                                                    String(gatePass.otp_verified || "").toLowerCase() === "yes"
+                                                        ? "gatepass-approved-text"
+                                                        : "gatepass-pending-text"
+                                                }>
+                                                    {String(gatePass.otp_verified || "").toLowerCase() === "yes"
+                                                        ? "✓ Approved"
+                                                        : "Pending"}
                                                 </strong>
 
                                             </div>

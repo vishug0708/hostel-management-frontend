@@ -21,6 +21,7 @@ const ApplyGatePass = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+    const [menuOpen, setMenuOpen] = useState(false);
 
     useEffect(() => {
         const savedStudent = localStorage.getItem("student");
@@ -178,6 +179,11 @@ const ApplyGatePass = () => {
         }
     };
 
+    const handleNavigation = (path) => {
+        setMenuOpen(false);
+        navigate(path);
+    };
+
     const handleLogout = () => {
         localStorage.removeItem("studentToken");
         localStorage.removeItem("student");
@@ -189,10 +195,23 @@ const ApplyGatePass = () => {
 
     return (
         <div className="apply-gatepass-page">
+            <button
+                type="button"
+                className="student-mobile-menu-button"
+                onClick={() => setMenuOpen(true)}
+                aria-label="Open student menu"
+            >
+                ☰
+            </button>
+
+            <div
+                className={`student-mobile-overlay ${menuOpen ? "show" : ""}`}
+                onClick={() => setMenuOpen(false)}
+            />
 
             {/* ================= SIDEBAR ================= */}
 
-            <aside className="student-sidebar">
+            <aside className={`student-sidebar ${menuOpen ? "mobile-open" : ""}`}>
 
                 <div className="student-sidebar-brand">
 
@@ -205,15 +224,22 @@ const ApplyGatePass = () => {
                         <span>Student Portal</span>
                     </div>
 
+                    <button
+                        type="button"
+                        className="student-mobile-close"
+                        onClick={() => setMenuOpen(false)}
+                        aria-label="Close student menu"
+                    >
+                        ×
+                    </button>
+
                 </div>
 
                 <nav className="student-sidebar-nav">
 
                     <button
                         className="student-nav-item"
-                        onClick={() =>
-                            navigate("/student/dashboard")
-                        }
+                        onClick={() => handleNavigation("/student/dashboard")}
                     >
                         📊
                         <span>Dashboard</span>
@@ -221,9 +247,7 @@ const ApplyGatePass = () => {
 
                     <button
                         className="student-nav-item"
-                        onClick={() =>
-                            navigate("/student/profile")
-                        }
+                        onClick={() => handleNavigation("/student/profile")}
                     >
                         👤
                         <span>My Profile</span>
@@ -231,9 +255,7 @@ const ApplyGatePass = () => {
 
                     <button
                         className="student-nav-item"
-                        onClick={() =>
-                            navigate("/student/room")
-                        }
+                        onClick={() => handleNavigation("/student/room")}
                     >
                         🛏️
                         <span>My Room</span>
@@ -241,9 +263,7 @@ const ApplyGatePass = () => {
 
                     <button
                         className="student-nav-item"
-                        onClick={() =>
-                            navigate("/student/leave")
-                        }
+                        onClick={() => handleNavigation("/student/leave")}
                     >
                         📄
                         <span>My Leave</span>
@@ -251,9 +271,7 @@ const ApplyGatePass = () => {
 
                     <button
                         className="student-nav-item active"
-                        onClick={() =>
-                            navigate("/student/gatepass")
-                        }
+                        onClick={() => handleNavigation("/student/gatepass")}
                     >
                         🎫
                         <span>Gate Pass</span>
@@ -261,9 +279,7 @@ const ApplyGatePass = () => {
 
                     <button
                         className="student-nav-item"
-                        onClick={() =>
-                            navigate("/student/complaints")
-                        }
+                        onClick={() => handleNavigation("/student/complaints")}
                     >
                         🛠️
                         <span>Complaints</span>
@@ -271,9 +287,7 @@ const ApplyGatePass = () => {
 
                     <button
                         className="student-nav-item"
-                        onClick={() =>
-                            navigate("/student/fees")
-                        }
+                        onClick={() => handleNavigation("/student/fees")}
                     >
                         💰
                         <span>My Fees</span>
@@ -281,9 +295,7 @@ const ApplyGatePass = () => {
 
                     <button
                         className="student-nav-item"
-                        onClick={() =>
-                            navigate("/student/notifications")
-                        }
+                        onClick={() => handleNavigation("/student/notifications")}
                     >
                         🔔
                         <span>Notifications</span>
@@ -305,6 +317,20 @@ const ApplyGatePass = () => {
             {/* ================= MAIN CONTENT ================= */}
 
             <main className="apply-gatepass-main">
+                <div className="apply-mobile-topbar">
+                    <button
+                        type="button"
+                        onClick={() => setMenuOpen(true)}
+                        aria-label="Open student menu"
+                    >
+                        ☰
+                    </button>
+                    <div>
+                        <strong>Hostel</strong>
+                        <span>Student Portal</span>
+                    </div>
+                    <span>🎫</span>
+                </div>
 
                 {/* HEADER */}
 
@@ -325,9 +351,7 @@ const ApplyGatePass = () => {
 
                     <button
                         className="apply-gatepass-back"
-                        onClick={() =>
-                            navigate("/student/gatepass")
-                        }
+                        onClick={() => handleNavigation("/student/gatepass")}
                     >
                         ← My Gate Pass
                     </button>

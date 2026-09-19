@@ -12,6 +12,7 @@ const VerifyOtp = () => {
     const [loading, setLoading] = useState(false);
     const [resending, setResending] = useState(false);
     const [message, setMessage] = useState("");
+    const [menuOpen, setMenuOpen] = useState(false);
     const [error, setError] = useState("");
     const [countdown, setCountdown] = useState(60);
 
@@ -30,6 +31,17 @@ const VerifyOtp = () => {
 
         return () => clearInterval(timer);
     }, [countdown]);
+
+    const handleNavigation = (path) => {
+        setMenuOpen(false);
+        navigate(path);
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem("studentToken");
+        localStorage.removeItem("student");
+        navigate("/student/login", { replace: true });
+    };
 
     const handleChange = (index, value) => {
         if (!/^\d?$/.test(value)) return;
@@ -207,6 +219,101 @@ const VerifyOtp = () => {
 
     return (
         <div className="verify-otp-page">
+            <button type="button" className="student-mobile-menu-button" onClick={() => setMenuOpen(true)} aria-label="Open student menu">☰</button>
+
+            <div className={`student-mobile-overlay ${menuOpen ? "show" : ""}`} onClick={() => setMenuOpen(false)} />
+
+            <aside className={`student-sidebar ${menuOpen ? "mobile-open" : ""}`}>
+                <div className="student-sidebar-brand">
+                    <div className="student-brand-icon">🏠</div>
+                    <div><h2>Hostel</h2><span>Student Portal</span></div>
+                    <button type="button" className="student-mobile-close" onClick={() => setMenuOpen(false)} aria-label="Close student menu">×</button>
+                </div>
+
+                <nav className="student-sidebar-nav">
+                    <button
+                        type="button"
+                        className="student-nav-item"
+                        onClick={() => handleNavigation("/student/dashboard")}
+                    >
+                        📊
+                        <span>Dashboard</span>
+                    </button>
+                    <button
+                        type="button"
+                        className="student-nav-item"
+                        onClick={() => handleNavigation("/student/profile")}
+                    >
+                        👤
+                        <span>My Profile</span>
+                    </button>
+                    <button
+                        type="button"
+                        className="student-nav-item"
+                        onClick={() => handleNavigation("/student/room")}
+                    >
+                        🛏️
+                        <span>My Room</span>
+                    </button>
+                    <button
+                        type="button"
+                        className="student-nav-item"
+                        onClick={() => handleNavigation("/student/leave")}
+                    >
+                        📄
+                        <span>My Leave</span>
+                    </button>
+                    <button
+                        type="button"
+                        className="student-nav-item active"
+                        onClick={() => handleNavigation("/student/gatepass")}
+                    >
+                        🎫
+                        <span>Gate Pass</span>
+                    </button>
+                    <button
+                        type="button"
+                        className="student-nav-item"
+                        onClick={() => handleNavigation("/student/complaints")}
+                    >
+                        🛠️
+                        <span>Complaints</span>
+                    </button>
+                    <button
+                        type="button"
+                        className="student-nav-item"
+                        onClick={() => handleNavigation("/student/fees")}
+                    >
+                        💰
+                        <span>My Fees</span>
+                    </button>
+                    <button
+                        type="button"
+                        className="student-nav-item"
+                        onClick={() => handleNavigation("/student/notifications")}
+                    >
+                        🔔
+                        <span>Notifications</span>
+                    </button>
+                </nav>
+
+                <button
+                    type="button"
+                    className="student-logout-button"
+                    onClick={handleLogout}
+                >
+                    🚪
+                    <span>Logout</span>
+                </button>
+            </aside>
+
+            <main className="verify-otp-main">
+                <div className="verify-mobile-topbar">
+                    <button type="button" onClick={() => setMenuOpen(true)} aria-label="Open student menu">☰</button>
+                    <div><strong>Hostel</strong><span>Student Portal</span></div>
+                    <span>🔐</span>
+                </div>
+
             <div className="verify-otp-card">
                 <div className="verify-otp-header">
                     <div className="verify-otp-icon">
@@ -338,6 +445,7 @@ const VerifyOtp = () => {
                     </button>
                 </div>
             </div>
+            </main>
         </div>
     );
 };

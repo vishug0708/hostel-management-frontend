@@ -18,6 +18,7 @@ const ViewGatePass = () => {
     );
     const [loading, setLoading] = useState(!gatePass);
     const [error, setError] = useState("");
+    const [menuOpen, setMenuOpen] = useState(false);
 
     useEffect(() => {
         if (gatePass) {
@@ -73,6 +74,17 @@ const ViewGatePass = () => {
 
         loadGatePass();
     }, [gatePass, gatePassId, navigate]);
+
+    const handleNavigation = (path) => {
+        setMenuOpen(false);
+        navigate(path);
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem("studentToken");
+        localStorage.removeItem("student");
+        navigate("/student/login", { replace: true });
+    };
 
     if (loading) {
         return (
@@ -155,6 +167,9 @@ const ViewGatePass = () => {
     const approved =
         String(gatePass.rector || "").toLowerCase() === "approved";
 
+    const parentApproved =
+        String(gatePass.otp_verified || "").toLowerCase() === "yes";
+
     const qrValue =
         approved && gatePass.qr_code
             ? gatePass.qr_code
@@ -176,7 +191,122 @@ const ViewGatePass = () => {
 
     return (
         <div className="view-gatepass-page">
-            <div className="view-gatepass-wrapper">
+            <button
+                type="button"
+                className="student-mobile-menu-button"
+                onClick={() => setMenuOpen(true)}
+                aria-label="Open student menu"
+            >
+                ☰
+            </button>
+
+            <div
+                className={`student-mobile-overlay ${menuOpen ? "show" : ""}`}
+                onClick={() => setMenuOpen(false)}
+            />
+
+            <aside className={`student-sidebar ${menuOpen ? "mobile-open" : ""}`}>
+                <div className="student-sidebar-brand">
+                    <div className="student-brand-icon">🏠</div>
+                    <div>
+                        <h2>Hostel</h2>
+                        <span>Student Portal</span>
+                    </div>
+                    <button
+                        type="button"
+                        className="student-mobile-close"
+                        onClick={() => setMenuOpen(false)}
+                        aria-label="Close student menu"
+                    >
+                        ×
+                    </button>
+                </div>
+
+                <nav className="student-sidebar-nav">
+                    <button
+                        type="button"
+                        className="student-nav-item"
+                        onClick={() => handleNavigation("/student/dashboard")}
+                    >
+                        📊
+                        <span>Dashboard</span>
+                    </button>
+                    <button
+                        type="button"
+                        className="student-nav-item"
+                        onClick={() => handleNavigation("/student/profile")}
+                    >
+                        👤
+                        <span>My Profile</span>
+                    </button>
+                    <button
+                        type="button"
+                        className="student-nav-item"
+                        onClick={() => handleNavigation("/student/room")}
+                    >
+                        🛏️
+                        <span>My Room</span>
+                    </button>
+                    <button
+                        type="button"
+                        className="student-nav-item"
+                        onClick={() => handleNavigation("/student/leave")}
+                    >
+                        📄
+                        <span>My Leave</span>
+                    </button>
+                    <button
+                        type="button"
+                        className="student-nav-item active"
+                        onClick={() => handleNavigation("/student/gatepass")}
+                    >
+                        🎫
+                        <span>Gate Pass</span>
+                    </button>
+                    <button
+                        type="button"
+                        className="student-nav-item"
+                        onClick={() => handleNavigation("/student/complaints")}
+                    >
+                        🛠️
+                        <span>Complaints</span>
+                    </button>
+                    <button
+                        type="button"
+                        className="student-nav-item"
+                        onClick={() => handleNavigation("/student/fees")}
+                    >
+                        💰
+                        <span>My Fees</span>
+                    </button>
+                    <button
+                        type="button"
+                        className="student-nav-item"
+                        onClick={() => handleNavigation("/student/notifications")}
+                    >
+                        🔔
+                        <span>Notifications</span>
+                    </button>
+                </nav>
+
+                <button
+                    type="button"
+                    className="student-logout-button"
+                    onClick={handleLogout}
+                >
+                    🚪
+                    <span>Logout</span>
+                </button>
+            </aside>
+
+            <main className="view-gatepass-main">
+                <div className="view-mobile-topbar">
+                    <button type="button" onClick={() => setMenuOpen(true)} aria-label="Open student menu">☰</button>
+                    <div><strong>Hostel</strong><span>Student Portal</span></div>
+                    <span>🎫</span>
+                </div>
+
+                <div className="view-gatepass-wrapper">
                 <button
                     className="view-gatepass-back"
                     onClick={() => navigate("/student/gatepass")}
@@ -351,44 +481,74 @@ const ViewGatePass = () => {
                         </div>
                     </section>
 
-                    {approved && qrValue && (
-                        <section className="view-gatepass-qr">
-                            <h2>QR CODE</h2>
+                    <section className="view-gatepass-qr">
+                        <h2>QR CODE</h2>
 
-                            <div className="view-gatepass-qr-box">
-                                <QRCodeSVG
-                                    value={String(qrValue)}
-                                    size={210}
-                                    level="H"
-                                    includeMargin
-                                />
+                        {approved && qrValue ? (
+                            <>
+                                <div className="view-gatepass-qr-box">
+                                    <QRCodeSVG
+                                        value={String(qrValue)}
+                                        size={220}
+                                        level="H"
+                                        includeMargin
+                                    />
+                                </div>
+
+                                <p>Scan this QR code at the hostel security gate.</p>
+                            </>
+                        ) : (
+                            <div className="view-gatepass-qr-placeholder">
+                                <span>▦</span>
+                                <strong>QR Code Not Generated</strong>
+                                <small>QR will be generated after rector approval.</small>
                             </div>
+                        )}
+                    </section>
 
-                            <p>
-                                Scan this QR code at the hostel security gate.
-                            </p>
-                        </section>
-                    )}
+                    <section className="view-gatepass-approval-panel">
+                        <div className="approval-row">
+                            <span>Parent Verification</span>
+                            <strong className={parentApproved ? "view-approved" : "view-pending"}>
+                                {parentApproved ? "✓ Approved" : "⏳ Pending"}
+                            </strong>
+                        </div>
 
-                    <section className="view-gatepass-rector">
+                        <div className="approval-row">
+                            <span>Rector Approval</span>
+                            <strong className={approved ? "view-approved" : "view-pending"}>
+                                {approved ? "✓ Approved" : "⏳ Pending"}
+                            </strong>
+                        </div>
+                    </section>
+
+                    <section className="view-gatepass-approved-by">
                         <div>
-                            <span>RECTOR</span>
+                            <span>Approved By</span>
                             <strong>
                                 {gatePass.rector_name ||
                                     gatePass.rectorName ||
+                                    gatePass.approved_by_name ||
                                     "Hostel Rector"}
                             </strong>
-                            <small>
-                                {gatePass.rector_mobile ||
-                                    gatePass.rectorMobile ||
-                                    "—"}
-                            </small>
                         </div>
 
                         <div>
-                            <span>RECTOR STATUS</span>
-                            <strong className="view-approved">
-                                {approved ? "✓ Approved" : "Pending"}
+                            <span>Mobile</span>
+                            <strong>
+                                {gatePass.rector_mobile ||
+                                    gatePass.rectorMobile ||
+                                    gatePass.approved_by_mobile ||
+                                    "—"}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Hostel</span>
+                            <strong>
+                                {student?.hostel ||
+                                    gatePass.hostel ||
+                                    "Virtuous Hostel"}
                             </strong>
                         </div>
                     </section>
@@ -448,7 +608,7 @@ const ViewGatePass = () => {
                         </span>
                     </div>
                 </div>
-            </div>
+            </main>
         </div>
     );
 };

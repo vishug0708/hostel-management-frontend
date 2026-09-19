@@ -368,3 +368,170 @@
         margin: 20px 16px 24px;
     }
 }
+
+/* Mobile hamburger navigation */
+.student-mobile-menu-button,
+.student-mobile-overlay,
+.student-mobile-close,
+.apply-mobile-topbar,
+.my-mobile-topbar,
+.view-mobile-topbar,
+.verify-mobile-topbar {
+    display: none;
+}
+
+@media (max-width: 900px) {
+    .student-sidebar {
+        transform: translateX(-105%);
+        transition: transform 0.25s ease;
+        box-shadow: 15px 0 35px rgba(0, 0, 0, 0.18);
+    }
+
+    .student-sidebar.mobile-open {
+        transform: translateX(0);
+    }
+
+    .student-mobile-menu-button {
+        position: fixed;
+        top: 14px;
+        left: 14px;
+        z-index: 1100;
+        width: 46px;
+        height: 46px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        border-radius: 12px;
+        background: #0d172a;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        box-shadow: 0 8px 20px rgba(13, 23, 42, 0.22);
+    }
+
+    .student-mobile-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 900;
+        display: block;
+        visibility: hidden;
+        background: rgba(5, 15, 30, 0.48);
+        opacity: 0;
+        transition: 0.2s ease;
+    }
+
+    .student-mobile-overlay.show {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    .student-mobile-close {
+        display: block;
+        margin-left: auto;
+        border: none;
+        background: transparent;
+        color: white;
+        font-size: 30px;
+        line-height: 1;
+        cursor: pointer;
+    }
+
+    .apply-gatepass-main,
+    .my-gatepass-main,
+    .verify-otp-main {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .apply-mobile-topbar,
+    .my-mobile-topbar,
+    .view-mobile-topbar,
+    .verify-mobile-topbar {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 72px;
+        background: white;
+        border-bottom: 1px solid #dfe8ee;
+    }
+
+    .apply-mobile-topbar,
+    .my-mobile-topbar,
+    .view-mobile-topbar,
+    .verify-mobile-topbar {
+        margin: -40px -48px 25px;
+        padding: 12px 22px 12px 72px;
+    }
+
+    .apply-mobile-topbar button,
+    .my-mobile-topbar button,
+    .view-mobile-topbar button,
+    .verify-mobile-topbar button {
+        position: absolute;
+        left: 18px;
+        width: 42px;
+        height: 42px;
+        border: none;
+        background: transparent;
+        color: #102f4f;
+        font-size: 27px;
+        cursor: pointer;
+    }
+
+    .apply-mobile-topbar strong,
+    .my-mobile-topbar strong,
+    .view-mobile-topbar strong,
+    .verify-mobile-topbar strong {
+        display: block;
+        color: #102f4f;
+        font-size: 18px;
+    }
+
+    .apply-mobile-topbar div span,
+    .my-mobile-topbar div span,
+    .view-mobile-topbar div span,
+    .verify-mobile-topbar div span {
+        display: block;
+        margin-top: 2px;
+        color: #75879a;
+        font-size: 11px;
+    }
+
+    .apply-mobile-topbar > span,
+    .my-mobile-topbar > span,
+    .view-mobile-topbar > span,
+    .verify-mobile-topbar > span {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 620px) {
+    .apply-gatepass-main,
+    .my-gatepass-main,
+    .verify-otp-main {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .apply-mobile-topbar,
+    .my-mobile-topbar,
+    .view-mobile-topbar,
+    .verify-mobile-topbar {
+        margin-left: -14px;
+        margin-right: -14px;
+        margin-bottom: 18px;
+    }
+}
+
+.gatepass-approved-text,
+.view-approved {
+    color: #159653 !important;
+}
+
+.gatepass-pending-text,
+.view-pending {
+    color: #d78300 !important;
+}
+
