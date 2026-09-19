@@ -32,19 +32,8 @@ const GatePass = () => {
             setLoading(true);
             setError("");
 
-            const token = localStorage.getItem("rectorToken");
-
             const response = await fetch(
-                `${API_URL}/api/rector/gatepass`,
-                {
-                    headers: {
-                        ...(token
-                            ? {
-                                  Authorization: `Bearer ${token}`
-                              }
-                            : {})
-                    }
-                }
+                `${API_URL}/api/rector/gatepass`
             );
 
             const data = await response.json();
@@ -91,12 +80,7 @@ const GatePass = () => {
                     method: "PUT",
                     headers: {
                         "Content-Type":
-                            "application/json",
-                        ...(localStorage.getItem("rectorToken")
-                            ? {
-                                  Authorization: `Bearer ${localStorage.getItem("rectorToken")}`
-                              }
-                            : {})
+                            "application/json"
                     }
                 }
             );
@@ -116,11 +100,7 @@ const GatePass = () => {
                     pass.id === gatePassId
                         ? {
                               ...pass,
-                              rector: status,
-                              qr_code:
-                                  status === "Approved"
-                                      ? data.qr_code || pass.qr_code
-                                      : null
+                              rector: status
                           }
                         : pass
                 )
@@ -790,12 +770,6 @@ const GatePass = () => {
                                                                 )}
                                                             </strong>
 
-                                                            <small>
-                                                                {formatTime(
-                                                                    pass.return_time
-                                                                )}
-                                                            </small>
-
                                                         </div>
 
                                                     </td>
@@ -861,7 +835,7 @@ const GatePass = () => {
                                                                 >
                                                                     {processing
                                                                         ? "..."
-                                                                        : "✓ Approve & Generate QR"}
+                                                                        : "✓ Approve"}
                                                                 </button>
 
                                                                 <button
