@@ -1,373 +1,264 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import "./AllowExit.css";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const AllowExit = () => {
-  const navigate = useNavigate();
-  const { id } = useParams();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { id } = useParams();
 
-  const [gatePass, setGatePass] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [processing, setProcessing] = useState(false);
-  const [error, setError] = useState("");
+    const [gatePass, setGatePass] = useState(location.state?.gatePass || null);
+    const [loading, setLoading] = useState(!location.state?.gatePass);
+    const [processing, setProcessing] = useState(false);
+    const [error, setError] = useState("");
 
-  const security = JSON.parse(localStorage.getItem("security") || "{}");
+    const security = JSON.parse(localStorage.getItem("security") || "{}");
+    const securityToken = localStorage.getItem("securityToken");
 
-  useEffect(() => {
-    fetchGatePass();
-  }, [id]);
-
-  const fetchGatePass = async () => {
-    try {
-      setLoading(true);
-      setError("");
-
-      const response = await fetch(
-        `${API_URL}/api/security/gatepass/scan`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            verification_code: id,
-          }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Unable to verify gate pass");
-      }
-
-      setGatePass(data.gatePass);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleAllowExit = async () => {
-    if (!gatePass?.id) return;
-
-    try {
-      setProcessing(true);
-      setError("");
-
-      const response = await fetch(
-        `${API_URL}/api/security/gatepass/${gatePass.id}/exit`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Unable to allow exit");
-      }
-
-      alert("Student exit allowed successfully.");
-
-      navigate("/security/gatepass/scan");
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setProcessing(false);
-    }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("security");
-    localStorage.removeItem("securityToken");
-    navigate("/security/login");
-  };
-
-  const formatDate = (date) => {
-    if (!date) return "-";
-
-    return new Date(date).toLocaleDateString("en-IN", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
+    const getHeaders = () => ({
+        "Content-Type": "application/json",
+        ...(securityToken ? { Authorization: `Bearer ${securityToken}` } : {})
     });
-  };
 
-  const formatDateTime = (date) => {
-    if (!date) return "-";
+    const fetchGatePass = async () => {
+        try {
+            setLoading(true);
+            setError("");
 
-    return new Date(date).toLocaleString("en-IN", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
+            const response = await fetch(`${API_URL}/api/security/gatepass/scan`, {
+                method: "POST",
+                headers: getHeaders(),
+                body: JSON.stringify({
+                    verification_code: decodeURIComponent(id || "")
+                })
+            });
 
-  return (
-    <div className="security-layout">
-      <aside className="security-sidebar">
-        <div className="security-logo">
-          <div className="security-logo-icon">🛡️</div>
-          <div>
-            <h2>Security</h2>
-            <span>Hostel Management</span>
-          </div>
+            const data = await response.json();
+
+            if (!response.ok || !(data.gatePass || data.data)) {
+                throw new Error(data.message || "Unable to verify gate pass.");
+            }
+
+            setGatePass(data.gatePass || data.data);
+        } catch (err) {
+            setError(err.message || "Unable to verify gate pass.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (!gatePass) {
+            fetchGatePass();
+        }
+    }, [id]);
+
+    const handleAllowExit = async () => {
+        if (!gatePass?.id || processing) {
+            return;
+        }
+
+        try {
+            setProcessing(true);
+            setError("");
+
+            const response = await fetch(`${API_URL}/api/security/gatepass/${gatePass.id}/exit`, {
+                method: "PUT",
+                headers: getHeaders(),
+                body: JSON.stringify({
+                    security_id: security.id || security.security_id
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || "Unable to allow exit.");
+            }
+
+            navigate("/security/gatepass/scan", {
+                replace: true,
+                state: { message: "Student exit allowed successfully." }
+            });
+        } catch (err) {
+            setError(err.message || "Unable to allow exit.");
+        } finally {
+            setProcessing(false);
+        }
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem("security");
+        localStorage.removeItem("securityToken");
+        navigate("/security/login", { replace: true });
+    };
+
+    const formatDate = (date) => {
+        if (!date) return "—";
+        const value = new Date(date);
+        if (Number.isNaN(value.getTime())) return date;
+        return value.toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        });
+    };
+
+    const formatTime = (time) => {
+        if (!time) return "—";
+        const parts = String(time).split(":");
+        if (parts.length < 2) return time;
+        let hour = Number(parts[0]);
+        const minute = parts[1];
+        const period = hour >= 12 ? "PM" : "AM";
+        hour = hour % 12 || 12;
+        return `${String(hour).padStart(2, "0")}:${minute} ${period}`;
+    };
+
+    const formatDateTime = (date) => {
+        if (!date) return "—";
+        const value = new Date(date);
+        if (Number.isNaN(value.getTime())) return date;
+        return value.toLocaleString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true
+        });
+    };
+
+    return (
+        <div className="security-exit-page">
+            <aside className="security-exit-sidebar">
+                <div className="security-exit-brand">
+                    <div>🛡️</div>
+                    <span><strong>Virtuous</strong>Security Panel</span>
+                </div>
+                <nav>
+                    <button onClick={() => navigate("/security/dashboard")}>📊 Dashboard</button>
+                    <button className="active" onClick={() => navigate("/security/gatepass/scan")}>📷 Scan Gate Pass</button>
+                    <button onClick={() => navigate("/security/gatepass/exit-records")}>🚪 Exit Records</button>
+                    <button onClick={() => navigate("/security/gatepass/entry-records")}>🏠 Entry Records</button>
+                    <button onClick={() => navigate("/security/profile")}>👤 Profile</button>
+                </nav>
+                <div className="security-exit-bottom">
+                    <div className="security-exit-user">
+                        <div>{security?.name?.charAt(0)?.toUpperCase() || "S"}</div>
+                        <span>{security?.name || "Security Guard"}</span>
+                    </div>
+                    <button onClick={handleLogout}>🚪 Logout</button>
+                </div>
+            </aside>
+
+            <main className="security-exit-main">
+                <header className="security-exit-header">
+                    <div>
+                        <span>GATE PASS • EXIT</span>
+                        <h1>Allow Student Exit</h1>
+                        <p>Confirm the approved gate pass before the student leaves the hostel.</p>
+                    </div>
+                    <button onClick={() => navigate("/security/gatepass/scan")}>← Scanner</button>
+                </header>
+
+                {loading && (
+                    <div className="security-exit-state">Verifying gate pass...</div>
+                )}
+
+                {!loading && error && (
+                    <div className="security-exit-error">
+                        <strong>⚠️ Gate Pass Verification Failed</strong>
+                        <span>{error}</span>
+                        <button onClick={() => navigate("/security/gatepass/scan")}>Back to Scanner</button>
+                    </div>
+                )}
+
+                {!loading && !error && gatePass && (
+                    <div className="security-exit-container">
+                        {gatePass.security_exit === "Yes" ? (
+                            <div className="security-exit-complete">
+                                <div>✓</div>
+                                <h2>Exit Already Recorded</h2>
+                                <p>This student has already been allowed to leave. The next scan will be handled as hostel entry.</p>
+                                <button onClick={() => navigate(`/security/gatepass/allow-entry/${encodeURIComponent(gatePass.verification_code || id)}`, { state: { gatePass } })}>
+                                    Continue to Entry
+                                </button>
+                            </div>
+                        ) : (
+                            <>
+                                <div className="security-exit-status">
+                                    <span>✓</span>
+                                    <div>
+                                        <strong>Rector Approved</strong>
+                                        <p>Gate pass is approved and ready for security exit verification.</p>
+                                    </div>
+                                </div>
+
+                                <section className="security-exit-card">
+                                    <div className="security-exit-card-title">
+                                        <span>Student Details</span>
+                                        <b>APPROVED</b>
+                                    </div>
+                                    <div className="security-exit-student">
+                                        {gatePass.photo ? (
+                                            <img src={`${API_URL}/uploads/students/${gatePass.photo}`} alt={gatePass.name || "Student"} />
+                                        ) : (
+                                            <div className="security-exit-photo-placeholder">{gatePass.name?.charAt(0)?.toUpperCase() || "S"}</div>
+                                        )}
+                                        <div>
+                                            <h2>{gatePass.name || "Student"}</h2>
+                                            <div className="security-exit-details">
+                                                <div><span>Student ID</span><strong>{gatePass.student_id || "—"}</strong></div>
+                                                <div><span>Mobile</span><strong>{gatePass.mobile || "—"}</strong></div>
+                                                <div><span>College</span><strong>{gatePass.college || "—"}</strong></div>
+                                                <div><span>Course</span><strong>{gatePass.course || "—"}</strong></div>
+                                                <div><span>Hostel</span><strong>{gatePass.hostel || "—"}</strong></div>
+                                                <div><span>Room</span><strong>{gatePass.room_no ? `${gatePass.block || ""} ${gatePass.room_no}` : "—"}</strong></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <section className="security-exit-card">
+                                    <div className="security-exit-card-title">
+                                        <span>Gate Pass Details</span>
+                                        <b>QR VERIFIED</b>
+                                    </div>
+                                    <div className="security-exit-details gatepass">
+                                        <div><span>Destination</span><strong>{gatePass.destination || "—"}</strong></div>
+                                        <div><span>Purpose</span><strong>{gatePass.purpose || "—"}</strong></div>
+                                        <div><span>Exit Date</span><strong>{formatDate(gatePass.out_date)}</strong></div>
+                                        <div><span>Return Date</span><strong>{formatDate(gatePass.return_date)}</strong></div>
+                                        <div><span>Exit Time</span><strong>{formatTime(gatePass.out_time)}</strong></div>
+                                        <div><span>Parent OTP</span><strong className="verified">✓ Verified</strong></div>
+                                    </div>
+                                </section>
+
+                                <section className="security-exit-action">
+                                    <div className="security-exit-action-icon">🚪</div>
+                                    <div>
+                                        <h2>Allow Hostel Exit?</h2>
+                                        <p>Confirm that <strong>{gatePass.name || "the student"}</strong> is leaving using this approved gate pass.</p>
+                                        <small>After exit is recorded, the same QR will be used for the student's return entry.</small>
+                                        <button onClick={handleAllowExit} disabled={processing}>
+                                            {processing ? "Recording Exit..." : "✓ Allow Exit"}
+                                        </button>
+                                    </div>
+                                </section>
+
+                                {gatePass.exit_datetime && (
+                                    <div className="security-exit-recorded">✓ Exit recorded at {formatDateTime(gatePass.exit_datetime)}</div>
+                                )}
+                            </>
+                        )}
+                    </div>
+                )}
+            </main>
         </div>
-
-        <nav className="security-nav">
-          <button onClick={() => navigate("/security/dashboard")}>
-            <span>📊</span>
-            Dashboard
-          </button>
-
-          <button
-            className="active"
-            onClick={() => navigate("/security/gatepass/scan")}
-          >
-            <span>📷</span>
-            Scan Gate Pass
-          </button>
-
-          <button
-            onClick={() => navigate("/security/gatepass/exit-records")}
-          >
-            <span>🚪</span>
-            Exit Records
-          </button>
-
-          <button
-            onClick={() => navigate("/security/gatepass/entry-records")}
-          >
-            <span>🏠</span>
-            Entry Records
-          </button>
-
-          <button onClick={() => navigate("/security/profile")}>
-            <span>👤</span>
-            Profile
-          </button>
-        </nav>
-
-        <div className="security-sidebar-bottom">
-          <div className="security-user">
-            <div className="security-user-avatar">
-              {security?.name
-                ? security.name.charAt(0).toUpperCase()
-                : "S"}
-            </div>
-
-            <div className="security-user-info">
-              <strong>{security?.name || "Security Guard"}</strong>
-              <span>{security?.hostel_name || "Hostel"}</span>
-            </div>
-          </div>
-
-          <button className="security-logout" onClick={handleLogout}>
-            <span>🚪</span>
-            Logout
-          </button>
-        </div>
-      </aside>
-
-      <main className="security-main">
-        <div className="security-page-header">
-          <div>
-            <h1>Allow Student Exit</h1>
-            <p>Verify gate pass and allow student to leave hostel</p>
-          </div>
-
-          <button
-            className="back-button"
-            onClick={() => navigate("/security/gatepass/scan")}
-          >
-            ← Back to Scanner
-          </button>
-        </div>
-
-        {loading && (
-          <div className="security-message loading-message">
-            <div className="loader"></div>
-            <p>Verifying gate pass...</p>
-          </div>
-        )}
-
-        {!loading && error && (
-          <div className="security-message error-message">
-            <div className="message-icon">⚠️</div>
-            <h3>Gate Pass Verification Failed</h3>
-            <p>{error}</p>
-
-            <button
-              onClick={() => navigate("/security/gatepass/scan")}
-              className="primary-button"
-            >
-              Back to Scanner
-            </button>
-          </div>
-        )}
-
-        {!loading && !error && gatePass && (
-          <div className="allow-container">
-            <div className="verification-badge">
-              <span>✓</span>
-              Gate Pass Verified
-            </div>
-
-            <div className="student-card">
-              <div className="student-card-header">
-                <h2>Student Details</h2>
-                <span className="approved-badge">RECTOR APPROVED</span>
-              </div>
-
-              <div className="student-content">
-                <div className="student-photo-wrapper">
-                  {gatePass.photo ? (
-                    <img
-                      src={`${API_URL}/uploads/students/${gatePass.photo}`}
-                      alt={gatePass.name}
-                      className="student-photo"
-                    />
-                  ) : (
-                    <div className="student-photo-placeholder">
-                      {gatePass.name?.charAt(0).toUpperCase() || "S"}
-                    </div>
-                  )}
-                </div>
-
-                <div className="student-info">
-                  <h3>{gatePass.name}</h3>
-
-                  <div className="info-grid">
-                    <div className="info-item">
-                      <span>Student ID</span>
-                      <strong>{gatePass.student_id}</strong>
-                    </div>
-
-                    <div className="info-item">
-                      <span>Mobile</span>
-                      <strong>{gatePass.mobile || "-"}</strong>
-                    </div>
-
-                    <div className="info-item">
-                      <span>College</span>
-                      <strong>{gatePass.college || "-"}</strong>
-                    </div>
-
-                    <div className="info-item">
-                      <span>Course</span>
-                      <strong>{gatePass.course || "-"}</strong>
-                    </div>
-
-                    <div className="info-item">
-                      <span>Hostel</span>
-                      <strong>{gatePass.hostel || "-"}</strong>
-                    </div>
-
-                    <div className="info-item">
-                      <span>Room</span>
-                      <strong>
-                        {gatePass.room_no
-                          ? `${gatePass.block || ""} ${gatePass.room_no}`
-                          : "-"}
-                      </strong>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="gatepass-card">
-              <div className="card-title">
-                <span>🎫</span>
-                <h2>Gate Pass Details</h2>
-              </div>
-
-              <div className="gatepass-grid">
-                <div className="detail-item">
-                  <span>Destination</span>
-                  <strong>{gatePass.destination || "-"}</strong>
-                </div>
-
-                <div className="detail-item">
-                  <span>Purpose</span>
-                  <strong>{gatePass.purpose || "-"}</strong>
-                </div>
-
-                <div className="detail-item">
-                  <span>Out Date</span>
-                  <strong>{formatDate(gatePass.out_date)}</strong>
-                </div>
-
-                <div className="detail-item">
-                  <span>Return Date</span>
-                  <strong>{formatDate(gatePass.return_date)}</strong>
-                </div>
-
-                <div className="detail-item">
-                  <span>Out Time</span>
-                  <strong>{gatePass.out_time || "-"}</strong>
-                </div>
-
-                <div className="detail-item">
-                  <span>Parent OTP</span>
-                  <strong className="verified-text">
-                    ✓ Verified
-                  </strong>
-                </div>
-              </div>
-            </div>
-
-            <div className="exit-confirm-card">
-              <div className="exit-icon">🚪</div>
-
-              <div className="exit-content">
-                <h2>Allow Hostel Exit?</h2>
-                <p>
-                  Confirm that <strong>{gatePass.name}</strong> is leaving
-                  the hostel using this approved gate pass.
-                </p>
-
-                <div className="exit-warning">
-                  ⚠️ Once exit is recorded, the student can use the same
-                  gate pass for entry when returning.
-                </div>
-
-                <button
-                  className="allow-exit-button"
-                  onClick={handleAllowExit}
-                  disabled={
-                    processing || gatePass.security_exit === "Yes"
-                  }
-                >
-                  {processing
-                    ? "Recording Exit..."
-                    : gatePass.security_exit === "Yes"
-                    ? "✓ Exit Already Recorded"
-                    : "✓ Allow Exit"}
-                </button>
-              </div>
-            </div>
-
-            {gatePass.exit_datetime && (
-              <div className="recorded-info">
-                <span>✓</span>
-                Exit recorded at {formatDateTime(gatePass.exit_datetime)}
-              </div>
-            )}
-          </div>
-        )}
-      </main>
-    </div>
-  );
+    );
 };
 
 export default AllowExit;
