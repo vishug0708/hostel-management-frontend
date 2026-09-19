@@ -5,6 +5,14 @@ import "./MyGatePass.css";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
+const getStudentToken = () => {
+    return (
+        localStorage.getItem("studentToken") ||
+        localStorage.getItem("token") ||
+        ""
+    );
+};
+
 const MyGatePass = () => {
     const navigate = useNavigate();
 
@@ -15,6 +23,23 @@ const MyGatePass = () => {
 
     useEffect(() => {
         loadStudent();
+
+        const timer = setInterval(() => {
+            const savedStudent = localStorage.getItem("student");
+
+            if (savedStudent) {
+                try {
+                    const currentStudent = JSON.parse(savedStudent);
+                    if (currentStudent?.id) {
+                        fetchGatePasses(currentStudent.id, true);
+                    }
+                } catch (error) {
+                    console.error("Gate Pass Auto Refresh Error:", error);
+                }
+            }
+        }, 30000);
+
+        return () => clearInterval(timer);
     }, []);
 
     const loadStudent = async () => {
@@ -42,7 +67,7 @@ const MyGatePass = () => {
             setLoading(true);
             setError("");
 
-            const token = localStorage.getItem("studentToken");
+            const token = getStudentToken();
 
             const response = await fetch(
                 `${API_URL}/api/student/gatepass/my/${studentId}`,
@@ -141,12 +166,14 @@ const MyGatePass = () => {
 
     const getStatus = (gatePass) => {
         const rectorStatus =
-            String(gatePass.rector || "").toLowerCase();
+            String(gatePass.rector || "Pending").toLowerCase();
 
-        if (
-            rectorStatus.includes("reject") ||
-            rectorStatus.includes("rejected")
-        ) {
+        const parentVerified =
+            gatePass.otp_verified === "Yes" ||
+            gatePass.otp_verified === 1 ||
+            gatePass.otp_verified === true;
+
+        if (rectorStatus === "rejected" || rectorStatus.includes("reject")) {
             return {
                 label: "Rejected",
                 className: "rejected"
@@ -173,18 +200,22 @@ const MyGatePass = () => {
             };
         }
 
-        if (
-            rectorStatus === "approved" ||
-            rectorStatus === "approve"
-        ) {
+        if (rectorStatus === "approved") {
             return {
                 label: "Approved",
                 className: "approved"
             };
         }
 
+        if (!parentVerified) {
+            return {
+                label: "Parent Verification Pending",
+                className: "pending-parent"
+            };
+        }
+
         return {
-            label: "Pending",
+            label: "Pending Rector Approval",
             className: "pending"
         };
     };
@@ -210,8 +241,8 @@ const MyGatePass = () => {
          * is not present in gate_pass.
          */
 
-        if (gatePass.out_time) {
-            return `${gatePass.return_date}T${gatePass.out_time}`;
+        if (gatePass.return_time) {
+            return `${gatePass.return_date}T${gatePass.return_time}`;
         }
 
         return `${gatePass.return_date}T23:59:59`;
@@ -260,11 +291,39 @@ const MyGatePass = () => {
     };
 
     const getQRValue = (gatePass) => {
-        if (!gatePass.verification_code) {
-            return "";
-        }
+        return String(
+            gatePass.verification_code ||
+            gatePass.qr_code ||
+            ""
+        );
+    };
 
-        return gatePass.verification_code;
+    const isCompleted = (gatePass) => {
+        return (
+            gatePass.security_entry === "Yes" ||
+            gatePass.security_entry === 1
+        );
+    };
+
+    const isRejected = (gatePass) => {
+        return String(gatePass.rector || "").toLowerCase() === "rejected";
+    };
+
+    const incompletePass = gatePasses.find(
+        (gatePass) =>
+            !isCompleted(gatePass) &&
+            !isRejected(gatePass)
+    );
+
+    const parentOtpPending = (gatePass) => {
+        return (
+            String(gatePass.rector || "Pending") === "Pending" &&
+            !(
+                gatePass.otp_verified === "Yes" ||
+                gatePass.otp_verified === 1 ||
+                gatePass.otp_verified === true
+            )
+        );
     };
 
     const handleViewGatePass = (gatePass) => {
@@ -410,16 +469,70 @@ const MyGatePass = () => {
                         </p>
                     </div>
 
-                    <button
-                        className="apply-new-gatepass-button"
-                        onClick={() =>
-                            navigate("/student/gatepass/apply")
-                        }
-                    >
-                        + Apply Gate Pass
-                    </button>
+                    <div className="my-gatepass-header-actions">
+                        <button
+                            className="gatepass-refresh-button"
+                            onClick={() =>
+                                student?.id &&
+                                fetchGatePasses(student.id)
+                            }
+                            disabled={loading}
+                        >
+                            ↻ Refresh
+                        </button>
+
+                        <button
+                            className="apply-new-gatepass-button"
+                            onClick={() =>
+                                navigate("/student/gatepass/apply")
+                            }
+                            disabled={Boolean(incompletePass)}
+                            title={
+                                incompletePass
+                                    ? "Complete the previous gate pass first."
+                                    : "Apply for a new gate pass"
+                            }
+                        >
+                            + Apply Gate Pass
+                        </button>
+                    </div>
 
                 </div>
+
+                <div className="gatepass-flow-strip my-gatepass-flow">
+                    <div className="gatepass-flow-step active">
+                        <span>1</span>
+                        <strong>Apply</strong>
+                    </div>
+                    <div className="gatepass-flow-line" />
+                    <div className="gatepass-flow-step">
+                        <span>2</span>
+                        <strong>Parent OTP</strong>
+                    </div>
+                    <div className="gatepass-flow-line" />
+                    <div className="gatepass-flow-step">
+                        <span>3</span>
+                        <strong>Rector Approval</strong>
+                    </div>
+                    <div className="gatepass-flow-line" />
+                    <div className="gatepass-flow-step">
+                        <span>4</span>
+                        <strong>QR OUT / IN</strong>
+                    </div>
+                </div>
+
+                {incompletePass && (
+                    <div className="gatepass-active-warning">
+                        <span>⛔</span>
+                        <div>
+                            <strong>Previous Gate Pass Not Completed</strong>
+                            <p>
+                                Complete the current OUT → IN process before
+                                applying for another gate pass.
+                            </p>
+                        </div>
+                    </div>
+                )}
 
 
                 {/* ERROR */}

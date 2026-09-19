@@ -4,6 +4,19 @@ import "./ApplyGatePass.css";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
+const getStudentToken = () => {
+    return (
+        localStorage.getItem("studentToken") ||
+        localStorage.getItem("token") ||
+        ""
+    );
+};
+
+const getLocalToday = () => {
+    const date = new Date();
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+};
+
 const ApplyGatePass = () => {
     const navigate = useNavigate();
 
@@ -85,10 +98,22 @@ const ApplyGatePass = () => {
             return;
         }
 
+        if (formData.out_date === getLocalToday()) {
+            const now = new Date();
+            const [hour, minute] = formData.out_time.split(":").map(Number);
+            const selectedMinutes = hour * 60 + minute;
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+            if (selectedMinutes <= currentMinutes) {
+                setError("Today's exit time must be in the future.");
+                return;
+            }
+        }
+
         try {
             setLoading(true);
 
-            const token = localStorage.getItem("studentToken");
+            const token = getStudentToken();
 
             if (!student?.id) {
                 throw new Error("Student session not found. Please login again.");
@@ -312,6 +337,28 @@ const ApplyGatePass = () => {
                         ← My Gate Pass
                     </button>
 
+                </div>
+
+                <div className="gatepass-flow-strip">
+                    <div className="gatepass-flow-step active">
+                        <span>1</span>
+                        <strong>Apply</strong>
+                    </div>
+                    <div className="gatepass-flow-line" />
+                    <div className="gatepass-flow-step">
+                        <span>2</span>
+                        <strong>Parent OTP</strong>
+                    </div>
+                    <div className="gatepass-flow-line" />
+                    <div className="gatepass-flow-step">
+                        <span>3</span>
+                        <strong>Rector Approval</strong>
+                    </div>
+                    <div className="gatepass-flow-line" />
+                    <div className="gatepass-flow-step">
+                        <span>4</span>
+                        <strong>QR OUT / IN</strong>
+                    </div>
                 </div>
 
 

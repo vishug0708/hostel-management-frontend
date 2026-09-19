@@ -1,25 +1,132 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
 import "./ViewGatePass.css";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
+const getStudentToken = () => {
+    return (
+        localStorage.getItem("studentToken") ||
+        localStorage.getItem("token") ||
+        ""
+    );
+};
+
 const ViewGatePass = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { gatePassId } = useParams();
 
-    const gatePass = location.state?.gatePass;
-    const student = location.state?.student;
+    const [gatePass, setGatePass] = useState(
+        location.state?.gatePass || null
+    );
+    const [student, setStudent] = useState(
+        location.state?.student || null
+    );
+    const [loading, setLoading] = useState(
+        !location.state?.gatePass
+    );
+    const [error, setError] = useState("");
 
-    if (!gatePass) {
+    useEffect(() => {
+        if (location.state?.gatePass) {
+            setLoading(false);
+            return;
+        }
+
+        const loadGatePass = async () => {
+            try {
+                const savedStudent =
+                    localStorage.getItem("student");
+
+                if (!savedStudent) {
+                    navigate("/student/login", {
+                        replace: true
+                    });
+                    return;
+                }
+
+                const studentData =
+                    JSON.parse(savedStudent);
+
+                setStudent(studentData);
+
+                if (!studentData?.id || !gatePassId) {
+                    throw new Error(
+                        "Student or gate pass information is missing."
+                    );
+                }
+
+                const token = getStudentToken();
+
+                const response = await fetch(
+                    `${API_URL}/api/student/gatepass/${studentData.id}/${gatePassId}`,
+                    {
+                        headers: {
+                            ...(token
+                                ? {
+                                      Authorization:
+                                          `Bearer ${token}`
+                                  }
+                                : {})
+                        }
+                    }
+                );
+
+                const data = await response.json();
+
+                if (!response.ok || !data.success) {
+                    throw new Error(
+                        data.message ||
+                        "Failed to load gate pass."
+                    );
+                }
+
+                setGatePass(
+                    data.data ||
+                    data.gatePass ||
+                    null
+                );
+            } catch (err) {
+                console.error(
+                    "View Gate Pass Error:",
+                    err
+                );
+                setError(
+                    err.message ||
+                    "Failed to load gate pass."
+                );
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadGatePass();
+    }, [gatePassId, location.state, navigate]);
+
+    if (loading) {
+        return (
+            <div className="view-gatepass-page">
+                <div className="view-gatepass-loading">
+                    <div className="view-gatepass-spinner" />
+                    <h2>Loading Gate Pass...</h2>
+                    <p>Please wait while we load your gate pass.</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (error || !gatePass) {
         return (
             <div className="view-gatepass-page">
                 <div className="view-gatepass-error">
                     <div className="view-gatepass-error-icon">⚠️</div>
                     <h2>Gate Pass Data Not Found</h2>
-                    <p>Please open the gate pass using the View button.</p>
+                    <p>
+                        {error ||
+                            "The requested gate pass could not be loaded."}
+                    </p>
                     <button onClick={() => navigate("/student/gatepass")}>
                         ← Back to My Gate Passes
                     </button>
@@ -271,7 +378,10 @@ const ViewGatePass = () => {
                         </div>
                     </section>
 
-                    {approved && (
+                    {approved &&
+                        !expired &&
+                        gatePass.security_entry !== "Yes" &&
+                        gatePass.security_entry !== 1 && (
                         <section className="view-gatepass-qr">
                             <h2>QR CODE</h2>
 

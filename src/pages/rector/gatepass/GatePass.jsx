@@ -5,6 +5,14 @@ import "./GatePass.css";
 const API_URL =
     import.meta.env.VITE_API_URL || "http://localhost:5000";
 
+const getRectorToken = () => {
+    return (
+        localStorage.getItem("rectorToken") ||
+        localStorage.getItem("token") ||
+        ""
+    );
+};
+
 const GatePass = () => {
     const navigate = useNavigate();
 
@@ -13,6 +21,7 @@ const GatePass = () => {
     const [error, setError] = useState("");
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [processingId, setProcessingId] = useState(null);
+    const [filter, setFilter] = useState("All");
 
     const rector = JSON.parse(
         localStorage.getItem("rector") || "{}"
@@ -25,6 +34,12 @@ const GatePass = () => {
 
     useEffect(() => {
         fetchGatePasses();
+
+        const timer = setInterval(() => {
+            fetchGatePasses();
+        }, 30000);
+
+        return () => clearInterval(timer);
     }, []);
 
     const fetchGatePasses = async () => {
@@ -32,8 +47,20 @@ const GatePass = () => {
             setLoading(true);
             setError("");
 
+            const token = getRectorToken();
+
             const response = await fetch(
-                `${API_URL}/api/rector/gatepass`
+                `${API_URL}/api/rector/gatepass`,
+                {
+                    headers: {
+                        ...(token
+                            ? {
+                                  Authorization:
+                                      `Bearer ${token}`
+                              }
+                            : {})
+                    }
+                }
             );
 
             const data = await response.json();
@@ -80,7 +107,13 @@ const GatePass = () => {
                     method: "PUT",
                     headers: {
                         "Content-Type":
-                            "application/json"
+                            "application/json",
+                        ...(getRectorToken()
+                            ? {
+                                  Authorization:
+                                      `Bearer ${getRectorToken()}`
+                              }
+                            : {})
                     }
                 }
             );
@@ -221,6 +254,27 @@ const GatePass = () => {
                 pass.rector ===
                 "Rejected"
         ).length;
+
+    const parentPendingCount =
+        gatePasses.filter(
+            (pass) =>
+                (pass.rector || "Pending") === "Pending" &&
+                !parentVerified(pass)
+        ).length;
+
+    const filteredGatePasses =
+        filter === "All"
+            ? gatePasses
+            : filter === "Parent Pending"
+            ? gatePasses.filter(
+                  (pass) =>
+                      (pass.rector || "Pending") === "Pending" &&
+                      !parentVerified(pass)
+              )
+            : gatePasses.filter(
+                  (pass) =>
+                      (pass.rector || "Pending") === filter
+              );
 
     return (
         <div className="rector-gatepass-layout">
@@ -555,11 +609,33 @@ const GatePass = () => {
                             </h2>
                         </div>
 
-                        <div className="request-count">
-                            {
-                                gatePasses.length
-                            } Requests
-                        </div>
+                        <div className="gatepass-header-tools">
+                             <select
+                                 className="gatepass-filter-select"
+                                 value={filter}
+                                 onChange={(event) =>
+                                     setFilter(event.target.value)
+                                 }
+                             >
+                                 <option value="All">All Requests</option>
+                                 <option value="Parent Pending">
+                                     Parent OTP Pending
+                                 </option>
+                                 <option value="Pending">
+                                     Rector Pending
+                                 </option>
+                                 <option value="Approved">
+                                     Approved
+                                 </option>
+                                 <option value="Rejected">
+                                     Rejected
+                                 </option>
+                             </select>
+
+                             <div className="request-count">
+                                 {filteredGatePasses.length} Requests
+                             </div>
+                         </div>
 
                     </div>
 
@@ -574,7 +650,7 @@ const GatePass = () => {
                             </p>
 
                         </div>
-                    ) : gatePasses.length ===
+                    ) : filteredGatePasses.length ===
                       0 ? (
                         <div className="gatepass-empty">
 

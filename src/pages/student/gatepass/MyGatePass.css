@@ -640,3 +640,183 @@
         width: 100%;
     }
 }
+
+
+/* ============================================================
+   GATE PASS FLOW / ACTIONS
+   ============================================================ */
+
+.my-gatepass-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.gatepass-refresh-button {
+    padding: 13px 17px;
+    border: 1px solid #cbd9e2;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #173650;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.gatepass-refresh-button:hover {
+    border-color: #0f8179;
+    color: #0f8179;
+}
+
+.gatepass-refresh-button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.my-gatepass-flow {
+    margin-bottom: 22px;
+}
+
+.gatepass-active-warning {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 22px;
+    padding: 16px 18px;
+    border: 1px solid #f1d49a;
+    border-radius: 12px;
+    background: #fff8e9;
+    color: #8b5a00;
+}
+
+.gatepass-active-warning > span {
+    font-size: 22px;
+}
+
+.gatepass-active-warning strong {
+    display: block;
+    font-size: 14px;
+}
+
+.gatepass-active-warning p {
+    margin: 5px 0 0;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.gatepass-card-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.gatepass-card-actions button {
+    padding: 11px 16px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.gatepass-verify-button {
+    border: 1px solid #0f8179;
+    background: #e7f7f5;
+    color: #0f6d67;
+}
+
+.gatepass-view-button {
+    border: none;
+    background: #0f8179;
+    color: #ffffff;
+}
+
+.gatepass-next-action {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 18px;
+    padding: 15px 17px;
+    border: 1px solid #bde7df;
+    border-radius: 12px;
+    background: #effcf9;
+}
+
+.gatepass-next-action > span {
+    font-size: 22px;
+}
+
+.gatepass-next-action > div {
+    flex: 1;
+}
+
+.gatepass-next-action strong {
+    display: block;
+    color: #0f6d67;
+    font-size: 13px;
+}
+
+.gatepass-next-action p {
+    margin: 4px 0 0;
+    color: #64748b;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.gatepass-next-action button {
+    padding: 10px 14px;
+    border: none;
+    border-radius: 8px;
+    background: #0f8179;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.gatepass-next-action.waiting {
+    border-color: #f1d49a;
+    background: #fffaf0;
+}
+
+.gatepass-next-action.waiting strong {
+    color: #8b5a00;
+}
+
+.gatepass-status.pending-parent {
+    background: #fff3d6;
+    color: #9a6200;
+}
+
+.gatepass-qr-help {
+    margin-top: 12px;
+    color: #0f6d67;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+}
+
+@media (max-width: 700px) {
+    .my-gatepass-header-actions {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .my-gatepass-header-actions button {
+        width: 100%;
+    }
+
+    .gatepass-next-action {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .gatepass-next-action button {
+        width: 100%;
+    }
+
+    .gatepass-card-actions button {
+        width: 100%;
+    }
+}
