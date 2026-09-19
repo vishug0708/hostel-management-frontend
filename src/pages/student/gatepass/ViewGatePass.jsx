@@ -5,14 +5,6 @@ import "./ViewGatePass.css";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-const getStudentToken = () => {
-    return (
-        localStorage.getItem("studentToken") ||
-        localStorage.getItem("token") ||
-        ""
-    );
-};
-
 const ViewGatePass = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -24,50 +16,34 @@ const ViewGatePass = () => {
     const [student, setStudent] = useState(
         location.state?.student || null
     );
-    const [loading, setLoading] = useState(
-        !location.state?.gatePass
-    );
+    const [loading, setLoading] = useState(!gatePass);
     const [error, setError] = useState("");
 
     useEffect(() => {
-        if (location.state?.gatePass) {
-            setLoading(false);
+        if (gatePass) {
             return;
         }
 
         const loadGatePass = async () => {
             try {
-                const savedStudent =
-                    localStorage.getItem("student");
+                const savedStudent = localStorage.getItem("student");
 
                 if (!savedStudent) {
-                    navigate("/student/login", {
-                        replace: true
-                    });
+                    navigate("/student/login", { replace: true });
                     return;
                 }
 
-                const studentData =
-                    JSON.parse(savedStudent);
-
+                const studentData = JSON.parse(savedStudent);
                 setStudent(studentData);
 
-                if (!studentData?.id || !gatePassId) {
-                    throw new Error(
-                        "Student or gate pass information is missing."
-                    );
-                }
-
-                const token = getStudentToken();
-
+                const token = localStorage.getItem("studentToken");
                 const response = await fetch(
                     `${API_URL}/api/student/gatepass/${studentData.id}/${gatePassId}`,
                     {
                         headers: {
                             ...(token
                                 ? {
-                                      Authorization:
-                                          `Bearer ${token}`
+                                      Authorization: `Bearer ${token}`
                                   }
                                 : {})
                         }
@@ -79,23 +55,16 @@ const ViewGatePass = () => {
                 if (!response.ok || !data.success) {
                     throw new Error(
                         data.message ||
-                        "Failed to load gate pass."
+                            "Failed to load gate pass."
                     );
                 }
 
-                setGatePass(
-                    data.data ||
-                    data.gatePass ||
-                    null
-                );
+                setGatePass(data.data || data.gatePass);
             } catch (err) {
-                console.error(
-                    "View Gate Pass Error:",
-                    err
-                );
+                console.error("View Gate Pass Error:", err);
                 setError(
                     err.message ||
-                    "Failed to load gate pass."
+                        "Failed to load gate pass."
                 );
             } finally {
                 setLoading(false);
@@ -103,30 +72,27 @@ const ViewGatePass = () => {
         };
 
         loadGatePass();
-    }, [gatePassId, location.state, navigate]);
+    }, [gatePass, gatePassId, navigate]);
 
     if (loading) {
         return (
             <div className="view-gatepass-page">
-                <div className="view-gatepass-loading">
-                    <div className="view-gatepass-spinner" />
+                <div className="view-gatepass-error">
+                    <div className="view-gatepass-error-icon">⏳</div>
                     <h2>Loading Gate Pass...</h2>
-                    <p>Please wait while we load your gate pass.</p>
+                    <p>Please wait while your gate pass is loaded.</p>
                 </div>
             </div>
         );
     }
 
-    if (error || !gatePass) {
+    if (!gatePass) {
         return (
             <div className="view-gatepass-page">
                 <div className="view-gatepass-error">
                     <div className="view-gatepass-error-icon">⚠️</div>
                     <h2>Gate Pass Data Not Found</h2>
-                    <p>
-                        {error ||
-                            "The requested gate pass could not be loaded."}
-                    </p>
+                    <p>{error || "Please open the gate pass again."}</p>
                     <button onClick={() => navigate("/student/gatepass")}>
                         ← Back to My Gate Passes
                     </button>
@@ -186,13 +152,13 @@ const ViewGatePass = () => {
         gatePass.gate_pass_no ||
         `GP-${String(gatePass.id || gatePassId).padStart(5, "0")}`;
 
-    const qrValue =
-        gatePass.verification_code ||
-        gatePass.qr_code ||
-        `GATEPASS-${gatePass.id || gatePassId}`;
-
     const approved =
         String(gatePass.rector || "").toLowerCase() === "approved";
+
+    const qrValue =
+        approved && gatePass.qr_code
+            ? gatePass.qr_code
+            : "";
 
     const expiry = gatePass.return_date
         ? new Date(
@@ -353,6 +319,13 @@ const ViewGatePass = () => {
                             </div>
 
                             <div>
+                                <span>Return Time</span>
+                                <strong>
+                                    {formatTime(gatePass.return_time)}
+                                </strong>
+                            </div>
+
+                            <div>
                                 <span>Destination</span>
                                 <strong>{gatePass.destination || "—"}</strong>
                             </div>
@@ -378,10 +351,7 @@ const ViewGatePass = () => {
                         </div>
                     </section>
 
-                    {approved &&
-                        !expired &&
-                        gatePass.security_entry !== "Yes" &&
-                        gatePass.security_entry !== 1 && (
+                    {approved && qrValue && (
                         <section className="view-gatepass-qr">
                             <h2>QR CODE</h2>
 

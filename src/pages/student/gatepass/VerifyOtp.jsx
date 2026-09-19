@@ -4,14 +4,6 @@ import "./VerifyOtp.css";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-const getStudentToken = () => {
-    return (
-        localStorage.getItem("studentToken") ||
-        localStorage.getItem("token") ||
-        ""
-    );
-};
-
 const VerifyOtp = () => {
     const navigate = useNavigate();
     const { gatePassId } = useParams();
@@ -125,13 +117,7 @@ const VerifyOtp = () => {
                 {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json",
-                        ...(getStudentToken()
-                            ? {
-                                  Authorization:
-                                      `Bearer ${getStudentToken()}`
-                              }
-                            : {})
+                        "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
                         otp: otpValue
@@ -184,13 +170,7 @@ const VerifyOtp = () => {
                 {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json",
-                        ...(getStudentToken()
-                            ? {
-                                  Authorization:
-                                      `Bearer ${getStudentToken()}`
-                              }
-                            : {})
+                        "Content-Type": "application/json"
                     }
                 }
             );

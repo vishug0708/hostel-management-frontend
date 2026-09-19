@@ -4,19 +4,6 @@ import "./ApplyGatePass.css";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-const getStudentToken = () => {
-    return (
-        localStorage.getItem("studentToken") ||
-        localStorage.getItem("token") ||
-        ""
-    );
-};
-
-const getLocalToday = () => {
-    const date = new Date();
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-};
-
 const ApplyGatePass = () => {
     const navigate = useNavigate();
 
@@ -27,7 +14,8 @@ const ApplyGatePass = () => {
         purpose: "",
         out_date: "",
         return_date: "",
-        out_time: ""
+        out_time: "",
+        return_time: ""
     });
 
     const [loading, setLoading] = useState(false);
@@ -93,27 +81,32 @@ const ApplyGatePass = () => {
             return;
         }
 
+        if (!formData.return_time) {
+            setError("Please select return time.");
+            return;
+        }
+
+        const exitDateTime = new Date(
+            `${formData.out_date}T${formData.out_time}`
+        );
+        const returnDateTime = new Date(
+            `${formData.return_date}T${formData.return_time}`
+        );
+
+        if (returnDateTime <= exitDateTime) {
+            setError("Return date and time must be after exit date and time.");
+            return;
+        }
+
         if (formData.return_date < formData.out_date) {
             setError("Return date cannot be before exit date.");
             return;
         }
 
-        if (formData.out_date === getLocalToday()) {
-            const now = new Date();
-            const [hour, minute] = formData.out_time.split(":").map(Number);
-            const selectedMinutes = hour * 60 + minute;
-            const currentMinutes = now.getHours() * 60 + now.getMinutes();
-
-            if (selectedMinutes <= currentMinutes) {
-                setError("Today's exit time must be in the future.");
-                return;
-            }
-        }
-
         try {
             setLoading(true);
 
-            const token = getStudentToken();
+            const token = localStorage.getItem("studentToken");
 
             if (!student?.id) {
                 throw new Error("Student session not found. Please login again.");
@@ -137,7 +130,8 @@ const ApplyGatePass = () => {
                         purpose: formData.purpose.trim(),
                         out_date: formData.out_date,
                         return_date: formData.return_date,
-                        out_time: formData.out_time
+                        out_time: formData.out_time,
+                        return_time: formData.return_time
                     })
                 }
             );
@@ -160,7 +154,8 @@ const ApplyGatePass = () => {
                 purpose: "",
                 out_date: "",
                 return_date: "",
-                out_time: ""
+                out_time: "",
+                return_time: ""
             });
 
             // OTP verification page
@@ -337,28 +332,6 @@ const ApplyGatePass = () => {
                         ← My Gate Pass
                     </button>
 
-                </div>
-
-                <div className="gatepass-flow-strip">
-                    <div className="gatepass-flow-step active">
-                        <span>1</span>
-                        <strong>Apply</strong>
-                    </div>
-                    <div className="gatepass-flow-line" />
-                    <div className="gatepass-flow-step">
-                        <span>2</span>
-                        <strong>Parent OTP</strong>
-                    </div>
-                    <div className="gatepass-flow-line" />
-                    <div className="gatepass-flow-step">
-                        <span>3</span>
-                        <strong>Rector Approval</strong>
-                    </div>
-                    <div className="gatepass-flow-line" />
-                    <div className="gatepass-flow-step">
-                        <span>4</span>
-                        <strong>QR OUT / IN</strong>
-                    </div>
                 </div>
 
 
@@ -569,19 +542,39 @@ const ApplyGatePass = () => {
                             </div>
 
 
-                            <div className="apply-gatepass-field">
+                            <div className="apply-gatepass-row">
 
-                                <label>
-                                    Exit Time
-                                    <span>*</span>
-                                </label>
+                                <div className="apply-gatepass-field">
 
-                                <input
-                                    type="time"
-                                    name="out_time"
-                                    value={formData.out_time}
-                                    onChange={handleChange}
-                                />
+                                    <label>
+                                        Exit Time
+                                        <span>*</span>
+                                    </label>
+
+                                    <input
+                                        type="time"
+                                        name="out_time"
+                                        value={formData.out_time}
+                                        onChange={handleChange}
+                                    />
+
+                                </div>
+
+                                <div className="apply-gatepass-field">
+
+                                    <label>
+                                        Return Time
+                                        <span>*</span>
+                                    </label>
+
+                                    <input
+                                        type="time"
+                                        name="return_time"
+                                        value={formData.return_time}
+                                        onChange={handleChange}
+                                    />
+
+                                </div>
 
                             </div>
 

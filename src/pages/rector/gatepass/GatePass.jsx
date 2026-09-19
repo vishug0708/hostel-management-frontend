@@ -5,14 +5,6 @@ import "./GatePass.css";
 const API_URL =
     import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-const getRectorToken = () => {
-    return (
-        localStorage.getItem("rectorToken") ||
-        localStorage.getItem("token") ||
-        ""
-    );
-};
-
 const GatePass = () => {
     const navigate = useNavigate();
 
@@ -21,7 +13,6 @@ const GatePass = () => {
     const [error, setError] = useState("");
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [processingId, setProcessingId] = useState(null);
-    const [filter, setFilter] = useState("All");
 
     const rector = JSON.parse(
         localStorage.getItem("rector") || "{}"
@@ -34,12 +25,6 @@ const GatePass = () => {
 
     useEffect(() => {
         fetchGatePasses();
-
-        const timer = setInterval(() => {
-            fetchGatePasses();
-        }, 30000);
-
-        return () => clearInterval(timer);
     }, []);
 
     const fetchGatePasses = async () => {
@@ -47,7 +32,7 @@ const GatePass = () => {
             setLoading(true);
             setError("");
 
-            const token = getRectorToken();
+            const token = localStorage.getItem("rectorToken");
 
             const response = await fetch(
                 `${API_URL}/api/rector/gatepass`,
@@ -55,8 +40,7 @@ const GatePass = () => {
                     headers: {
                         ...(token
                             ? {
-                                  Authorization:
-                                      `Bearer ${token}`
+                                  Authorization: `Bearer ${token}`
                               }
                             : {})
                     }
@@ -108,10 +92,9 @@ const GatePass = () => {
                     headers: {
                         "Content-Type":
                             "application/json",
-                        ...(getRectorToken()
+                        ...(localStorage.getItem("rectorToken")
                             ? {
-                                  Authorization:
-                                      `Bearer ${getRectorToken()}`
+                                  Authorization: `Bearer ${localStorage.getItem("rectorToken")}`
                               }
                             : {})
                     }
@@ -133,7 +116,11 @@ const GatePass = () => {
                     pass.id === gatePassId
                         ? {
                               ...pass,
-                              rector: status
+                              rector: status,
+                              qr_code:
+                                  status === "Approved"
+                                      ? data.qr_code || pass.qr_code
+                                      : null
                           }
                         : pass
                 )
@@ -254,27 +241,6 @@ const GatePass = () => {
                 pass.rector ===
                 "Rejected"
         ).length;
-
-    const parentPendingCount =
-        gatePasses.filter(
-            (pass) =>
-                (pass.rector || "Pending") === "Pending" &&
-                !parentVerified(pass)
-        ).length;
-
-    const filteredGatePasses =
-        filter === "All"
-            ? gatePasses
-            : filter === "Parent Pending"
-            ? gatePasses.filter(
-                  (pass) =>
-                      (pass.rector || "Pending") === "Pending" &&
-                      !parentVerified(pass)
-              )
-            : gatePasses.filter(
-                  (pass) =>
-                      (pass.rector || "Pending") === filter
-              );
 
     return (
         <div className="rector-gatepass-layout">
@@ -609,33 +575,11 @@ const GatePass = () => {
                             </h2>
                         </div>
 
-                        <div className="gatepass-header-tools">
-                             <select
-                                 className="gatepass-filter-select"
-                                 value={filter}
-                                 onChange={(event) =>
-                                     setFilter(event.target.value)
-                                 }
-                             >
-                                 <option value="All">All Requests</option>
-                                 <option value="Parent Pending">
-                                     Parent OTP Pending
-                                 </option>
-                                 <option value="Pending">
-                                     Rector Pending
-                                 </option>
-                                 <option value="Approved">
-                                     Approved
-                                 </option>
-                                 <option value="Rejected">
-                                     Rejected
-                                 </option>
-                             </select>
-
-                             <div className="request-count">
-                                 {filteredGatePasses.length} Requests
-                             </div>
-                         </div>
+                        <div className="request-count">
+                            {
+                                gatePasses.length
+                            } Requests
+                        </div>
 
                     </div>
 
@@ -650,7 +594,7 @@ const GatePass = () => {
                             </p>
 
                         </div>
-                    ) : filteredGatePasses.length ===
+                    ) : gatePasses.length ===
                       0 ? (
                         <div className="gatepass-empty">
 
@@ -846,6 +790,12 @@ const GatePass = () => {
                                                                 )}
                                                             </strong>
 
+                                                            <small>
+                                                                {formatTime(
+                                                                    pass.return_time
+                                                                )}
+                                                            </small>
+
                                                         </div>
 
                                                     </td>
@@ -911,7 +861,7 @@ const GatePass = () => {
                                                                 >
                                                                     {processing
                                                                         ? "..."
-                                                                        : "✓ Approve"}
+                                                                        : "✓ Approve & Generate QR"}
                                                                 </button>
 
                                                                 <button
