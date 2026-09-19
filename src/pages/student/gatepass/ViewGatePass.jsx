@@ -608,6 +608,7 @@ const ViewGatePass = () => {
                         </span>
                     </div>
                 </div>
+                </div>
             </main>
         </div>
     );
