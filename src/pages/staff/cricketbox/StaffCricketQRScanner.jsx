@@ -44,6 +44,60 @@ const getPhotoUrl = (photo) => {
     return `${API_URL}/uploads/staff/${normalized}`;
 };
 
+const playQrBeep = async (type = "success") => {
+    try {
+        const AudioContextClass =
+            window.AudioContext ||
+            window.webkitAudioContext;
+
+        if (!AudioContextClass) {
+            return;
+        }
+
+        const audioContext = new AudioContextClass();
+
+        if (audioContext.state === "suspended") {
+            await audioContext.resume();
+        }
+
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator.type = "sine";
+        oscillator.frequency.value =
+            type === "success" ? 880 : 420;
+
+        gainNode.gain.setValueAtTime(
+            0.0001,
+            audioContext.currentTime
+        );
+
+        gainNode.gain.exponentialRampToValueAtTime(
+            0.25,
+            audioContext.currentTime + 0.02
+        );
+
+        gainNode.gain.exponentialRampToValueAtTime(
+            0.0001,
+            audioContext.currentTime + 0.22
+        );
+
+        oscillator.start();
+        oscillator.stop(
+            audioContext.currentTime + 0.22
+        );
+
+        oscillator.onended = () => {
+            audioContext.close().catch(() => { });
+        };
+    } catch (error) {
+        console.warn("QR Beep Error:", error);
+    }
+};
+
 function StaffCricketQRScanner() {
     const navigate = useNavigate();
     const scannerRef = useRef(null);
@@ -406,7 +460,11 @@ function StaffCricketQRScanner() {
             setError("");
             setVerificationLoading(true);
 
-            if (!result?.qr_token) {
+            const qrToken = String(
+                result?.qr_token || ""
+            ).trim();
+
+            if (!qrToken) {
                 setError("QR information is missing.");
                 return;
             }
@@ -428,7 +486,7 @@ function StaffCricketQRScanner() {
                         Authorization: `Bearer ${token}`
                     },
                     body: JSON.stringify({
-                        qr_token: result.qr_token,
+                        qr_token: qrToken,
                         action: action
                     })
                 }
@@ -441,14 +499,39 @@ function StaffCricketQRScanner() {
                 data
             );
 
-            setResult(data);
-
             if (!response.ok || !data.success) {
+                setResult(data);
+
                 setError(
                     data.message ||
                     "QR verification failed."
                 );
+
+                await playQrBeep("error");
+
+                return;
             }
+
+            // Successful ENTRY / EXIT
+            setResult({
+                ...data,
+                qr_token: qrToken
+            });
+
+            // 🔊 SUCCESS BEEP
+            await playQrBeep("success");
+
+            // Automatically open scanner again
+            setTimeout(async () => {
+                setError("");
+                setResult(null);
+                setDecodedText("");
+
+                processingRef.current = false;
+
+                await startScanner();
+            }, 1200);
+
         } catch (error) {
             console.error(
                 "QR Verification Error:",
@@ -459,11 +542,14 @@ function StaffCricketQRScanner() {
                 error?.message ||
                 "Unable to verify QR code."
             );
+
+            await playQrBeep("error");
+
         } finally {
             setVerificationLoading(false);
         }
     };
-
+    
     const scanAnother = async () => {
         setError("");
         setResult(null);
@@ -682,8 +768,8 @@ function StaffCricketQRScanner() {
                             ) : (
                                 <div
                                     className={`sq-result ${result.success
-                                            ? "valid"
-                                            : "invalid"
+                                        ? "valid"
+                                        : "invalid"
                                         }`}
                                 >
                                     <b>
