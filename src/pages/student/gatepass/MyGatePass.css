@@ -445,19 +445,19 @@
 
 @media (max-width: 768px) {
     .student-mobile-header {
-        position: absolute;
+        position: fixed;
         top: 0;
         left: 0;
-        z-index: 1000;
+        z-index: 1300;
         width: 100%;
         height: 64px;
         display: flex;
         align-items: center;
         justify-content: space-between;
         padding: 10px 16px;
-        background: transparent;
-        border-bottom: none;
-        pointer-events: none;
+        background: #ffffff;
+        border-bottom: 1px solid #e5e7eb;
+        box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08);
     }
 
     .student-mobile-left {
@@ -474,13 +474,14 @@
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
+        padding: 0;
         border: none;
         border-radius: 10px;
         background: #0f766e;
         color: #ffffff;
         font-size: 23px;
+        line-height: 1;
         cursor: pointer;
-        pointer-events: auto;
     }
 
     .student-mobile-brand {
@@ -532,7 +533,6 @@
         background: #f8fafc;
         font-size: 19px;
         cursor: pointer;
-        pointer-events: auto;
     }
 
     .student-mobile-profile-btn img {
@@ -543,48 +543,61 @@
     }
 
     .student-sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        z-index: 1200;
-        width: 270px;
-        height: 100vh;
-        padding: 22px 15px;
-        transform: translateX(-100%);
-        transition: transform 0.28s ease;
-        box-shadow: 8px 0 30px rgba(0, 0, 0, 0.18);
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: auto !important;
+        bottom: 0 !important;
+        z-index: 1400 !important;
+        width: 270px !important;
+        height: 100vh !important;
+        min-height: 100vh !important;
+        margin: 0 !important;
+        padding: 22px 15px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        transform: translate3d(-105%, 0, 0) !important;
+        transition: transform 0.28s ease !important;
+        box-shadow: 8px 0 30px rgba(0, 0, 0, 0.22) !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        visibility: visible !important;
     }
 
     .student-sidebar.mobile-open {
-        transform: translateX(0);
+        transform: translate3d(0, 0, 0) !important;
     }
 
     .student-mobile-overlay {
-        display: block;
-        position: fixed;
-        inset: 0;
-        z-index: 1150;
-        background: rgba(0, 0, 0, 0.42);
+        position: fixed !important;
+        inset: 0 !important;
+        z-index: 1350 !important;
+        display: block !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        background: rgba(2, 6, 23, 0.48) !important;
     }
 
     .my-gatepass-main {
-        width: 100%;
-        min-width: 0;
-        margin-left: 0;
-        padding: 0 16px 35px;
+        width: 100% !important;
+        min-width: 0 !important;
+        margin-left: 0 !important;
+        padding: 84px 16px 35px !important;
     }
 
     .my-gatepass-topbar {
         align-items: flex-start;
+        gap: 12px;
         margin-bottom: 22px;
-        padding-top: 78px;
+        padding-top: 0;
     }
 
     .my-gatepass-heading {
-        padding-right: 5px;
+        padding-right: 0;
     }
 
     .my-gatepass-heading h1 {
+        margin-top: 7px;
         font-size: 30px;
     }
 
@@ -597,17 +610,23 @@
         display: none;
     }
 
+    .my-gatepass-panel {
+        width: 100%;
+    }
+
     .my-gatepass-panel-title {
         min-height: 78px;
         padding: 17px 15px;
     }
 
     .panel-title-left {
+        min-width: 0;
         justify-content: flex-start;
     }
 
     .panel-title-left h2 {
         font-size: 22px;
+        white-space: nowrap;
     }
 
     .panel-title-left span {
@@ -619,6 +638,14 @@
         padding: 0 12px;
         font-size: 12px;
         white-space: nowrap;
+    }
+
+    .gatepass-table-wrapper {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto !important;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
     }
 
     .gatepass-table {
@@ -634,11 +661,15 @@
         padding: 12px 14px;
         font-size: 13px;
     }
+
+    body.student-gatepass-menu-open {
+        overflow: hidden;
+    }
 }
 
 @media (max-width: 480px) {
     .student-mobile-header {
-        min-height: 60px;
+        height: 60px;
         padding: 8px 12px;
     }
 
@@ -668,7 +699,7 @@
     }
 
     .student-sidebar {
-        width: 270px;
+        width: 270px !important;
     }
 
     .student-sidebar-brand {
@@ -700,7 +731,7 @@
     }
 
     .my-gatepass-main {
-        padding: 0 10px 30px;
+        padding: 78px 10px 30px !important;
     }
 
     .my-gatepass-heading h1 {

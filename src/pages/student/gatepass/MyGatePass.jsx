@@ -17,6 +17,19 @@ const MyGatePass = () => {
         loadStudent();
     }, []);
 
+    useEffect(() => {
+        document.body.classList.toggle(
+            "student-gatepass-menu-open",
+            mobileMenuOpen
+        );
+
+        return () => {
+            document.body.classList.remove(
+                "student-gatepass-menu-open"
+            );
+        };
+    }, [mobileMenuOpen]);
+
     const loadStudent = async () => {
         try {
             const savedStudent = localStorage.getItem("student");
