@@ -972,3 +972,226 @@
         font-size: 9px;
     }
 }
+
+/* ============================================================
+   FINAL MOBILE STUDENT SIDEBAR
+   Same vertical menu layout as My Room / Gate Pass
+   ============================================================ */
+
+@media (max-width: 700px) {
+    .student-dashboard-sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        bottom: 0 !important;
+        width: 258px !important;
+        height: 100vh !important;
+        min-height: 100vh !important;
+        margin: 0 !important;
+        padding: 22px 15px !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        background: #0f172a !important;
+        z-index: 1400 !important;
+        transform: translateX(-105%);
+        transition: transform 0.25s ease;
+        box-shadow: 12px 0 35px rgba(15, 23, 42, 0.25);
+    }
+
+    .student-dashboard-sidebar.mobile-open {
+        transform: translateX(0) !important;
+    }
+
+    .student-dashboard-brand {
+        flex-shrink: 0;
+        padding: 5px 10px 25px !important;
+    }
+
+    .student-dashboard-nav {
+        display: flex !important;
+        flex-direction: column !important;
+        grid-template-columns: none !important;
+        gap: 5px !important;
+        width: 100% !important;
+        margin-top: 25px !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+
+    .student-dashboard-nav button {
+        width: 100% !important;
+        min-height: 44px !important;
+        flex-shrink: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 12px !important;
+        padding: 12px 13px !important;
+        box-sizing: border-box !important;
+        border-radius: 9px !important;
+        background: transparent !important;
+        color: #94a3b8 !important;
+        text-align: left !important;
+        font-size: 13px !important;
+    }
+
+    .student-dashboard-nav button.active {
+        background: #134e4a !important;
+        color: white !important;
+        box-shadow: inset 3px 0 0 #2dd4bf !important;
+    }
+
+    .student-dashboard-nav button:hover {
+        background: #1e293b !important;
+        color: white !important;
+        transform: translateX(2px);
+    }
+
+    .student-dashboard-logout {
+        width: 100% !important;
+        flex-shrink: 0 !important;
+        margin-top: auto !important;
+        padding: 12px 13px !important;
+        box-sizing: border-box !important;
+    }
+
+    .student-dashboard-mobile-overlay {
+        position: fixed !important;
+        inset: 0 !important;
+        display: block !important;
+        background: rgba(15, 23, 42, 0.48) !important;
+        z-index: 1350 !important;
+        touch-action: none;
+    }
+
+    .student-dashboard-main {
+        width: 100% !important;
+        margin-left: 0 !important;
+        min-height: 100vh !important;
+        padding: 0 15px 30px !important;
+        box-sizing: border-box !important;
+    }
+
+    .student-dashboard-mobile-topbar {
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 900 !important;
+        display: grid !important;
+        grid-template-columns: 42px 1fr 42px !important;
+        align-items: center !important;
+        gap: 10px !important;
+        min-height: 68px !important;
+        margin: 0 -15px 24px !important;
+        padding: 10px 15px !important;
+        box-sizing: border-box !important;
+        border-bottom: 1px solid #dce5eb !important;
+        background: rgba(243, 247, 250, 0.97) !important;
+        backdrop-filter: blur(10px);
+    }
+
+    .student-dashboard-mobile-menu-btn {
+        width: 42px !important;
+        height: 42px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border: 1px solid #d3dde5 !important;
+        border-radius: 10px !important;
+        background: #ffffff !important;
+        color: #102a43 !important;
+        font-size: 22px !important;
+        cursor: pointer !important;
+    }
+
+    .student-dashboard-mobile-brand {
+        min-width: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 9px !important;
+    }
+
+    .student-dashboard-mobile-brand-icon {
+        width: 40px !important;
+        height: 40px !important;
+        flex: 0 0 40px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 10px !important;
+        background: #0f766e !important;
+        font-size: 20px !important;
+    }
+
+    .student-dashboard-mobile-brand strong {
+        display: block !important;
+        color: #102a43 !important;
+        font-size: 15px !important;
+    }
+
+    .student-dashboard-mobile-brand span {
+        display: block !important;
+        margin-top: 2px !important;
+        color: #64748b !important;
+        font-size: 10px !important;
+    }
+
+    .student-dashboard-mobile-photo {
+        width: 42px !important;
+        height: 42px !important;
+        flex: 0 0 42px !important;
+        justify-self: end !important;
+        overflow: hidden !important;
+        border: 2px solid #d8e3eb !important;
+        border-radius: 50% !important;
+        background: #e7eef3 !important;
+    }
+
+    .student-dashboard-mobile-photo img {
+        width: 100% !important;
+        height: 100% !important;
+        display: block !important;
+        object-fit: cover !important;
+    }
+
+    .student-dashboard-header-actions {
+        display: none !important;
+    }
+
+    body.student-dashboard-menu-open {
+        overflow: hidden !important;
+    }
+}
+
+@media (max-width: 420px) {
+    .student-dashboard-sidebar {
+        width: 258px !important;
+    }
+
+    .student-dashboard-mobile-topbar {
+        grid-template-columns: 40px 1fr 40px !important;
+        gap: 8px !important;
+    }
+
+    .student-dashboard-mobile-menu-btn,
+    .student-dashboard-mobile-photo {
+        width: 40px !important;
+        height: 40px !important;
+        flex-basis: 40px !important;
+    }
+
+    .student-dashboard-mobile-brand-icon {
+        width: 38px !important;
+        height: 38px !important;
+        flex-basis: 38px !important;
+    }
+
+    .student-dashboard-mobile-brand strong {
+        font-size: 14px !important;
+    }
+
+    .student-dashboard-mobile-brand span {
+        font-size: 9px !important;
+    }
+}
