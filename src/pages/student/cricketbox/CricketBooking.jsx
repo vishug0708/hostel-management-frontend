@@ -745,10 +745,7 @@ function CricketBooking() {
                             setSidebarOpen((prev) => !prev)
                         }
                         aria-label="Toggle menu"
-                    >
-                        <span />
-                        <span />
-                        <span />
+                    > ☰
                     </button>
 
                     <div className="cricket-booking-panel-title">
