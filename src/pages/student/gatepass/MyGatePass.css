@@ -22,6 +22,7 @@
     padding: 25px 17px;
     background: #0d172a;
     color: white;
+    overflow-y: auto;
 }
 
 .student-sidebar-brand {
@@ -46,7 +47,9 @@
 
 .student-sidebar-brand h2 {
     margin: 0;
+    color: white;
     font-size: 20px;
+    font-weight: 800;
 }
 
 .student-sidebar-brand span {
@@ -59,27 +62,30 @@
 .student-sidebar-nav {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    margin-top: 25px;
+    gap: 4px;
+    margin-top: 24px;
 }
 
 .student-nav-item {
     width: 100%;
+    min-height: 48px;
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 14px 16px;
+    padding: 12px 15px;
     border: none;
     border-radius: 10px;
     background: transparent;
     color: #cbd5e1;
     font-size: 15px;
+    font-weight: 500;
     text-align: left;
     cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
 }
 
 .student-nav-item:hover {
-    background: rgba(255,255,255,0.07);
+    background: rgba(255,255,255,0.06);
     color: white;
 }
 
@@ -89,12 +95,23 @@
     box-shadow: inset 3px 0 #2dd4bf;
 }
 
+.nav-icon {
+    width: 22px;
+    min-width: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+}
+
 .student-logout-button {
+    width: 100%;
+    min-height: 50px;
     margin-top: auto;
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 14px 16px;
+    padding: 13px 15px;
     border: 1px solid #334155;
     border-radius: 10px;
     background: transparent;
@@ -110,14 +127,14 @@
     padding: 34px 42px 55px;
 }
 
-.my-gatepass-topbar {
+.my-gatepass-header {
     width: 100%;
-    min-height: 70px;
+    min-height: 78px;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
-    gap: 24px;
-    margin-bottom: 28px;
+    gap: 25px;
+    margin-bottom: 25px;
 }
 
 .my-gatepass-heading {
@@ -125,6 +142,7 @@
 }
 
 .my-gatepass-eyebrow {
+    display: block;
     color: #087f78;
     font-size: 11px;
     font-weight: 900;
@@ -144,52 +162,54 @@
     font-size: 14px;
 }
 
-.student-profile-mini {
+.student-profile-top-right {
     display: flex;
     align-items: center;
-    gap: 12px;
-    flex: 0 0 auto;
+    gap: 11px;
+    flex-shrink: 0;
+    margin-top: 0;
 }
 
-.student-profile-mini-info {
+.student-profile-text {
     text-align: right;
 }
 
-.student-profile-mini-info strong {
+.student-profile-text strong {
     display: block;
     color: #102f4f;
     font-size: 14px;
+    font-weight: 800;
 }
 
-.student-profile-mini-info span {
+.student-profile-text span {
     display: block;
     margin-top: 3px;
     color: #7a8b9a;
     font-size: 11px;
 }
 
-.student-profile-mini img,
-.student-profile-mini-placeholder {
-    display: block !important;
-    width: 50px !important;
-    min-width: 50px !important;
-    max-width: 50px !important;
-    height: 50px !important;
-    min-height: 50px !important;
-    max-height: 50px !important;
-    flex: 0 0 50px;
+.student-top-photo,
+.student-top-photo-placeholder {
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    min-height: 48px !important;
+    max-width: 48px !important;
+    max-height: 48px !important;
+    display: block;
+    flex: 0 0 48px;
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid #d5e4ea;
-    background: #0f8179;
 }
 
-.student-profile-mini-placeholder {
-    display: flex !important;
+.student-top-photo-placeholder {
+    display: flex;
     align-items: center;
     justify-content: center;
+    background: #0f8179;
     color: white;
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 800;
 }
 
@@ -393,20 +413,18 @@
     cursor: pointer;
 }
 
-.student-mobile-menu-button,
-.student-mobile-overlay,
-.student-mobile-close {
+.student-mobile-menu-button {
     display: none;
 }
 
 @media (max-width: 1050px) {
     .student-sidebar {
-        width: 245px;
+        width: 250px;
     }
 
     .my-gatepass-main {
-        width: calc(100% - 245px);
-        margin-left: 245px;
+        width: calc(100% - 250px);
+        margin-left: 250px;
         padding: 30px;
     }
 }
@@ -417,12 +435,12 @@
         top: 0;
         left: 0;
         z-index: 1200;
-        width: 298px;
+        width: 290px;
         height: 100vh;
-        display: flex;
+        padding: 22px 12px;
         transform: translateX(-105%);
         transition: transform 0.25s ease;
-        box-shadow: 15px 0 35px rgba(0,0,0,0.22);
+        box-shadow: 12px 0 30px rgba(0,0,0,0.25);
     }
 
     .student-sidebar.mobile-open {
@@ -433,7 +451,7 @@
         position: fixed;
         top: 14px;
         left: 14px;
-        z-index: 1100;
+        z-index: 1300;
         width: 44px;
         height: 44px;
         display: flex;
@@ -445,77 +463,87 @@
         color: white;
         font-size: 23px;
         cursor: pointer;
-    }
-
-    .student-mobile-overlay {
-        position: fixed;
-        inset: 0;
-        z-index: 1150;
-        display: block;
-        visibility: hidden;
-        background: rgba(5,15,30,0.48);
-        opacity: 0;
-        transition: 0.2s ease;
-    }
-
-    .student-mobile-overlay.show {
-        visibility: visible;
-        opacity: 1;
-    }
-
-    .student-mobile-close {
-        display: block;
-        margin-left: auto;
-        border: none;
-        background: transparent;
-        color: white;
-        font-size: 30px;
-        line-height: 1;
-        cursor: pointer;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
 
     .my-gatepass-main {
         width: 100%;
         margin-left: 0;
-        padding: 78px 18px 35px;
+        padding: 76px 16px 35px;
     }
 
-    .my-gatepass-topbar {
+    .my-gatepass-header {
+        align-items: flex-start;
         margin-bottom: 22px;
+    }
+
+    .student-profile-top-right {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+    }
+
+    .student-profile-text {
+        display: none;
+    }
+
+    .student-top-photo,
+    .student-top-photo-placeholder {
+        width: 46px !important;
+        height: 46px !important;
+        min-width: 46px !important;
+        min-height: 46px !important;
+        max-width: 46px !important;
+        max-height: 46px !important;
+        flex-basis: 46px;
     }
 }
 
 @media (max-width: 650px) {
+    .student-sidebar {
+        width: 285px;
+    }
+
+    .student-sidebar-brand {
+        padding: 5px 10px 22px;
+    }
+
+    .student-sidebar-nav {
+        gap: 2px;
+        margin-top: 20px;
+    }
+
+    .student-nav-item {
+        min-height: 46px;
+        padding: 11px 15px;
+        font-size: 15px;
+    }
+
+    .student-logout-button {
+        min-height: 48px;
+    }
+
     .my-gatepass-main {
         padding: 76px 10px 30px;
     }
 
-    .my-gatepass-topbar {
-        align-items: center;
+    .my-gatepass-heading {
+        padding-right: 55px;
+    }
+
+    .my-gatepass-eyebrow {
+        font-size: 9px;
+        letter-spacing: 2px;
     }
 
     .my-gatepass-heading h1 {
+        margin-top: 6px;
         font-size: 27px;
     }
 
     .my-gatepass-heading p {
         font-size: 12px;
         line-height: 1.4;
-    }
-
-    .student-profile-mini-info {
-        display: none;
-    }
-
-    .student-profile-mini img,
-    .student-profile-mini-placeholder {
-        width: 44px !important;
-        min-width: 44px !important;
-        max-width: 44px !important;
-        height: 44px !important;
-        min-height: 44px !important;
-        max-height: 44px !important;
-        flex-basis: 44px;
     }
 
     .my-gatepass-panel {
@@ -532,5 +560,15 @@
 
     .gatepass-table {
         min-width: 900px;
+    }
+
+    .gatepass-table th {
+        padding: 14px;
+        font-size: 13px;
+    }
+
+    .gatepass-table td {
+        padding: 12px 14px;
+        font-size: 13px;
     }
 }
