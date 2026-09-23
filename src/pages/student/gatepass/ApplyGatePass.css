@@ -468,7 +468,6 @@
 .applygatepass-mobile-menu-button,
 .applygatepass-mobile-overlay,
 .applygatepass-mobile-close,
-.apply-mobile-topbar,
 .my-mobile-topbar,
 .view-mobile-topbar,
 .verify-mobile-topbar {
@@ -539,8 +538,7 @@
         margin-left: 0;
     }
 
-    .apply-mobile-topbar,
-    .my-mobile-topbar,
+        .my-mobile-topbar,
     .view-mobile-topbar,
     .verify-mobile-topbar {
         position: relative;
@@ -552,8 +550,7 @@
         border-bottom: 1px solid #dfe8ee;
     }
 
-    .apply-mobile-topbar,
-    .my-mobile-topbar,
+        .my-mobile-topbar,
     .view-mobile-topbar,
     .verify-mobile-topbar {
         margin: -40px -48px 25px;
@@ -610,8 +607,7 @@
         padding-right: 14px;
     }
 
-    .apply-mobile-topbar,
-    .my-mobile-topbar,
+        .my-mobile-topbar,
     .view-mobile-topbar,
     .verify-mobile-topbar {
         margin-left: -14px;
