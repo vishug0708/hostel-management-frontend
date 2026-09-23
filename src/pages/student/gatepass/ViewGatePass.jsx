@@ -233,7 +233,7 @@ const ViewGatePass = () => {
           )
         : null;
 
-    const profilePhoto = getPhotoUrl();
+    const profilePhoto = photoUrl;
 
     const expired =
         approved &&
@@ -429,12 +429,6 @@ const ViewGatePass = () => {
                             "👤"
                         )}
                     </button>
-                </div>
-
-                <div className="view-mobile-topbar">
-                    <button type="button" onClick={() => setMenuOpen(true)} aria-label="Open student menu">☰</button>
-                    <div><strong>Hostel</strong><span>Student Portal</span></div>
-                    <span>🎫</span>
                 </div>
 
                 <div className="viewgatepass-wrapper">

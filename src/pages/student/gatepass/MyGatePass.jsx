@@ -222,7 +222,6 @@ const MyGatePass = () => {
 
         if (
             status.includes("withdrawn") ||
-            otpStatus.includes("withdrawn") ||
             rectorStatus.includes("withdrawn")
         ) {
             return {
