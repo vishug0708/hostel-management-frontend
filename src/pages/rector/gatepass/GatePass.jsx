@@ -165,12 +165,8 @@ const GatePass = () => {
 
     const parentVerified =
         (pass) =>
-            pass.otp_verified ===
-                "Yes" ||
-            pass.otp_verified ===
-                1 ||
-            pass.otp_verified ===
-                true;
+            String(pass.parent_decision || "").toLowerCase() ===
+            "approved";
 
     const getStatusClass = (
         status
@@ -823,7 +819,7 @@ const GatePass = () => {
                                                                     }
                                                                     title={
                                                                         !verified
-                                                                            ? "Parent OTP must be verified first"
+                                                                            ? "Parent approval is required first"
                                                                             : "Approve Gate Pass"
                                                                     }
                                                                     onClick={() =>
