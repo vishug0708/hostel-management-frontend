@@ -307,37 +307,6 @@ const MyGatePass = () => {
             </aside>
 
             <main className="my-gatepass-main">
-                <div className="mobile-student-topbar">
-                    <button
-                        type="button"
-                        className="mobile-topbar-menu"
-                        onClick={() => setMenuOpen(true)}
-                        aria-label="Open student menu"
-                    >
-                        ☰
-                    </button>
-
-                    <div className="mobile-topbar-brand">
-                        <div className="mobile-topbar-brand-icon">🏠</div>
-                        <div>
-                            <strong>Hostel</strong>
-                            <span>Student Portal</span>
-                        </div>
-                    </div>
-
-                    {getStudentPhoto() ? (
-                        <img
-                            className="mobile-topbar-photo"
-                            src={getStudentPhoto()}
-                            alt={student?.name || "Student"}
-                        />
-                    ) : (
-                        <div className="mobile-topbar-photo-placeholder">
-                            {student?.name?.charAt(0)?.toUpperCase() || "S"}
-                        </div>
-                    )}
-                </div>
-
                 <div className="my-gatepass-topbar">
                     <div className="my-gatepass-heading">
                         <span className="my-gatepass-eyebrow">
