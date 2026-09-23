@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
 import "./ViewGatePass.css";
@@ -19,6 +19,52 @@ const ViewGatePass = () => {
     const [loading, setLoading] = useState(!gatePass);
     const [error, setError] = useState("");
     const [menuOpen, setMenuOpen] = useState(false);
+
+    const sidebarRef = useRef(null);
+    const mobileMenuButtonRef = useRef(null);
+
+    useEffect(() => {
+        document.body.classList.toggle(
+            "viewgatepass-menu-open",
+            menuOpen
+        );
+
+        if (!menuOpen) {
+            return () => {
+                document.body.classList.remove("viewgatepass-menu-open");
+            };
+        }
+
+        const handleOutsidePointer = (event) => {
+            const sidebar = sidebarRef.current;
+            const menuButton = mobileMenuButtonRef.current;
+
+            if (
+                sidebar &&
+                !sidebar.contains(event.target) &&
+                menuButton &&
+                !menuButton.contains(event.target)
+            ) {
+                setMenuOpen(false);
+            }
+        };
+
+        document.addEventListener(
+            "pointerdown",
+            handleOutsidePointer,
+            true
+        );
+
+        return () => {
+            document.removeEventListener(
+                "pointerdown",
+                handleOutsidePointer,
+                true
+            );
+            document.body.classList.remove("viewgatepass-menu-open");
+        };
+    }, [menuOpen]);
+
 
     useEffect(() => {
         if (gatePass) {
@@ -88,9 +134,9 @@ const ViewGatePass = () => {
 
     if (loading) {
         return (
-            <div className="view-gatepass-page">
-                <div className="view-gatepass-error">
-                    <div className="view-gatepass-error-icon">⏳</div>
+            <div className="viewgatepass-page">
+                <div className="viewgatepass-error">
+                    <div className="viewgatepass-error-icon">⏳</div>
                     <h2>Loading Gate Pass...</h2>
                     <p>Please wait while your gate pass is loaded.</p>
                 </div>
@@ -100,9 +146,9 @@ const ViewGatePass = () => {
 
     if (!gatePass) {
         return (
-            <div className="view-gatepass-page">
-                <div className="view-gatepass-error">
-                    <div className="view-gatepass-error-icon">⚠️</div>
+            <div className="viewgatepass-page">
+                <div className="viewgatepass-error">
+                    <div className="viewgatepass-error-icon">⚠️</div>
                     <h2>Gate Pass Data Not Found</h2>
                     <p>{error || "Please open the gate pass again."}</p>
                     <button onClick={() => navigate("/student/gatepass")}>
@@ -183,6 +229,8 @@ const ViewGatePass = () => {
           )
         : null;
 
+    const profilePhoto = getPhotoUrl();
+
     const expired =
         approved &&
         expiry &&
@@ -190,133 +238,212 @@ const ViewGatePass = () => {
         gatePass.security_entry !== "Yes";
 
     return (
-        <div className="view-gatepass-page">
-            <button
-                type="button"
-                className="student-mobile-menu-button"
-                onClick={() => setMenuOpen(true)}
-                aria-label="Open student menu"
-            >
-                ☰
-            </button>
+        <div className="viewgatepass-page">
 
-            <div
-                className={`student-mobile-overlay ${menuOpen ? "show" : ""}`}
-                onClick={() => setMenuOpen(false)}
-            />
-
-            <aside className={`student-sidebar ${menuOpen ? "mobile-open" : ""}`}>
-                <div className="student-sidebar-brand">
-                    <div className="student-brand-icon">🏠</div>
-                    <div>
-                        <h2>Hostel</h2>
-                        <span>Student Portal</span>
-                    </div>
+            <header className="viewgatepass-mobile-header">
+                <div className="viewgatepass-mobile-left">
                     <button
+                        ref={mobileMenuButtonRef}
                         type="button"
-                        className="student-mobile-close"
-                        onClick={() => setMenuOpen(false)}
-                        aria-label="Close student menu"
+                        className="viewgatepass-mobile-menu"
+                        onClick={() => setMenuOpen((open) => !open)}
+                        aria-label={
+                            menuOpen
+                                ? "Close student menu"
+                                : "Open student menu"
+                        }
                     >
-                        ×
+                        ☰
                     </button>
+
+                    <div className="viewgatepass-mobile-brand">
+                        <div className="viewgatepass-mobile-brand-icon">🏠</div>
+                        <div>
+                            <strong>Hostel</strong>
+                            <span>Student Portal</span>
+                        </div>
+                    </div>
                 </div>
 
-                <nav className="student-sidebar-nav">
+                <button
+                    type="button"
+                    className="viewgatepass-mobile-photo"
+                    onClick={() => navigate("/student/profile")}
+                    aria-label="Open student profile"
+                >
+                    {profilePhoto ? (
+                        <img
+                            src={profilePhoto}
+                            alt="Student profile"
+                            onError={(event) => {
+                                event.currentTarget.style.display = "none";
+                            }}
+                        />
+                    ) : (
+                        "👤"
+                    )}
+                </button>
+            </header>
+
+            {menuOpen && (
+                <div
+                    className="viewgatepass-mobile-overlay"
+                    onPointerDown={() => setMenuOpen(false)}
+                />
+            )}
+
+            <aside
+                ref={sidebarRef}
+                className={`viewgatepass-sidebar ${menuOpen ? "mobile-open" : ""}`}
+            >
+                <div className="viewgatepass-brand">
+                    <div className="viewgatepass-brand-icon">🏠</div>
+                    <div>
+                        <strong>Hostel</strong>
+                        <span>Student Portal</span>
+                    </div>
+                </div>
+
+                <nav className="viewgatepass-nav">
                     <button
                         type="button"
-                        className="student-nav-item"
+                        className="viewgatepass-nav-item"
                         onClick={() => handleNavigation("/student/dashboard")}
                     >
-                        📊
+                        <span>📊</span>
                         <span>Dashboard</span>
                     </button>
+
                     <button
                         type="button"
-                        className="student-nav-item"
+                        className="viewgatepass-nav-item"
                         onClick={() => handleNavigation("/student/profile")}
                     >
-                        👤
+                        <span>👤</span>
                         <span>My Profile</span>
                     </button>
+
                     <button
                         type="button"
-                        className="student-nav-item"
+                        className="viewgatepass-nav-item"
                         onClick={() => handleNavigation("/student/room")}
                     >
-                        🛏️
+                        <span>🛏️</span>
                         <span>My Room</span>
                     </button>
+
                     <button
                         type="button"
-                        className="student-nav-item"
+                        className="viewgatepass-nav-item"
                         onClick={() => handleNavigation("/student/leave")}
                     >
-                        📄
+                        <span>📄</span>
                         <span>My Leave</span>
                     </button>
+
                     <button
                         type="button"
-                        className="student-nav-item active"
+                        className="viewgatepass-nav-item"
+                        onClick={() => handleNavigation("/student/leave/apply")}
+                    >
+                        <span>➕</span>
+                        <span>Apply Leave</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        className="viewgatepass-nav-item active"
                         onClick={() => handleNavigation("/student/gatepass")}
                     >
-                        🎫
+                        <span>🎫</span>
                         <span>Gate Pass</span>
                     </button>
+
                     <button
                         type="button"
-                        className="student-nav-item"
+                        className="viewgatepass-nav-item"
                         onClick={() => handleNavigation("/student/complaints")}
                     >
-                        🛠️
+                        <span>🛠️</span>
                         <span>Complaints</span>
                     </button>
+
                     <button
                         type="button"
-                        className="student-nav-item"
+                        className="viewgatepass-nav-item"
                         onClick={() => handleNavigation("/student/fees")}
                     >
-                        💰
+                        <span>💰</span>
                         <span>My Fees</span>
                     </button>
+
                     <button
                         type="button"
-                        className="student-nav-item"
+                        className="viewgatepass-nav-item"
+                        onClick={() => handleNavigation("/student/cricketbox")}
+                    >
+                        <span>🏏</span>
+                        <span>Cricket Box</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        className="viewgatepass-nav-item"
                         onClick={() => handleNavigation("/student/notifications")}
                     >
-                        🔔
+                        <span>🔔</span>
                         <span>Notifications</span>
                     </button>
                 </nav>
 
                 <button
                     type="button"
-                    className="student-logout-button"
+                    className="viewgatepass-logout"
                     onClick={handleLogout}
                 >
-                    🚪
+                    <span>🚪</span>
                     <span>Logout</span>
                 </button>
             </aside>
 
-            <main className="view-gatepass-main">
+            <main className="viewgatepass-main">
+                <div className="viewgatepass-desktop-photo">
+                    <button
+                        type="button"
+                        onClick={() => navigate("/student/profile")}
+                        aria-label="Open student profile"
+                    >
+                        {profilePhoto ? (
+                            <img
+                                src={profilePhoto}
+                                alt="Student profile"
+                                onError={(event) => {
+                                    event.currentTarget.style.display = "none";
+                                }}
+                            />
+                        ) : (
+                            "👤"
+                        )}
+                    </button>
+                </div>
+
                 <div className="view-mobile-topbar">
                     <button type="button" onClick={() => setMenuOpen(true)} aria-label="Open student menu">☰</button>
                     <div><strong>Hostel</strong><span>Student Portal</span></div>
                     <span>🎫</span>
                 </div>
 
-                <div className="view-gatepass-wrapper">
+                <div className="viewgatepass-wrapper">
                 <button
-                    className="view-gatepass-back"
+                    className="viewgatepass-back"
                     onClick={() => navigate("/student/gatepass")}
                 >
                     ← Back to My Gate Passes
                 </button>
 
-                <div className="view-gatepass-card">
-                    <div className="view-gatepass-header">
-                        <div className="view-gatepass-logo">🏠</div>
+                <div className="viewgatepass-card">
+                    <div className="viewgatepass-header">
+                        <div className="viewgatepass-logo">🏠</div>
 
                         <div>
                             <h1>GATEPASS</h1>
@@ -324,31 +451,31 @@ const ViewGatePass = () => {
                             <span>Hostel Management System</span>
                         </div>
 
-                        <div className="view-gatepass-ticket">🎫</div>
+                        <div className="viewgatepass-ticket">🎫</div>
                     </div>
 
-                    <div className="view-gatepass-photo-wrap">
+                    <div className="viewgatepass-photo-wrap">
                         {photoUrl ? (
                             <img
-                                className="view-gatepass-photo"
+                                className="viewgatepass-photo"
                                 src={photoUrl}
                                 alt="Student"
                             />
                         ) : (
-                            <div className="view-gatepass-photo-placeholder">
+                            <div className="viewgatepass-photo-placeholder">
                                 👨‍🎓
                             </div>
                         )}
                     </div>
 
-                    <div className="view-gatepass-number">
+                    <div className="viewgatepass-number">
                         🎫 <strong>Gatepass No:</strong> <b>{gatePassNo}</b>
                     </div>
 
-                    <section className="view-gatepass-section">
+                    <section className="viewgatepass-section">
                         <h2>STUDENT INFORMATION</h2>
 
-                        <div className="view-gatepass-info-grid">
+                        <div className="viewgatepass-info-grid">
                             <div>
                                 <span>Full Name</span>
                                 <strong>
@@ -427,10 +554,10 @@ const ViewGatePass = () => {
                         </div>
                     </section>
 
-                    <section className="view-gatepass-section">
+                    <section className="viewgatepass-section">
                         <h2>GATE PASS DETAILS</h2>
 
-                        <div className="view-gatepass-details">
+                        <div className="viewgatepass-details">
                             <div>
                                 <span>Exit Date</span>
                                 <strong>{formatDate(gatePass.out_date)}</strong>
@@ -481,12 +608,12 @@ const ViewGatePass = () => {
                         </div>
                     </section>
 
-                    <section className="view-gatepass-qr">
+                    <section className="viewgatepass-qr">
                         <h2>QR CODE</h2>
 
                         {approved && qrValue ? (
                             <>
-                                <div className="view-gatepass-qr-box">
+                                <div className="viewgatepass-qr-box">
                                     <QRCodeSVG
                                         value={String(qrValue)}
                                         size={220}
@@ -498,7 +625,7 @@ const ViewGatePass = () => {
                                 <p>Scan this QR code at the hostel security gate.</p>
                             </>
                         ) : (
-                            <div className="view-gatepass-qr-placeholder">
+                            <div className="viewgatepass-qr-placeholder">
                                 <span>▦</span>
                                 <strong>QR Code Not Generated</strong>
                                 <small>QR will be generated after rector approval.</small>
@@ -506,7 +633,7 @@ const ViewGatePass = () => {
                         )}
                     </section>
 
-                    <section className="view-gatepass-approval-panel">
+                    <section className="viewgatepass-approval-panel">
                         <div className="approval-row">
                             <span>Parent Verification</span>
                             <strong className={parentApproved ? "view-approved" : "view-pending"}>
@@ -522,7 +649,7 @@ const ViewGatePass = () => {
                         </div>
                     </section>
 
-                    <section className="view-gatepass-approved-by">
+                    <section className="viewgatepass-approved-by">
                         <div>
                             <span>Approved By</span>
                             <strong>
@@ -553,7 +680,7 @@ const ViewGatePass = () => {
                         </div>
                     </section>
 
-                    <section className="view-gatepass-security">
+                    <section className="viewgatepass-security">
                         <div>
                             <span>Security Exit</span>
                             <strong>
@@ -574,7 +701,7 @@ const ViewGatePass = () => {
                     </section>
 
                     <div
-                        className={`view-gatepass-validity ${
+                        className={`viewgatepass-validity ${
                             !approved
                                 ? "inactive"
                                 : expired

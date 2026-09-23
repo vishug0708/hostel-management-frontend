@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "./MyRoom.css";
 
@@ -6,8 +6,57 @@ const MyRoom = () => {
     const navigate = useNavigate();
 
     const [room, setRoom] = useState(null);
+    const [student, setStudent] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+
+    const [menuOpen, setMenuOpen] = useState(false);
+
+    const sidebarRef = useRef(null);
+    const mobileMenuButtonRef = useRef(null);
+
+    useEffect(() => {
+        document.body.classList.toggle(
+            "myroom-menu-open",
+            menuOpen
+        );
+
+        if (!menuOpen) {
+            return () => {
+                document.body.classList.remove("myroom-menu-open");
+            };
+        }
+
+        const handleOutsidePointer = (event) => {
+            const sidebar = sidebarRef.current;
+            const menuButton = mobileMenuButtonRef.current;
+
+            if (
+                sidebar &&
+                !sidebar.contains(event.target) &&
+                menuButton &&
+                !menuButton.contains(event.target)
+            ) {
+                setMenuOpen(false);
+            }
+        };
+
+        document.addEventListener(
+            "pointerdown",
+            handleOutsidePointer,
+            true
+        );
+
+        return () => {
+            document.removeEventListener(
+                "pointerdown",
+                handleOutsidePointer,
+                true
+            );
+            document.body.classList.remove("myroom-menu-open");
+        };
+    }, [menuOpen]);
+
 
     const getStudentId = () => {
         const studentData = localStorage.getItem("student");
@@ -26,6 +75,16 @@ const MyRoom = () => {
     };
 
     useEffect(() => {
+        const savedStudent = localStorage.getItem("student");
+
+        if (savedStudent) {
+            try {
+                setStudent(JSON.parse(savedStudent));
+            } catch (error) {
+                console.error("Invalid saved student data:", error);
+            }
+        }
+
         fetchRoom();
     }, []);
 
@@ -69,6 +128,42 @@ const MyRoom = () => {
         }
     };
 
+    const getProfilePhoto = () => {
+        if (!student?.photo) {
+            return "";
+        }
+
+        const photo = String(student.photo).trim();
+
+        if (
+            photo.startsWith("data:") ||
+            photo.startsWith("blob:") ||
+            photo.startsWith("http://") ||
+            photo.startsWith("https://")
+        ) {
+            return photo;
+        }
+
+        const API_URL =
+            import.meta.env.VITE_API_URL ||
+            "http://localhost:5000";
+
+        const normalizedPhoto = photo.replace(/^\/+/, "");
+
+        if (normalizedPhoto.startsWith("uploads/")) {
+            return `${API_URL}/${normalizedPhoto}`;
+        }
+
+        return `${API_URL}/uploads/students/${normalizedPhoto}`;
+    };
+
+    const profilePhoto = getProfilePhoto();
+
+    const handleNavigation = (path) => {
+        setMenuOpen(false);
+        navigate(path);
+    };
+
     const handleLogout = () => {
         localStorage.removeItem("studentId");
         localStorage.removeItem("student_id");
@@ -80,110 +175,197 @@ const MyRoom = () => {
     const roommates = room?.roommates || [];
 
     return (
-        <div className="student-layout">
+        <div className="myroom-layout">
 
-            {/* SIDEBAR */}
-            <aside className="student-sidebar">
-                <div className="student-brand">
-                    <div className="student-brand-icon">🏠</div>
-                    <div>
-                        <h2>Hostel</h2>
-                        <p>Student Portal</p>
+            <header className="myroom-mobile-header">
+                <div className="myroom-mobile-left">
+                    <button
+                        ref={mobileMenuButtonRef}
+                        type="button"
+                        className="myroom-mobile-menu"
+                        onClick={() => setMenuOpen((open) => !open)}
+                        aria-label={
+                            menuOpen
+                                ? "Close student menu"
+                                : "Open student menu"
+                        }
+                    >
+                        ☰
+                    </button>
+
+                    <div className="myroom-mobile-brand">
+                        <div className="myroom-mobile-brand-icon">🏠</div>
+                        <div>
+                            <strong>Hostel</strong>
+                            <span>Student Portal</span>
+                        </div>
                     </div>
                 </div>
 
-                <nav className="student-nav">
-                    <NavLink
-                        to="/student/dashboard"
-                        className={({ isActive }) =>
-                            `student-nav-item ${isActive ? "active" : ""}`
-                        }
-                    >
-                        📊 <span>Dashboard</span>
-                    </NavLink>
+                <button
+                    type="button"
+                    className="myroom-mobile-photo"
+                    onClick={() => navigate("/student/profile")}
+                    aria-label="Open student profile"
+                >
+                    {profilePhoto ? (
+                        <img
+                            src={profilePhoto}
+                            alt="Student profile"
+                            onError={(event) => {
+                                event.currentTarget.style.display = "none";
+                            }}
+                        />
+                    ) : (
+                        "👤"
+                    )}
+                </button>
+            </header>
 
-                    <NavLink
-                        to="/student/profile"
-                        className={({ isActive }) =>
-                            `student-nav-item ${isActive ? "active" : ""}`
-                        }
-                    >
-                        👤 <span>My Profile</span>
-                    </NavLink>
+            {menuOpen && (
+                <div
+                    className="myroom-mobile-overlay"
+                    onPointerDown={() => setMenuOpen(false)}
+                />
+            )}
 
-                    <NavLink
-                        to="/student/room"
-                        className={({ isActive }) =>
-                            `student-nav-item ${isActive ? "active" : ""}`
-                        }
-                    >
-                        🛏️ <span>My Room</span>
-                    </NavLink>
+            <aside
+                ref={sidebarRef}
+                className={`myroom-sidebar ${menuOpen ? "mobile-open" : ""}`}
+            >
+                <div className="myroom-brand">
+                    <div className="myroom-brand-icon">🏠</div>
+                    <div>
+                        <strong>Hostel</strong>
+                        <span>Student Portal</span>
+                    </div>
+                </div>
 
-                    <NavLink
-                        to="/student/leave"
-                        className={({ isActive }) =>
-                            `student-nav-item ${isActive ? "active" : ""}`
-                        }
+                <nav className="myroom-nav">
+                    <button
+                        type="button"
+                        className="myroom-nav-item"
+                        onClick={() => handleNavigation("/student/dashboard")}
                     >
-                        📄 <span>My Leave</span>
-                    </NavLink>
+                        <span>📊</span>
+                        <span>Dashboard</span>
+                    </button>
 
-                    <NavLink
-                        to="/student/leave/apply"
-                        className={({ isActive }) =>
-                            `student-nav-item ${isActive ? "active" : ""}`
-                        }
+                    <button
+                        type="button"
+                        className="myroom-nav-item"
+                        onClick={() => handleNavigation("/student/profile")}
                     >
-                        ➕ <span>Apply Leave</span>
-                    </NavLink>
+                        <span>👤</span>
+                        <span>My Profile</span>
+                    </button>
 
-                    <NavLink
-                        to="/student/gate-pass"
-                        className={({ isActive }) =>
-                            `student-nav-item ${isActive ? "active" : ""}`
-                        }
+                    <button
+                        type="button"
+                        className="myroom-nav-item active"
+                        onClick={() => handleNavigation("/student/room")}
                     >
-                        🎫 <span>Gate Pass</span>
-                    </NavLink>
+                        <span>🛏️</span>
+                        <span>My Room</span>
+                    </button>
 
-                    <NavLink
-                        to="/student/complaints"
-                        className={({ isActive }) =>
-                            `student-nav-item ${isActive ? "active" : ""}`
-                        }
+                    <button
+                        type="button"
+                        className="myroom-nav-item"
+                        onClick={() => handleNavigation("/student/leave")}
                     >
-                        🛠️ <span>Complaints</span>
-                    </NavLink>
+                        <span>📄</span>
+                        <span>My Leave</span>
+                    </button>
 
-                    <NavLink
-                        to="/student/fees"
-                        className={({ isActive }) =>
-                            `student-nav-item ${isActive ? "active" : ""}`
-                        }
+                    <button
+                        type="button"
+                        className="myroom-nav-item"
+                        onClick={() => handleNavigation("/student/leave/apply")}
                     >
-                        💰 <span>My Fees</span>
-                    </NavLink>
+                        <span>➕</span>
+                        <span>Apply Leave</span>
+                    </button>
 
-                    <NavLink
-                        to="/student/notifications"
-                        className={({ isActive }) =>
-                            `student-nav-item ${isActive ? "active" : ""}`
-                        }
+                    <button
+                        type="button"
+                        className="myroom-nav-item"
+                        onClick={() => handleNavigation("/student/gatepass")}
                     >
-                        🔔 <span>Notifications</span>
-                    </NavLink>
+                        <span>🎫</span>
+                        <span>Gate Pass</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        className="myroom-nav-item"
+                        onClick={() => handleNavigation("/student/complaints")}
+                    >
+                        <span>🛠️</span>
+                        <span>Complaints</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        className="myroom-nav-item"
+                        onClick={() => handleNavigation("/student/fees")}
+                    >
+                        <span>💰</span>
+                        <span>My Fees</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        className="myroom-nav-item"
+                        onClick={() => handleNavigation("/student/cricketbox")}
+                    >
+                        <span>🏏</span>
+                        <span>Cricket Box</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        className="myroom-nav-item"
+                        onClick={() => handleNavigation("/student/notifications")}
+                    >
+                        <span>🔔</span>
+                        <span>Notifications</span>
+                    </button>
                 </nav>
 
-                <button className="student-logout" onClick={handleLogout}>
-                    🚪 <span>Logout</span>
+                <button
+                    type="button"
+                    className="myroom-logout"
+                    onClick={handleLogout}
+                >
+                    <span>🚪</span>
+                    <span>Logout</span>
                 </button>
             </aside>
 
-            {/* MAIN CONTENT */}
-            <main className="student-main">
+            <main className="myroom-main">
+                <div className="myroom-desktop-photo">
+                    <button
+                        type="button"
+                        onClick={() => navigate("/student/profile")}
+                        aria-label="Open student profile"
+                    >
+                        {profilePhoto ? (
+                            <img
+                                src={profilePhoto}
+                                alt="Student profile"
+                                onError={(event) => {
+                                    event.currentTarget.style.display = "none";
+                                }}
+                            />
+                        ) : (
+                            "👤"
+                        )}
+                    </button>
+                </div>
 
-                <div className="my-room-header">
+
+                <div className="myroom-header">
                     <div>
                         <p className="section-label">ROOM INFORMATION</p>
                         <h1>My Room</h1>
@@ -328,21 +510,21 @@ const MyRoom = () => {
                                             <div className="roommate-details">
                                                 <h3>{student.name || "—"}</h3>
 
-                                                <div className="student-detail-row">
+                                                <div className="myroom-detail-row">
                                                     <span>ID</span>
                                                     <strong>
                                                         {student.id || "—"}
                                                     </strong>
                                                 </div>
 
-                                                <div className="student-detail-row">
+                                                <div className="myroom-detail-row">
                                                     <span>Email</span>
                                                     <strong>
                                                         {student.email || "—"}
                                                     </strong>
                                                 </div>
 
-                                                <div className="student-detail-row">
+                                                <div className="myroom-detail-row">
                                                     <span>Mobile</span>
                                                     <strong>
                                                         {student.mobile || "—"}

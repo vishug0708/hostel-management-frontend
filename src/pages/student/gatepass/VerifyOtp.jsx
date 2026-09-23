@@ -13,12 +13,69 @@ const VerifyOtp = () => {
     const [resending, setResending] = useState(false);
     const [message, setMessage] = useState("");
     const [menuOpen, setMenuOpen] = useState(false);
+
+    const sidebarRef = useRef(null);
+    const mobileMenuButtonRef = useRef(null);
+
+    useEffect(() => {
+        document.body.classList.toggle(
+            "verifyotp-menu-open",
+            menuOpen
+        );
+
+        if (!menuOpen) {
+            return () => {
+                document.body.classList.remove("verifyotp-menu-open");
+            };
+        }
+
+        const handleOutsidePointer = (event) => {
+            const sidebar = sidebarRef.current;
+            const menuButton = mobileMenuButtonRef.current;
+
+            if (
+                sidebar &&
+                !sidebar.contains(event.target) &&
+                menuButton &&
+                !menuButton.contains(event.target)
+            ) {
+                setMenuOpen(false);
+            }
+        };
+
+        document.addEventListener(
+            "pointerdown",
+            handleOutsidePointer,
+            true
+        );
+
+        return () => {
+            document.removeEventListener(
+                "pointerdown",
+                handleOutsidePointer,
+                true
+            );
+            document.body.classList.remove("verifyotp-menu-open");
+        };
+    }, [menuOpen]);
+
     const [error, setError] = useState("");
     const [countdown, setCountdown] = useState(60);
+    const [student, setStudent] = useState(null);
 
     const inputRefs = useRef([]);
 
     useEffect(() => {
+        const savedStudent = localStorage.getItem("student");
+
+        if (savedStudent) {
+            try {
+                setStudent(JSON.parse(savedStudent));
+            } catch (error) {
+                console.error("Invalid saved student data:", error);
+            }
+        }
+
         inputRefs.current[0]?.focus();
     }, []);
 
@@ -42,6 +99,33 @@ const VerifyOtp = () => {
         localStorage.removeItem("student");
         navigate("/student/login", { replace: true });
     };
+
+    const getProfilePhoto = () => {
+        if (!student?.photo) {
+            return "";
+        }
+
+        const photo = String(student.photo).trim();
+
+        if (
+            photo.startsWith("data:") ||
+            photo.startsWith("blob:") ||
+            photo.startsWith("http://") ||
+            photo.startsWith("https://")
+        ) {
+            return photo;
+        }
+
+        const normalizedPhoto = photo.replace(/^\/+/, "");
+
+        if (normalizedPhoto.startsWith("uploads/")) {
+            return `${API_URL}/${normalizedPhoto}`;
+        }
+
+        return `${API_URL}/uploads/students/${normalizedPhoto}`;
+    };
+
+    const profilePhoto = getProfilePhoto();
 
     const handleChange = (index, value) => {
         if (!/^\d?$/.test(value)) return;
@@ -125,7 +209,7 @@ const VerifyOtp = () => {
             setMessage("");
 
             const response = await fetch(
-                `${API_URL}/api/student/gatepass/verify-otp/${gatePassId}`,
+                `${API_URL}/api/student/gatepass/verifyotp/${gatePassId}`,
                 {
                     method: "POST",
                     headers: {
@@ -218,105 +302,204 @@ const VerifyOtp = () => {
     };
 
     return (
-        <div className="verify-otp-page">
-            <button type="button" className="student-mobile-menu-button" onClick={() => setMenuOpen(true)} aria-label="Open student menu">☰</button>
+        <div className="verifyotp-page">
 
-            <div className={`student-mobile-overlay ${menuOpen ? "show" : ""}`} onClick={() => setMenuOpen(false)} />
+            <header className="verifyotp-mobile-header">
+                <div className="verifyotp-mobile-left">
+                    <button
+                        ref={mobileMenuButtonRef}
+                        type="button"
+                        className="verifyotp-mobile-menu"
+                        onClick={() => setMenuOpen((open) => !open)}
+                        aria-label={
+                            menuOpen
+                                ? "Close student menu"
+                                : "Open student menu"
+                        }
+                    >
+                        ☰
+                    </button>
 
-            <aside className={`student-sidebar ${menuOpen ? "mobile-open" : ""}`}>
-                <div className="student-sidebar-brand">
-                    <div className="student-brand-icon">🏠</div>
-                    <div><h2>Hostel</h2><span>Student Portal</span></div>
-                    <button type="button" className="student-mobile-close" onClick={() => setMenuOpen(false)} aria-label="Close student menu">×</button>
+                    <div className="verifyotp-mobile-brand">
+                        <div className="verifyotp-mobile-brand-icon">🏠</div>
+                        <div>
+                            <strong>Hostel</strong>
+                            <span>Student Portal</span>
+                        </div>
+                    </div>
                 </div>
 
-                <nav className="student-sidebar-nav">
+                <button
+                    type="button"
+                    className="verifyotp-mobile-photo"
+                    onClick={() => navigate("/student/profile")}
+                    aria-label="Open student profile"
+                >
+                    {profilePhoto ? (
+                        <img
+                            src={profilePhoto}
+                            alt="Student profile"
+                            onError={(event) => {
+                                event.currentTarget.style.display = "none";
+                            }}
+                        />
+                    ) : (
+                        "👤"
+                    )}
+                </button>
+            </header>
+
+            {menuOpen && (
+                <div
+                    className="verifyotp-mobile-overlay"
+                    onPointerDown={() => setMenuOpen(false)}
+                />
+            )}
+
+            <aside
+                ref={sidebarRef}
+                className={`verifyotp-sidebar ${menuOpen ? "mobile-open" : ""}`}
+            >
+                <div className="verifyotp-brand">
+                    <div className="verifyotp-brand-icon">🏠</div>
+                    <div>
+                        <strong>Hostel</strong>
+                        <span>Student Portal</span>
+                    </div>
+                </div>
+
+                <nav className="verifyotp-nav">
                     <button
                         type="button"
-                        className="student-nav-item"
+                        className="verifyotp-nav-item"
                         onClick={() => handleNavigation("/student/dashboard")}
                     >
-                        📊
+                        <span>📊</span>
                         <span>Dashboard</span>
                     </button>
+
                     <button
                         type="button"
-                        className="student-nav-item"
+                        className="verifyotp-nav-item"
                         onClick={() => handleNavigation("/student/profile")}
                     >
-                        👤
+                        <span>👤</span>
                         <span>My Profile</span>
                     </button>
+
                     <button
                         type="button"
-                        className="student-nav-item"
+                        className="verifyotp-nav-item"
                         onClick={() => handleNavigation("/student/room")}
                     >
-                        🛏️
+                        <span>🛏️</span>
                         <span>My Room</span>
                     </button>
+
                     <button
                         type="button"
-                        className="student-nav-item"
+                        className="verifyotp-nav-item"
                         onClick={() => handleNavigation("/student/leave")}
                     >
-                        📄
+                        <span>📄</span>
                         <span>My Leave</span>
                     </button>
+
                     <button
                         type="button"
-                        className="student-nav-item active"
+                        className="verifyotp-nav-item"
+                        onClick={() => handleNavigation("/student/leave/apply")}
+                    >
+                        <span>➕</span>
+                        <span>Apply Leave</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        className="verifyotp-nav-item active"
                         onClick={() => handleNavigation("/student/gatepass")}
                     >
-                        🎫
+                        <span>🎫</span>
                         <span>Gate Pass</span>
                     </button>
+
                     <button
                         type="button"
-                        className="student-nav-item"
+                        className="verifyotp-nav-item"
                         onClick={() => handleNavigation("/student/complaints")}
                     >
-                        🛠️
+                        <span>🛠️</span>
                         <span>Complaints</span>
                     </button>
+
                     <button
                         type="button"
-                        className="student-nav-item"
+                        className="verifyotp-nav-item"
                         onClick={() => handleNavigation("/student/fees")}
                     >
-                        💰
+                        <span>💰</span>
                         <span>My Fees</span>
                     </button>
+
                     <button
                         type="button"
-                        className="student-nav-item"
+                        className="verifyotp-nav-item"
+                        onClick={() => handleNavigation("/student/cricketbox")}
+                    >
+                        <span>🏏</span>
+                        <span>Cricket Box</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        className="verifyotp-nav-item"
                         onClick={() => handleNavigation("/student/notifications")}
                     >
-                        🔔
+                        <span>🔔</span>
                         <span>Notifications</span>
                     </button>
                 </nav>
 
                 <button
                     type="button"
-                    className="student-logout-button"
+                    className="verifyotp-logout"
                     onClick={handleLogout}
                 >
-                    🚪
+                    <span>🚪</span>
                     <span>Logout</span>
                 </button>
             </aside>
 
-            <main className="verify-otp-main">
+            <main className="verifyotp-main">
+                <div className="verifyotp-desktop-photo">
+                    <button
+                        type="button"
+                        onClick={() => navigate("/student/profile")}
+                        aria-label="Open student profile"
+                    >
+                        {profilePhoto ? (
+                            <img
+                                src={profilePhoto}
+                                alt="Student profile"
+                                onError={(event) => {
+                                    event.currentTarget.style.display = "none";
+                                }}
+                            />
+                        ) : (
+                            "👤"
+                        )}
+                    </button>
+                </div>
+
                 <div className="verify-mobile-topbar">
                     <button type="button" onClick={() => setMenuOpen(true)} aria-label="Open student menu">☰</button>
                     <div><strong>Hostel</strong><span>Student Portal</span></div>
                     <span>🔐</span>
                 </div>
 
-            <div className="verify-otp-card">
-                <div className="verify-otp-header">
-                    <div className="verify-otp-icon">
+            <div className="verifyotp-card">
+                <div className="verifyotp-header">
+                    <div className="verifyotp-icon">
                         🔐
                     </div>
 
@@ -327,8 +510,8 @@ const VerifyOtp = () => {
                     </p>
                 </div>
 
-                <div className="verify-otp-body">
-                    <div className="verify-otp-title">
+                <div className="verifyotp-body">
+                    <div className="verifyotp-title">
                         <h2>Parent Verification</h2>
 
                         <p>
@@ -391,7 +574,7 @@ const VerifyOtp = () => {
 
                         <button
                             type="submit"
-                            className="verify-otp-button"
+                            className="verifyotp-button"
                             disabled={loading}
                         >
                             {loading

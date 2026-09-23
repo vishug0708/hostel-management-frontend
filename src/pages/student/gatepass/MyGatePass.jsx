@@ -11,7 +11,7 @@ const MyGatePass = () => {
     const [gatePasses, setGatePasses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
 
     const sidebarRef = useRef(null);
     const mobileMenuButtonRef = useRef(null);
@@ -22,19 +22,19 @@ const MyGatePass = () => {
 
     useEffect(() => {
         document.body.classList.toggle(
-            "student-gatepass-menu-open",
-            mobileMenuOpen
+            "mygatepass-menu-open",
+            menuOpen
         );
 
         return () => {
             document.body.classList.remove(
-                "student-gatepass-menu-open"
+                "mygatepass-menu-open"
             );
         };
-    }, [mobileMenuOpen]);
+    }, [menuOpen]);
 
     useEffect(() => {
-        if (!mobileMenuOpen) {
+        if (!menuOpen) {
             return;
         }
 
@@ -48,7 +48,7 @@ const MyGatePass = () => {
                 menuButton &&
                 !menuButton.contains(event.target)
             ) {
-                setMobileMenuOpen(false);
+                setMenuOpen(false);
             }
         };
 
@@ -65,7 +65,7 @@ const MyGatePass = () => {
                 true
             );
         };
-    }, [mobileMenuOpen]);
+    }, [menuOpen]);
 
     const loadStudent = async () => {
         try {
@@ -134,13 +134,13 @@ const MyGatePass = () => {
     };
 
     const handleNavigation = (path) => {
-        setMobileMenuOpen(false);
+        setMenuOpen(false);
 
         navigate(path);
     };
 
     const handleLogout = () => {
-        setMobileMenuOpen(false);
+        setMenuOpen(false);
 
         localStorage.removeItem("studentToken");
         localStorage.removeItem("student");
@@ -174,6 +174,8 @@ const MyGatePass = () => {
 
         return `${API_URL}/uploads/students/${normalizedPhoto}`;
     };
+
+    const profilePhoto = getStudentPhoto();
 
     const formatDateForTable = (date) => {
         if (!date) {
@@ -280,25 +282,25 @@ const MyGatePass = () => {
     };
 
     return (
-        <div className="my-gatepass-page">
+        <div className="mygatepass-page">
 
             {/* =========================
                 MOBILE HEADER
             ========================= */}
 
-            <header className="student-mobile-header">
+            <header className="mygatepass-mobile-header">
 
-                <div className="student-mobile-left">
+                <div className="mygatepass-mobile-left">
 
                     <button
                         ref={mobileMenuButtonRef}
                         type="button"
-                        className="student-mobile-menu-btn"
+                        className="mygatepass-mobile-menu"
                         onClick={() =>
-                            setMobileMenuOpen((open) => !open)
+                            setMenuOpen((open) => !open)
                         }
                         aria-label={
-                            mobileMenuOpen
+                            menuOpen
                                 ? "Close student menu"
                                 : "Open student menu"
                         }
@@ -306,9 +308,9 @@ const MyGatePass = () => {
                         ☰
                     </button>
 
-                    <div className="student-mobile-brand">
+                    <div className="mygatepass-mobile-brand">
 
-                        <div className="student-mobile-brand-icon">
+                        <div className="mygatepass-mobile-brand-icon">
                             🏠
                         </div>
 
@@ -328,7 +330,7 @@ const MyGatePass = () => {
 
                 <button
                     type="button"
-                    className="student-mobile-profile-btn"
+                    className="mygatepass-mobile-photo"
                     onClick={() =>
                         navigate("/student/profile")
                     }
@@ -356,16 +358,16 @@ const MyGatePass = () => {
 
             <aside
                 ref={sidebarRef}
-                className={`student-sidebar ${
-                    mobileMenuOpen
+                className={`mygatepass-sidebar ${
+                    menuOpen
                         ? "mobile-open"
                         : ""
                 }`}
             >
 
-                <div className="student-sidebar-brand">
+                <div className="mygatepass-sidebar-brand">
 
-                    <div className="student-brand-icon">
+                    <div className="mygatepass-brand-icon">
                         🏠
                     </div>
 
@@ -381,11 +383,11 @@ const MyGatePass = () => {
 
                 </div>
 
-                <nav className="student-sidebar-nav">
+                <nav className="mygatepass-sidebar-nav">
 
                     <button
                         type="button"
-                        className="student-nav-item"
+                        className="mygatepass-nav-item"
                         onClick={() =>
                             handleNavigation(
                                 "/student/dashboard"
@@ -398,7 +400,7 @@ const MyGatePass = () => {
 
                     <button
                         type="button"
-                        className="student-nav-item"
+                        className="mygatepass-nav-item"
                         onClick={() =>
                             handleNavigation(
                                 "/student/profile"
@@ -411,7 +413,7 @@ const MyGatePass = () => {
 
                     <button
                         type="button"
-                        className="student-nav-item"
+                        className="mygatepass-nav-item"
                         onClick={() =>
                             handleNavigation(
                                 "/student/room"
@@ -424,7 +426,7 @@ const MyGatePass = () => {
 
                     <button
                         type="button"
-                        className="student-nav-item"
+                        className="mygatepass-nav-item"
                         onClick={() =>
                             handleNavigation(
                                 "/student/leave"
@@ -437,7 +439,7 @@ const MyGatePass = () => {
 
                     <button
                         type="button"
-                        className="student-nav-item"
+                        className="mygatepass-nav-item"
                         onClick={() =>
                             handleNavigation(
                                 "/student/leave/apply"
@@ -450,7 +452,7 @@ const MyGatePass = () => {
 
                     <button
                         type="button"
-                        className="student-nav-item active"
+                        className="mygatepass-nav-item active"
                         onClick={() =>
                             handleNavigation(
                                 "/student/gatepass"
@@ -463,7 +465,7 @@ const MyGatePass = () => {
 
                     <button
                         type="button"
-                        className="student-nav-item"
+                        className="mygatepass-nav-item"
                         onClick={() =>
                             handleNavigation(
                                 "/student/complaints"
@@ -476,7 +478,7 @@ const MyGatePass = () => {
 
                     <button
                         type="button"
-                        className="student-nav-item"
+                        className="mygatepass-nav-item"
                         onClick={() =>
                             handleNavigation(
                                 "/student/fees"
@@ -489,7 +491,7 @@ const MyGatePass = () => {
 
                     <button
                         type="button"
-                        className="student-nav-item"
+                        className="mygatepass-nav-item"
                         onClick={() =>
                             handleNavigation(
                                 "/student/cricketbox"
@@ -502,7 +504,7 @@ const MyGatePass = () => {
 
                     <button
                         type="button"
-                        className="student-nav-item"
+                        className="mygatepass-nav-item"
                         onClick={() =>
                             handleNavigation(
                                 "/student/notifications"
@@ -517,7 +519,7 @@ const MyGatePass = () => {
 
                 <button
                     type="button"
-                    className="student-logout"
+                    className="mygatepass-logout"
                     onClick={handleLogout}
                 >
                     <span>🚪</span>
@@ -530,14 +532,14 @@ const MyGatePass = () => {
                 MOBILE OVERLAY
             ========================= */}
 
-            {mobileMenuOpen && (
+            {menuOpen && (
                 <div
-                    className="student-mobile-overlay"
+                    className="mygatepass-mobile-overlay"
                     onPointerDown={() =>
-                        setMobileMenuOpen(false)
+                        setMenuOpen(false)
                     }
                     onClick={() =>
-                        setMobileMenuOpen(false)
+                        setMenuOpen(false)
                     }
                 />
             )}
@@ -546,17 +548,17 @@ const MyGatePass = () => {
                 MAIN
             ========================= */}
 
-            <main className="my-gatepass-main">
+            <main className="mygatepass-main">
 
                 {/* =========================
                     DESKTOP TOPBAR
                 ========================= */}
 
-                <header className="my-gatepass-topbar">
+                <header className="mygatepass-topbar">
 
-                    <div className="my-gatepass-heading">
+                    <div className="mygatepass-heading">
 
-                        <span className="my-gatepass-eyebrow">
+                        <span className="mygatepass-eyebrow">
                             STUDENT PORTAL
                         </span>
 
@@ -571,61 +573,30 @@ const MyGatePass = () => {
 
                     </div>
 
-                    <div className="student-desktop-actions">
-
-                        <button
-                            type="button"
-                            className="apply-gatepass-btn"
-                            onClick={() =>
-                                navigate(
-                                    "/student/gatepass/apply"
-                                )
-                            }
-                        >
-                            + Apply Gate Pass
-                        </button>
-
-                        {getStudentPhoto() ? (
-                            <button
-                                type="button"
-                                className="student-desktop-photo-btn"
-                                onClick={() =>
-                                    navigate(
-                                        "/student/profile"
-                                    )
-                                }
-                                aria-label="Student profile"
-                            >
-                                <img
-                                    src={getStudentPhoto()}
-                                    alt="Student profile"
-                                    onError={(event) => {
-                                        event.currentTarget.style.display =
-                                            "none";
-                                    }}
-                                />
-                            </button>
+                    <div className="mygatepass-desktop-photo">
+                    <button
+                        type="button"
+                        onClick={() => navigate("/student/profile")}
+                        aria-label="Open student profile"
+                    >
+                        {profilePhoto ? (
+                            <img
+                                src={profilePhoto}
+                                alt="Student profile"
+                                onError={(event) => {
+                                    event.currentTarget.style.display = "none";
+                                }}
+                            />
                         ) : (
-                            <button
-                                type="button"
-                                className="student-desktop-photo-placeholder"
-                                onClick={() =>
-                                    navigate(
-                                        "/student/profile"
-                                    )
-                                }
-                                aria-label="Student profile"
-                            >
-                                👤
-                            </button>
+                            "👤"
                         )}
-
-                    </div>
+                    </button>
+                </div>
 
                 </header>
 
                 {error && (
-                    <div className="my-gatepass-alert">
+                    <div className="mygatepass-alert">
 
                         <span>
                             ⚠️
@@ -651,9 +622,9 @@ const MyGatePass = () => {
                     GATEPASS PANEL
                 ========================= */}
 
-                <section className="my-gatepass-panel">
+                <section className="mygatepass-panel">
 
-                    <div className="my-gatepass-panel-title">
+                    <div className="mygatepass-panel-title">
 
                         <div className="panel-title-left">
                             <span>📋</span>
@@ -678,7 +649,7 @@ const MyGatePass = () => {
                     </div>
 
                     {loading && (
-                        <div className="my-gatepass-loading">
+                        <div className="mygatepass-loading">
 
                             <div className="gatepass-spinner"></div>
 
@@ -692,7 +663,7 @@ const MyGatePass = () => {
                     {!loading &&
                         !error &&
                         gatePasses.length === 0 && (
-                            <div className="my-gatepass-empty">
+                            <div className="mygatepass-empty">
 
                                 <div className="empty-gatepass-icon">
                                     🎫

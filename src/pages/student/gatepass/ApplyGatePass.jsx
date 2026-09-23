@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ApplyGatePass.css";
 
@@ -23,6 +23,52 @@ const ApplyGatePass = () => {
     const [success, setSuccess] = useState("");
     const [menuOpen, setMenuOpen] = useState(false);
 
+    const sidebarRef = useRef(null);
+    const mobileMenuButtonRef = useRef(null);
+
+    useEffect(() => {
+        document.body.classList.toggle(
+            "applygatepass-menu-open",
+            menuOpen
+        );
+
+        if (!menuOpen) {
+            return () => {
+                document.body.classList.remove("applygatepass-menu-open");
+            };
+        }
+
+        const handleOutsidePointer = (event) => {
+            const sidebar = sidebarRef.current;
+            const menuButton = mobileMenuButtonRef.current;
+
+            if (
+                sidebar &&
+                !sidebar.contains(event.target) &&
+                menuButton &&
+                !menuButton.contains(event.target)
+            ) {
+                setMenuOpen(false);
+            }
+        };
+
+        document.addEventListener(
+            "pointerdown",
+            handleOutsidePointer,
+            true
+        );
+
+        return () => {
+            document.removeEventListener(
+                "pointerdown",
+                handleOutsidePointer,
+                true
+            );
+            document.body.classList.remove("applygatepass-menu-open");
+        };
+    }, [menuOpen]);
+
+
     useEffect(() => {
         const savedStudent = localStorage.getItem("student");
 
@@ -38,6 +84,33 @@ const ApplyGatePass = () => {
             setError("Invalid student session. Please login again.");
         }
     }, []);
+
+    const getProfilePhoto = () => {
+        if (!student?.photo) {
+            return "";
+        }
+
+        const photo = String(student.photo).trim();
+
+        if (
+            photo.startsWith("data:") ||
+            photo.startsWith("blob:") ||
+            photo.startsWith("http://") ||
+            photo.startsWith("https://")
+        ) {
+            return photo;
+        }
+
+        const normalizedPhoto = photo.replace(/^\/+/, "");
+
+        if (normalizedPhoto.startsWith("uploads/")) {
+            return `${API_URL}/${normalizedPhoto}`;
+        }
+
+        return `${API_URL}/uploads/students/${normalizedPhoto}`;
+    };
+
+    const profilePhoto = getProfilePhoto();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -194,129 +267,195 @@ const ApplyGatePass = () => {
     };
 
     return (
-        <div className="apply-gatepass-page">
-            <button
-                type="button"
-                className="student-mobile-menu-button"
-                onClick={() => setMenuOpen(true)}
-                aria-label="Open student menu"
-            >
-                ☰
-            </button>
+        <div className="applygatepass-page">
 
-            <div
-                className={`student-mobile-overlay ${menuOpen ? "show" : ""}`}
-                onClick={() => setMenuOpen(false)}
-            />
-
-            {/* ================= SIDEBAR ================= */}
-
-            <aside className={`student-sidebar ${menuOpen ? "mobile-open" : ""}`}>
-
-                <div className="student-sidebar-brand">
-
-                    <div className="student-brand-icon">
-                        🏠
-                    </div>
-
-                    <div>
-                        <h2>Hostel</h2>
-                        <span>Student Portal</span>
-                    </div>
-
+            <header className="applygatepass-mobile-header">
+                <div className="applygatepass-mobile-left">
                     <button
+                        ref={mobileMenuButtonRef}
                         type="button"
-                        className="student-mobile-close"
-                        onClick={() => setMenuOpen(false)}
-                        aria-label="Close student menu"
+                        className="applygatepass-mobile-menu"
+                        onClick={() => setMenuOpen((open) => !open)}
+                        aria-label={
+                            menuOpen
+                                ? "Close student menu"
+                                : "Open student menu"
+                        }
                     >
-                        ×
+                        ☰
                     </button>
 
+                    <div className="applygatepass-mobile-brand">
+                        <div className="applygatepass-mobile-brand-icon">🏠</div>
+                        <div>
+                            <strong>Hostel</strong>
+                            <span>Student Portal</span>
+                        </div>
+                    </div>
                 </div>
 
-                <nav className="student-sidebar-nav">
+                <button
+                    type="button"
+                    className="applygatepass-mobile-photo"
+                    onClick={() => navigate("/student/profile")}
+                    aria-label="Open student profile"
+                >
+                    {profilePhoto ? (
+                        <img
+                            src={profilePhoto}
+                            alt="Student profile"
+                            onError={(event) => {
+                                event.currentTarget.style.display = "none";
+                            }}
+                        />
+                    ) : (
+                        "👤"
+                    )}
+                </button>
+            </header>
 
+            {menuOpen && (
+                <div
+                    className="applygatepass-mobile-overlay"
+                    onPointerDown={() => setMenuOpen(false)}
+                />
+            )}
+
+            <aside
+                ref={sidebarRef}
+                className={`applygatepass-sidebar ${menuOpen ? "mobile-open" : ""}`}
+            >
+                <div className="applygatepass-brand">
+                    <div className="applygatepass-brand-icon">🏠</div>
+                    <div>
+                        <strong>Hostel</strong>
+                        <span>Student Portal</span>
+                    </div>
+                </div>
+
+                <nav className="applygatepass-nav">
                     <button
-                        className="student-nav-item"
+                        type="button"
+                        className="applygatepass-nav-item"
                         onClick={() => handleNavigation("/student/dashboard")}
                     >
-                        📊
+                        <span>📊</span>
                         <span>Dashboard</span>
                     </button>
 
                     <button
-                        className="student-nav-item"
+                        type="button"
+                        className="applygatepass-nav-item"
                         onClick={() => handleNavigation("/student/profile")}
                     >
-                        👤
+                        <span>👤</span>
                         <span>My Profile</span>
                     </button>
 
                     <button
-                        className="student-nav-item"
+                        type="button"
+                        className="applygatepass-nav-item"
                         onClick={() => handleNavigation("/student/room")}
                     >
-                        🛏️
+                        <span>🛏️</span>
                         <span>My Room</span>
                     </button>
 
                     <button
-                        className="student-nav-item"
+                        type="button"
+                        className="applygatepass-nav-item"
                         onClick={() => handleNavigation("/student/leave")}
                     >
-                        📄
+                        <span>📄</span>
                         <span>My Leave</span>
                     </button>
 
                     <button
-                        className="student-nav-item active"
+                        type="button"
+                        className="applygatepass-nav-item"
+                        onClick={() => handleNavigation("/student/leave/apply")}
+                    >
+                        <span>➕</span>
+                        <span>Apply Leave</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        className="applygatepass-nav-item active"
                         onClick={() => handleNavigation("/student/gatepass")}
                     >
-                        🎫
+                        <span>🎫</span>
                         <span>Gate Pass</span>
                     </button>
 
                     <button
-                        className="student-nav-item"
+                        type="button"
+                        className="applygatepass-nav-item"
                         onClick={() => handleNavigation("/student/complaints")}
                     >
-                        🛠️
+                        <span>🛠️</span>
                         <span>Complaints</span>
                     </button>
 
                     <button
-                        className="student-nav-item"
+                        type="button"
+                        className="applygatepass-nav-item"
                         onClick={() => handleNavigation("/student/fees")}
                     >
-                        💰
+                        <span>💰</span>
                         <span>My Fees</span>
                     </button>
 
                     <button
-                        className="student-nav-item"
-                        onClick={() => handleNavigation("/student/notifications")}
+                        type="button"
+                        className="applygatepass-nav-item"
+                        onClick={() => handleNavigation("/student/cricketbox")}
                     >
-                        🔔
-                        <span>Notifications</span>
+                        <span>🏏</span>
+                        <span>Cricket Box</span>
                     </button>
 
+                    <button
+                        type="button"
+                        className="applygatepass-nav-item"
+                        onClick={() => handleNavigation("/student/notifications")}
+                    >
+                        <span>🔔</span>
+                        <span>Notifications</span>
+                    </button>
                 </nav>
 
                 <button
-                    className="student-logout-button"
+                    type="button"
+                    className="applygatepass-logout"
                     onClick={handleLogout}
                 >
-                    🚪
+                    <span>🚪</span>
                     <span>Logout</span>
                 </button>
-
             </aside>
 
+            <main className="applygatepass-main">
+                <div className="applygatepass-desktop-photo">
+                    <button
+                        type="button"
+                        onClick={() => navigate("/student/profile")}
+                        aria-label="Open student profile"
+                    >
+                        {profilePhoto ? (
+                            <img
+                                src={profilePhoto}
+                                alt="Student profile"
+                                onError={(event) => {
+                                    event.currentTarget.style.display = "none";
+                                }}
+                            />
+                        ) : (
+                            "👤"
+                        )}
+                    </button>
+                </div>
 
-            {/* ================= MAIN CONTENT ================= */}
-
-            <main className="apply-gatepass-main">
                 <div className="apply-mobile-topbar">
                     <button
                         type="button"
@@ -334,10 +473,10 @@ const ApplyGatePass = () => {
 
                 {/* HEADER */}
 
-                <div className="apply-gatepass-header">
+                <div className="applygatepass-header">
 
                     <div>
-                        <span className="apply-gatepass-eyebrow">
+                        <span className="applygatepass-eyebrow">
                             GATE PASS
                         </span>
 
@@ -350,7 +489,7 @@ const ApplyGatePass = () => {
                     </div>
 
                     <button
-                        className="apply-gatepass-back"
+                        className="applygatepass-back"
                         onClick={() => handleNavigation("/student/gatepass")}
                     >
                         ← My Gate Pass
@@ -362,7 +501,7 @@ const ApplyGatePass = () => {
                 {/* ERROR */}
 
                 {error && (
-                    <div className="apply-gatepass-alert error">
+                    <div className="applygatepass-alert error">
 
                         <span>⚠️</span>
 
@@ -381,7 +520,7 @@ const ApplyGatePass = () => {
                 {/* SUCCESS */}
 
                 {success && (
-                    <div className="apply-gatepass-alert success">
+                    <div className="applygatepass-alert success">
 
                         <span>✓</span>
 
@@ -399,11 +538,11 @@ const ApplyGatePass = () => {
 
                 {/* FORM CARD */}
 
-                <section className="apply-gatepass-card">
+                <section className="applygatepass-card">
 
-                    <div className="apply-gatepass-card-header">
+                    <div className="applygatepass-card-header">
 
-                        <div className="apply-gatepass-card-icon">
+                        <div className="applygatepass-card-icon">
                             🎫
                         </div>
 
@@ -419,21 +558,21 @@ const ApplyGatePass = () => {
 
 
                     <form
-                        className="apply-gatepass-form"
+                        className="applygatepass-form"
                         onSubmit={handleSubmit}
                     >
 
                         {/* STUDENT INFORMATION */}
 
-                        <div className="apply-gatepass-section">
+                        <div className="applygatepass-section">
 
-                            <div className="apply-gatepass-section-title">
+                            <div className="applygatepass-section-title">
                                 👤 Student Information
                             </div>
 
-                            <div className="apply-gatepass-student-box">
+                            <div className="applygatepass-student-box">
 
-                                <div className="apply-gatepass-student-avatar">
+                                <div className="applygatepass-student-avatar">
                                     {student?.photo ? (
                                         <img
                                             src={
@@ -453,7 +592,7 @@ const ApplyGatePass = () => {
                                     )}
                                 </div>
 
-                                <div className="apply-gatepass-student-info">
+                                <div className="applygatepass-student-info">
 
                                     <strong>
                                         {student?.name || "Student"}
@@ -473,13 +612,13 @@ const ApplyGatePass = () => {
 
                         {/* DESTINATION */}
 
-                        <div className="apply-gatepass-section">
+                        <div className="applygatepass-section">
 
-                            <div className="apply-gatepass-section-title">
+                            <div className="applygatepass-section-title">
                                 📍 Gate Pass Details
                             </div>
 
-                            <div className="apply-gatepass-field">
+                            <div className="applygatepass-field">
 
                                 <label>
                                     Destination
@@ -498,7 +637,7 @@ const ApplyGatePass = () => {
                             </div>
 
 
-                            <div className="apply-gatepass-field">
+                            <div className="applygatepass-field">
 
                                 <label>
                                     Purpose
@@ -517,9 +656,9 @@ const ApplyGatePass = () => {
                             </div>
 
 
-                            <div className="apply-gatepass-row">
+                            <div className="applygatepass-row">
 
-                                <div className="apply-gatepass-field">
+                                <div className="applygatepass-field">
 
                                     <label>
                                         Exit Date
@@ -541,7 +680,7 @@ const ApplyGatePass = () => {
                                 </div>
 
 
-                                <div className="apply-gatepass-field">
+                                <div className="applygatepass-field">
 
                                     <label>
                                         Return Date
@@ -566,9 +705,9 @@ const ApplyGatePass = () => {
                             </div>
 
 
-                            <div className="apply-gatepass-row">
+                            <div className="applygatepass-row">
 
-                                <div className="apply-gatepass-field">
+                                <div className="applygatepass-field">
 
                                     <label>
                                         Exit Time
@@ -584,7 +723,7 @@ const ApplyGatePass = () => {
 
                                 </div>
 
-                                <div className="apply-gatepass-field">
+                                <div className="applygatepass-field">
 
                                     <label>
                                         Return Time
@@ -607,9 +746,9 @@ const ApplyGatePass = () => {
 
                         {/* PARENT VERIFICATION */}
 
-                        <div className="apply-gatepass-parent-box">
+                        <div className="applygatepass-parent-box">
 
-                            <div className="apply-gatepass-parent-icon">
+                            <div className="applygatepass-parent-icon">
                                 ✉️
                             </div>
 
@@ -632,11 +771,11 @@ const ApplyGatePass = () => {
 
                         {/* SUBMIT */}
 
-                        <div className="apply-gatepass-form-footer">
+                        <div className="applygatepass-form-footer">
 
                             <button
                                 type="button"
-                                className="apply-gatepass-cancel"
+                                className="applygatepass-cancel"
                                 onClick={() =>
                                     navigate("/student/gatepass")
                                 }
@@ -646,7 +785,7 @@ const ApplyGatePass = () => {
 
                             <button
                                 type="submit"
-                                className="apply-gatepass-submit"
+                                className="applygatepass-submit"
                                 disabled={loading}
                             >
                                 {loading

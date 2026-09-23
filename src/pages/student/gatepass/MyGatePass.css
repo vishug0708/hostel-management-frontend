@@ -2,7 +2,7 @@
     box-sizing: border-box;
 }
 
-.my-gatepass-page {
+.mygatepass-page {
     min-height: 100vh;
     width: 100%;
     background: #eef4f8;
@@ -10,7 +10,7 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
-.student-sidebar {
+.mygatepass-sidebar {
     position: fixed;
     top: 0;
     left: 0;
@@ -25,7 +25,7 @@
     overflow-y: auto;
 }
 
-.student-sidebar-brand {
+.mygatepass-sidebar-brand {
     display: flex;
     align-items: center;
     gap: 11px;
@@ -33,7 +33,7 @@
     border-bottom: 1px solid #1e293b;
 }
 
-.student-brand-icon {
+.mygatepass-brand-icon {
     width: 43px;
     height: 43px;
     flex: 0 0 43px;
@@ -45,27 +45,27 @@
     font-size: 21px;
 }
 
-.student-sidebar-brand strong {
+.mygatepass-sidebar-brand strong {
     display: block;
     color: #ffffff;
     font-size: 17px;
 }
 
-.student-sidebar-brand span {
+.mygatepass-sidebar-brand span {
     display: block;
     margin-top: 3px;
     color: #94a3b8;
     font-size: 11px;
 }
 
-.student-sidebar-nav {
+.mygatepass-sidebar-nav {
     display: flex;
     flex-direction: column;
     gap: 5px;
     margin-top: 25px;
 }
 
-.student-nav-item {
+.mygatepass-nav-item {
     width: 100%;
     min-height: 44px;
     display: flex;
@@ -82,19 +82,19 @@
     transition: background 0.2s ease, color 0.2s ease;
 }
 
-.student-nav-item:hover,
-.student-nav-item.active {
+.mygatepass-nav-item:hover,
+.mygatepass-nav-item.active {
     background: #134e4a;
     color: #ffffff;
 }
 
-.student-nav-item span {
+.mygatepass-nav-item span {
     width: 20px;
     min-width: 20px;
     text-align: center;
 }
 
-.student-logout {
+.mygatepass-logout {
     margin-top: auto;
     width: 100%;
     display: flex;
@@ -109,19 +109,19 @@
     font-size: 13px;
 }
 
-.student-logout:hover {
+.mygatepass-logout:hover {
     background: #7f1d1d;
     color: #ffffff;
 }
 
-.my-gatepass-main {
+.mygatepass-main {
     width: calc(100% - 255px);
     min-height: 100vh;
     margin-left: 255px;
     padding: 30px 35px;
 }
 
-.my-gatepass-topbar {
+.mygatepass-topbar {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
@@ -129,11 +129,11 @@
     margin-bottom: 28px;
 }
 
-.my-gatepass-heading {
+.mygatepass-heading {
     min-width: 0;
 }
 
-.my-gatepass-eyebrow {
+.mygatepass-eyebrow {
     display: block;
     color: #0f766e;
     font-size: 10px;
@@ -141,20 +141,20 @@
     letter-spacing: 1.8px;
 }
 
-.my-gatepass-heading h1 {
+.mygatepass-heading h1 {
     margin: 8px 0 7px;
     color: #102f4f;
     font-size: 34px;
     line-height: 1.1;
 }
 
-.my-gatepass-heading p {
+.mygatepass-heading p {
     margin: 0;
     color: #64748b;
     font-size: 13px;
 }
 
-.student-desktop-actions {
+.mygatepass-desktop-actions {
     display: flex;
     align-items: center;
     gap: 14px;
@@ -179,8 +179,8 @@
     transform: translateY(-1px);
 }
 
-.student-desktop-photo-btn,
-.student-desktop-photo-placeholder {
+.mygatepass-desktop-photo-btn,
+.mygatepass-desktop-photo-placeholder {
     width: 46px !important;
     height: 46px !important;
     min-width: 46px !important;
@@ -198,26 +198,26 @@
     cursor: pointer;
 }
 
-.student-desktop-photo-btn img {
+.mygatepass-desktop-photo-btn img {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover;
     border-radius: 50%;
 }
 
-.student-desktop-photo-placeholder {
+.mygatepass-desktop-photo-placeholder {
     font-size: 19px;
 }
 
-.student-mobile-header {
+.mygatepass-mobile-header {
     display: none;
 }
 
-.student-mobile-overlay {
+.mygatepass-mobile-overlay {
     display: none;
 }
 
-.my-gatepass-alert {
+.mygatepass-alert {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -230,7 +230,7 @@
     font-size: 13px;
 }
 
-.my-gatepass-alert button {
+.mygatepass-alert button {
     margin-left: auto;
     border: none;
     background: transparent;
@@ -239,7 +239,7 @@
     cursor: pointer;
 }
 
-.my-gatepass-panel {
+.mygatepass-panel {
     width: 100%;
     overflow: hidden;
     border-radius: 16px;
@@ -247,7 +247,7 @@
     box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14);
 }
 
-.my-gatepass-panel-title {
+.mygatepass-panel-title {
     min-height: 95px;
     display: flex;
     align-items: center;
@@ -379,7 +379,7 @@
     background: #ed4d42;
 }
 
-.my-gatepass-loading {
+.mygatepass-loading {
     min-height: 260px;
     display: flex;
     flex-direction: column;
@@ -404,7 +404,7 @@
     }
 }
 
-.my-gatepass-empty {
+.mygatepass-empty {
     padding: 65px 30px;
     text-align: center;
 }
@@ -421,19 +421,19 @@
     font-size: 30px;
 }
 
-.my-gatepass-empty h2 {
+.mygatepass-empty h2 {
     margin: 18px 0 8px;
     color: #173650;
     font-size: 22px;
 }
 
-.my-gatepass-empty p {
+.mygatepass-empty p {
     margin: 0 0 20px;
     color: #718096;
     font-size: 14px;
 }
 
-.my-gatepass-empty button {
+.mygatepass-empty button {
     padding: 12px 20px;
     border: none;
     border-radius: 9px;
@@ -444,7 +444,7 @@
 }
 
 @media (max-width: 768px) {
-    .student-mobile-header {
+    .mygatepass-mobile-header {
         position: fixed;
         top: 0;
         left: 0;
@@ -460,14 +460,14 @@
         box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08);
     }
 
-    .student-mobile-left {
+    .mygatepass-mobile-left {
         min-width: 0;
         display: flex;
         align-items: center;
         gap: 10px;
     }
 
-    .student-mobile-menu-btn {
+    .mygatepass-mobile-menu-btn {
         width: 42px;
         height: 42px;
         display: flex;
@@ -484,14 +484,14 @@
         cursor: pointer;
     }
 
-    .student-mobile-brand {
+    .mygatepass-mobile-brand {
         min-width: 0;
         display: flex;
         align-items: center;
         gap: 9px;
     }
 
-    .student-mobile-brand-icon {
+    .mygatepass-mobile-brand-icon {
         width: 38px;
         height: 38px;
         display: flex;
@@ -503,7 +503,7 @@
         font-size: 19px;
     }
 
-    .student-mobile-brand strong {
+    .mygatepass-mobile-brand strong {
         display: block;
         color: #111827;
         font-size: 15px;
@@ -511,7 +511,7 @@
         white-space: nowrap;
     }
 
-    .student-mobile-brand span {
+    .mygatepass-mobile-brand span {
         display: block;
         color: #6b7280;
         font-size: 11px;
@@ -519,7 +519,7 @@
         white-space: nowrap;
     }
 
-    .student-mobile-profile-btn {
+    .mygatepass-mobile-profile-btn {
         width: 42px;
         height: 42px;
         padding: 0;
@@ -535,14 +535,14 @@
         cursor: pointer;
     }
 
-    .student-mobile-profile-btn img {
+    .mygatepass-mobile-profile-btn img {
         width: 100% !important;
         height: 100% !important;
         object-fit: cover;
         border-radius: 50%;
     }
 
-    .student-sidebar {
+    .mygatepass-sidebar {
         position: fixed !important;
         top: 0 !important;
         left: 0 !important;
@@ -565,11 +565,11 @@
         visibility: visible !important;
     }
 
-    .student-sidebar.mobile-open {
+    .mygatepass-sidebar.mobile-open {
         transform: translate3d(0, 0, 0) !important;
     }
 
-    .student-mobile-overlay {
+    .mygatepass-mobile-overlay {
         position: fixed !important;
         inset: 0 !important;
         z-index: 1350 !important;
@@ -580,43 +580,43 @@
         background: rgba(2, 6, 23, 0.48) !important;
     }
 
-    .my-gatepass-main {
+    .mygatepass-main {
         width: 100% !important;
         min-width: 0 !important;
         margin-left: 0 !important;
         padding: 84px 16px 35px !important;
     }
 
-    .my-gatepass-topbar {
+    .mygatepass-topbar {
         align-items: flex-start;
         gap: 12px;
         margin-bottom: 22px;
         padding-top: 0;
     }
 
-    .my-gatepass-heading {
+    .mygatepass-heading {
         padding-right: 0;
     }
 
-    .my-gatepass-heading h1 {
+    .mygatepass-heading h1 {
         margin-top: 7px;
         font-size: 30px;
     }
 
-    .my-gatepass-heading p {
+    .mygatepass-heading p {
         font-size: 13px;
         line-height: 1.5;
     }
 
-    .student-desktop-actions {
+    .mygatepass-desktop-actions {
         display: none;
     }
 
-    .my-gatepass-panel {
+    .mygatepass-panel {
         width: 100%;
     }
 
-    .my-gatepass-panel-title {
+    .mygatepass-panel-title {
         min-height: 78px;
         padding: 17px 15px;
     }
@@ -664,56 +664,56 @@
         font-size: 13px;
     }
 
-    body.student-gatepass-menu-open {
+    body.mygatepass-gatepass-menu-open {
         overflow: hidden;
     }
 }
 
 @media (max-width: 480px) {
-    .student-mobile-header {
+    .mygatepass-mobile-header {
         height: 60px;
         padding: 8px 12px;
     }
 
-    .student-mobile-menu-btn {
+    .mygatepass-mobile-menu-btn {
         width: 40px;
         height: 40px;
         font-size: 22px;
     }
 
-    .student-mobile-brand-icon {
+    .mygatepass-mobile-brand-icon {
         width: 36px;
         height: 36px;
         font-size: 18px;
     }
 
-    .student-mobile-brand strong {
+    .mygatepass-mobile-brand strong {
         font-size: 14px;
     }
 
-    .student-mobile-brand span {
+    .mygatepass-mobile-brand span {
         font-size: 10px;
     }
 
-    .student-mobile-profile-btn {
+    .mygatepass-mobile-profile-btn {
         width: 40px;
         height: 40px;
     }
 
-    .student-sidebar {
+    .mygatepass-sidebar {
         width: 270px !important;
     }
 
-    .student-sidebar-brand {
+    .mygatepass-sidebar-brand {
         padding: 5px 10px 25px;
     }
 
-    .student-sidebar-nav {
+    .mygatepass-sidebar-nav {
         gap: 5px;
         margin-top: 25px;
     }
 
-    .student-nav-item {
+    .mygatepass-nav-item {
         min-height: 48px;
         padding: 12px 13px;
         gap: 13px;
@@ -721,34 +721,34 @@
         font-size: 15px;
     }
 
-    .student-nav-item span {
+    .mygatepass-nav-item span {
         width: 20px;
         min-width: 20px;
         font-size: 16px;
     }
 
-    .student-logout {
+    .mygatepass-logout {
         min-height: 48px;
         font-size: 15px;
     }
 
-    .my-gatepass-main {
+    .mygatepass-main {
         padding: 78px 10px 30px !important;
     }
 
-    .my-gatepass-heading h1 {
+    .mygatepass-heading h1 {
         font-size: 27px;
     }
 
-    .my-gatepass-heading p {
+    .mygatepass-heading p {
         font-size: 12px;
     }
 
-    .my-gatepass-panel {
+    .mygatepass-panel {
         border-radius: 12px;
     }
 
-    .my-gatepass-panel-title {
+    .mygatepass-panel-title {
         align-items: center;
         gap: 8px;
         padding: 15px 12px;
@@ -776,5 +776,335 @@
 
     .gatepass-table {
         min-width: 900px;
+    }
+}
+
+
+/* =========================================================
+   mygatepass RESPONSIVE STUDENT SHELL
+   ========================================================= */
+
+.mygatepass-page {
+    min-height: 100vh;
+    width: 100%;
+    background: #f3f7fa;
+}
+
+.mygatepass-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1400;
+    width: 275px;
+    height: 100vh;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    padding: 22px 16px;
+    background: #0d172b;
+    color: #ffffff;
+    overflow-y: auto;
+    transform: translateX(0);
+    transition: transform 0.25s ease;
+}
+
+.mygatepass-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-height: 82px;
+    padding: 0 10px 18px;
+    box-sizing: border-box;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.mygatepass-brand-icon {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: #0d8b84;
+    font-size: 24px;
+}
+
+.mygatepass-brand strong {
+    display: block;
+    margin: 0;
+    color: #ffffff;
+    font-size: 20px;
+    line-height: 1.1;
+}
+
+.mygatepass-brand span {
+    display: block;
+    margin-top: 4px;
+    color: #9fb0c7;
+    font-size: 12px;
+}
+
+.mygatepass-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 24px;
+    padding: 0;
+}
+
+.mygatepass-nav-item {
+    width: 100%;
+    min-height: 46px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-sizing: border-box;
+    padding: 0 15px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: #c2cede;
+    text-decoration: none;
+    font-size: 15px;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.mygatepass-nav-item:hover {
+    background: rgba(255,255,255,0.07);
+    color: #ffffff;
+    transform: translateX(2px);
+}
+
+.mygatepass-nav-item.active {
+    background: #145f5b;
+    color: #ffffff;
+    box-shadow: inset 3px 0 0 #2ce0d2;
+}
+
+.mygatepass-nav-item span:first-child {
+    width: 20px;
+    min-width: 20px;
+    text-align: center;
+}
+
+.mygatepass-logout {
+    width: 100%;
+    min-height: 48px;
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-sizing: border-box;
+    padding: 0 15px;
+    border: 1px solid #2c3a52;
+    border-radius: 10px;
+    background: transparent;
+    color: #ff9999;
+    font-size: 15px;
+    text-align: left;
+    cursor: pointer;
+}
+
+.mygatepass-logout:hover {
+    background: rgba(255,255,255,0.06);
+}
+
+.mygatepass-main {
+    position: relative;
+    width: calc(100% - 275px);
+    min-height: 100vh;
+    margin-left: 275px;
+    box-sizing: border-box;
+}
+
+.mygatepass-mobile-header {
+    display: none;
+}
+
+.mygatepass-mobile-overlay {
+    display: none;
+}
+
+.mygatepass-desktop-photo {
+    position: absolute;
+    top: 24px;
+    right: 28px;
+    z-index: 50;
+}
+
+.mygatepass-desktop-photo button,
+.mygatepass-mobile-photo {
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #dbe6ee;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #102a43;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(15,42,60,0.12);
+}
+
+.mygatepass-desktop-photo img,
+.mygatepass-mobile-photo img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.mygatepass-desktop-photo span,
+.mygatepass-mobile-photo span {
+    font-size: 21px;
+}
+
+@media (max-width: 800px) {
+    body.mygatepass-menu-open {
+        overflow: hidden;
+    }
+
+    .mygatepass-sidebar {
+        width: 275px;
+        max-width: 86vw;
+        transform: translateX(-105%);
+        box-shadow: 12px 0 35px rgba(0,0,0,0.22);
+    }
+
+    .mygatepass-sidebar.mobile-open {
+        transform: translateX(0);
+    }
+
+    .mygatepass-main {
+        width: 100%;
+        margin-left: 0;
+        min-height: 100vh;
+    }
+
+    .mygatepass-mobile-header {
+        position: sticky;
+        top: 0;
+        z-index: 1200;
+        width: 100%;
+        min-height: 68px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        box-sizing: border-box;
+        padding: 10px 14px;
+        background: #ffffff;
+        border-bottom: 1px solid #dbe6ee;
+        box-shadow: 0 3px 12px rgba(15,42,60,0.08);
+    }
+
+    .mygatepass-mobile-left {
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: 11px;
+    }
+
+    .mygatepass-mobile-menu {
+        width: 42px;
+        height: 42px;
+        flex: 0 0 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border: 0;
+        border-radius: 9px;
+        background: #0d8b84;
+        color: #ffffff;
+        font-size: 23px;
+        line-height: 1;
+        cursor: pointer;
+    }
+
+    .mygatepass-mobile-brand {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        min-width: 0;
+    }
+
+    .mygatepass-mobile-brand-icon {
+        width: 38px;
+        height: 38px;
+        flex: 0 0 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        background: #0d8b84;
+        font-size: 20px;
+    }
+
+    .mygatepass-mobile-brand strong {
+        display: block;
+        color: #102a43;
+        font-size: 16px;
+        line-height: 1.1;
+    }
+
+    .mygatepass-mobile-brand span {
+        display: block;
+        margin-top: 2px;
+        color: #607d98;
+        font-size: 10px;
+    }
+
+    .mygatepass-mobile-photo {
+        width: 46px;
+        height: 46px;
+        flex: 0 0 46px;
+    }
+
+    .mygatepass-desktop-photo {
+        display: none;
+    }
+
+    .mygatepass-mobile-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 1300;
+        display: block;
+        background: rgba(2, 12, 27, 0.48);
+        cursor: pointer;
+    }
+
+    .mygatepass-sidebar {
+        z-index: 1400;
+    }
+}
+
+@media (max-width: 480px) {
+    .mygatepass-mobile-header {
+        min-height: 62px;
+        padding: 8px 10px;
+    }
+
+    .mygatepass-mobile-menu {
+        width: 40px;
+        height: 40px;
+        flex-basis: 40px;
+    }
+
+    .mygatepass-mobile-photo {
+        width: 42px;
+        height: 42px;
+        flex-basis: 42px;
+    }
+
+    .mygatepass-mobile-brand strong {
+        font-size: 15px;
     }
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "./MyProfile.css";
 
@@ -8,6 +8,54 @@ const MyProfile = () => {
     const [student, setStudent] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+
+    const [menuOpen, setMenuOpen] = useState(false);
+
+    const sidebarRef = useRef(null);
+    const mobileMenuButtonRef = useRef(null);
+
+    useEffect(() => {
+        document.body.classList.toggle(
+            "myprofile-menu-open",
+            menuOpen
+        );
+
+        if (!menuOpen) {
+            return () => {
+                document.body.classList.remove("myprofile-menu-open");
+            };
+        }
+
+        const handleOutsidePointer = (event) => {
+            const sidebar = sidebarRef.current;
+            const menuButton = mobileMenuButtonRef.current;
+
+            if (
+                sidebar &&
+                !sidebar.contains(event.target) &&
+                menuButton &&
+                !menuButton.contains(event.target)
+            ) {
+                setMenuOpen(false);
+            }
+        };
+
+        document.addEventListener(
+            "pointerdown",
+            handleOutsidePointer,
+            true
+        );
+
+        return () => {
+            document.removeEventListener(
+                "pointerdown",
+                handleOutsidePointer,
+                true
+            );
+            document.body.classList.remove("myprofile-menu-open");
+        };
+    }, [menuOpen]);
+
 
     const API_URL =
         import.meta.env.VITE_API_URL ||
@@ -82,8 +130,23 @@ const MyProfile = () => {
     };
 
     useEffect(() => {
+        const savedStudent = localStorage.getItem("student");
+
+        if (savedStudent) {
+            try {
+                setStudent(JSON.parse(savedStudent));
+            } catch (error) {
+                console.error("Invalid saved student data:", error);
+            }
+        }
+
         fetchProfile();
     }, []);
+
+    const handleNavigation = (path) => {
+        setMenuOpen(false);
+        navigate(path);
+    };
 
     const handleLogout = () => {
         localStorage.removeItem("studentId");
@@ -118,29 +181,208 @@ const MyProfile = () => {
             return student.photo;
         }
 
-        return `${API_URL}/${student.photo}`;
+        const normalizedPhoto = String(student.photo).replace(/^\/+/, "");
+
+        if (normalizedPhoto.startsWith("uploads/")) {
+            return `${API_URL}/${normalizedPhoto}`;
+        }
+
+        return `${API_URL}/uploads/students/${normalizedPhoto}`;
     };
+
+    const profilePhoto = getPhotoUrl();
 
     if (loading) {
         return (
-            <div className="student-profile-layout">
+            <div className="myprofile-layout">
 
-                <aside className="student-profile-sidebar">
+            <header className="myprofile-mobile-header">
+                <div className="myprofile-mobile-left">
+                    <button
+                        ref={mobileMenuButtonRef}
+                        type="button"
+                        className="myprofile-mobile-menu"
+                        onClick={() => setMenuOpen((open) => !open)}
+                        aria-label={
+                            menuOpen
+                                ? "Close student menu"
+                                : "Open student menu"
+                        }
+                    >
+                        ☰
+                    </button>
 
-                    <div className="student-profile-brand">
-                        <div className="student-profile-brand-icon">
-                            🏠
-                        </div>
-
+                    <div className="myprofile-mobile-brand">
+                        <div className="myprofile-mobile-brand-icon">🏠</div>
                         <div>
-                            <h2>Hostel</h2>
-                            <p>Student Portal</p>
+                            <strong>Hostel</strong>
+                            <span>Student Portal</span>
                         </div>
                     </div>
+                </div>
 
-                </aside>
+                <button
+                    type="button"
+                    className="myprofile-mobile-photo"
+                    onClick={() => navigate("/student/profile")}
+                    aria-label="Open student profile"
+                >
+                    {profilePhoto ? (
+                        <img
+                            src={profilePhoto}
+                            alt="Student profile"
+                            onError={(event) => {
+                                event.currentTarget.style.display = "none";
+                            }}
+                        />
+                    ) : (
+                        "👤"
+                    )}
+                </button>
+            </header>
 
-                <main className="student-profile-main">
+            {menuOpen && (
+                <div
+                    className="myprofile-mobile-overlay"
+                    onPointerDown={() => setMenuOpen(false)}
+                />
+            )}
+
+            <aside
+                ref={sidebarRef}
+                className={`myprofile-sidebar ${menuOpen ? "mobile-open" : ""}`}
+            >
+                <div className="myprofile-brand">
+                    <div className="myprofile-brand-icon">🏠</div>
+                    <div>
+                        <strong>Hostel</strong>
+                        <span>Student Portal</span>
+                    </div>
+                </div>
+
+                <nav className="myprofile-nav">
+                    <button
+                        type="button"
+                        className="myprofile-nav-item"
+                        onClick={() => handleNavigation("/student/dashboard")}
+                    >
+                        <span>📊</span>
+                        <span>Dashboard</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        className="myprofile-nav-item active"
+                        onClick={() => handleNavigation("/student/profile")}
+                    >
+                        <span>👤</span>
+                        <span>My Profile</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        className="myprofile-nav-item"
+                        onClick={() => handleNavigation("/student/room")}
+                    >
+                        <span>🛏️</span>
+                        <span>My Room</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        className="myprofile-nav-item"
+                        onClick={() => handleNavigation("/student/leave")}
+                    >
+                        <span>📄</span>
+                        <span>My Leave</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        className="myprofile-nav-item"
+                        onClick={() => handleNavigation("/student/leave/apply")}
+                    >
+                        <span>➕</span>
+                        <span>Apply Leave</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        className="myprofile-nav-item"
+                        onClick={() => handleNavigation("/student/gatepass")}
+                    >
+                        <span>🎫</span>
+                        <span>Gate Pass</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        className="myprofile-nav-item"
+                        onClick={() => handleNavigation("/student/complaints")}
+                    >
+                        <span>🛠️</span>
+                        <span>Complaints</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        className="myprofile-nav-item"
+                        onClick={() => handleNavigation("/student/fees")}
+                    >
+                        <span>💰</span>
+                        <span>My Fees</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        className="myprofile-nav-item"
+                        onClick={() => handleNavigation("/student/cricketbox")}
+                    >
+                        <span>🏏</span>
+                        <span>Cricket Box</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        className="myprofile-nav-item"
+                        onClick={() => handleNavigation("/student/notifications")}
+                    >
+                        <span>🔔</span>
+                        <span>Notifications</span>
+                    </button>
+                </nav>
+
+                <button
+                    type="button"
+                    className="myprofile-logout"
+                    onClick={handleLogout}
+                >
+                    <span>🚪</span>
+                    <span>Logout</span>
+                </button>
+            </aside>
+
+            <main className="myprofile-main">
+                <div className="myprofile-desktop-photo">
+                    <button
+                        type="button"
+                        onClick={() => navigate("/student/profile")}
+                        aria-label="Open student profile"
+                    >
+                        {profilePhoto ? (
+                            <img
+                                src={profilePhoto}
+                                alt="Student profile"
+                                onError={(event) => {
+                                    event.currentTarget.style.display = "none";
+                                }}
+                            />
+                        ) : (
+                            "👤"
+                        )}
+                    </button>
+                </div>
+
 
                     <div className="profile-loading">
                         <div className="profile-spinner"></div>
@@ -154,168 +396,213 @@ const MyProfile = () => {
     }
 
     return (
-        <div className="student-profile-layout">
+        <div className="myprofile-layout">
 
-            {/* ================= SIDEBAR ================= */}
+            <header className="myprofile-mobile-header">
+                <div className="myprofile-mobile-left">
+                    <button
+                        ref={mobileMenuButtonRef}
+                        type="button"
+                        className="myprofile-mobile-menu"
+                        onClick={() => setMenuOpen((open) => !open)}
+                        aria-label={
+                            menuOpen
+                                ? "Close student menu"
+                                : "Open student menu"
+                        }
+                    >
+                        ☰
+                    </button>
 
-            <aside className="student-profile-sidebar">
-
-                <div className="student-profile-brand">
-
-                    <div className="student-profile-brand-icon">
-                        🏠
+                    <div className="myprofile-mobile-brand">
+                        <div className="myprofile-mobile-brand-icon">🏠</div>
+                        <div>
+                            <strong>Hostel</strong>
+                            <span>Student Portal</span>
+                        </div>
                     </div>
-
-                    <div>
-                        <h2>Hostel</h2>
-                        <p>Student Portal</p>
-                    </div>
-
                 </div>
 
-                <nav className="student-profile-nav">
+                <button
+                    type="button"
+                    className="myprofile-mobile-photo"
+                    onClick={() => navigate("/student/profile")}
+                    aria-label="Open student profile"
+                >
+                    {profilePhoto ? (
+                        <img
+                            src={profilePhoto}
+                            alt="Student profile"
+                            onError={(event) => {
+                                event.currentTarget.style.display = "none";
+                            }}
+                        />
+                    ) : (
+                        "👤"
+                    )}
+                </button>
+            </header>
 
-                    <NavLink
-                        to="/student/dashboard"
-                        className={({ isActive }) =>
-                            `student-profile-nav-item ${
-                                isActive ? "active" : ""
-                            }`
-                        }
+            {menuOpen && (
+                <div
+                    className="myprofile-mobile-overlay"
+                    onPointerDown={() => setMenuOpen(false)}
+                />
+            )}
+
+            <aside
+                ref={sidebarRef}
+                className={`myprofile-sidebar ${menuOpen ? "mobile-open" : ""}`}
+            >
+                <div className="myprofile-brand">
+                    <div className="myprofile-brand-icon">🏠</div>
+                    <div>
+                        <strong>Hostel</strong>
+                        <span>Student Portal</span>
+                    </div>
+                </div>
+
+                <nav className="myprofile-nav">
+                    <button
+                        type="button"
+                        className="myprofile-nav-item"
+                        onClick={() => handleNavigation("/student/dashboard")}
                     >
-                        📊
+                        <span>📊</span>
                         <span>Dashboard</span>
-                    </NavLink>
+                    </button>
 
-                    <NavLink
-                        to="/student/profile"
-                        className={({ isActive }) =>
-                            `student-profile-nav-item ${
-                                isActive ? "active" : ""
-                            }`
-                        }
+                    <button
+                        type="button"
+                        className="myprofile-nav-item active"
+                        onClick={() => handleNavigation("/student/profile")}
                     >
-                        👤
+                        <span>👤</span>
                         <span>My Profile</span>
-                    </NavLink>
+                    </button>
 
-                    <NavLink
-                        to="/student/room"
-                        className={({ isActive }) =>
-                            `student-profile-nav-item ${
-                                isActive ? "active" : ""
-                            }`
-                        }
+                    <button
+                        type="button"
+                        className="myprofile-nav-item"
+                        onClick={() => handleNavigation("/student/room")}
                     >
-                        🛏️
+                        <span>🛏️</span>
                         <span>My Room</span>
-                    </NavLink>
+                    </button>
 
-                    <NavLink
-                        to="/student/leave"
-                        className={({ isActive }) =>
-                            `student-profile-nav-item ${
-                                isActive ? "active" : ""
-                            }`
-                        }
+                    <button
+                        type="button"
+                        className="myprofile-nav-item"
+                        onClick={() => handleNavigation("/student/leave")}
                     >
-                        📄
+                        <span>📄</span>
                         <span>My Leave</span>
-                    </NavLink>
+                    </button>
 
-                    <NavLink
-                        to="/student/leave/apply"
-                        className={({ isActive }) =>
-                            `student-profile-nav-item ${
-                                isActive ? "active" : ""
-                            }`
-                        }
+                    <button
+                        type="button"
+                        className="myprofile-nav-item"
+                        onClick={() => handleNavigation("/student/leave/apply")}
                     >
-                        ➕
+                        <span>➕</span>
                         <span>Apply Leave</span>
-                    </NavLink>
+                    </button>
 
-                    <NavLink
-                        to="/student/gate-pass"
-                        className={({ isActive }) =>
-                            `student-profile-nav-item ${
-                                isActive ? "active" : ""
-                            }`
-                        }
+                    <button
+                        type="button"
+                        className="myprofile-nav-item"
+                        onClick={() => handleNavigation("/student/gatepass")}
                     >
-                        🎫
+                        <span>🎫</span>
                         <span>Gate Pass</span>
-                    </NavLink>
+                    </button>
 
-                    <NavLink
-                        to="/student/complaints"
-                        className={({ isActive }) =>
-                            `student-profile-nav-item ${
-                                isActive ? "active" : ""
-                            }`
-                        }
+                    <button
+                        type="button"
+                        className="myprofile-nav-item"
+                        onClick={() => handleNavigation("/student/complaints")}
                     >
-                        🛠️
+                        <span>🛠️</span>
                         <span>Complaints</span>
-                    </NavLink>
+                    </button>
 
-                    <NavLink
-                        to="/student/fees"
-                        className={({ isActive }) =>
-                            `student-profile-nav-item ${
-                                isActive ? "active" : ""
-                            }`
-                        }
+                    <button
+                        type="button"
+                        className="myprofile-nav-item"
+                        onClick={() => handleNavigation("/student/fees")}
                     >
-                        💰
+                        <span>💰</span>
                         <span>My Fees</span>
-                    </NavLink>
+                    </button>
 
-                    <NavLink
-                        to="/student/notifications"
-                        className={({ isActive }) =>
-                            `student-profile-nav-item ${
-                                isActive ? "active" : ""
-                            }`
-                        }
+                    <button
+                        type="button"
+                        className="myprofile-nav-item"
+                        onClick={() => handleNavigation("/student/cricketbox")}
                     >
-                        🔔
-                        <span>Notifications</span>
-                    </NavLink>
+                        <span>🏏</span>
+                        <span>Cricket Box</span>
+                    </button>
 
+                    <button
+                        type="button"
+                        className="myprofile-nav-item"
+                        onClick={() => handleNavigation("/student/notifications")}
+                    >
+                        <span>🔔</span>
+                        <span>Notifications</span>
+                    </button>
                 </nav>
 
                 <button
-                    className="student-profile-logout"
+                    type="button"
+                    className="myprofile-logout"
                     onClick={handleLogout}
                 >
-                    🚪
+                    <span>🚪</span>
                     <span>Logout</span>
                 </button>
-
             </aside>
 
-            {/* ================= MAIN ================= */}
+            <main className="myprofile-main">
+                <div className="myprofile-desktop-photo">
+                    <button
+                        type="button"
+                        onClick={() => navigate("/student/profile")}
+                        aria-label="Open student profile"
+                    >
+                        {profilePhoto ? (
+                            <img
+                                src={profilePhoto}
+                                alt="Student profile"
+                                onError={(event) => {
+                                    event.currentTarget.style.display = "none";
+                                }}
+                            />
+                        ) : (
+                            "👤"
+                        )}
+                    </button>
+                </div>
 
-            <main className="student-profile-main">
 
                 {/* HEADER */}
 
-                <div className="student-profile-header">
+                <div className="myprofile-header">
 
                     <div>
-                        <p className="student-profile-label">
+                        <p className="myprofile-label">
                             STUDENT PROFILE
                         </p>
 
                         <h1>My Profile</h1>
 
-                        <p className="student-profile-description">
+                        <p className="myprofile-description">
                             View your personal and hostel information.
                         </p>
                     </div>
 
-                    <div className="student-profile-header-actions">
+                    <div className="myprofile-header-actions">
 
                         <button
                             className="profile-refresh-btn"
@@ -342,7 +629,7 @@ const MyProfile = () => {
                 {/* ERROR */}
 
                 {error && (
-                    <div className="student-profile-alert">
+                    <div className="myprofile-alert">
 
                         <span>⚠️</span>
 
@@ -364,11 +651,11 @@ const MyProfile = () => {
 
                         {/* PROFILE TOP CARD */}
 
-                        <section className="student-profile-card">
+                        <section className="myprofile-card">
 
-                            <div className="student-profile-top">
+                            <div className="myprofile-top">
 
-                                <div className="student-profile-photo">
+                                <div className="myprofile-photo">
 
                                     {getPhotoUrl() ? (
                                         <img
@@ -388,7 +675,7 @@ const MyProfile = () => {
 
                                 </div>
 
-                                <div className="student-profile-identity">
+                                <div className="myprofile-identity">
 
                                     <p>STUDENT</p>
 
@@ -405,7 +692,7 @@ const MyProfile = () => {
 
                                 </div>
 
-                                <div className="student-active-badge">
+                                <div className="myprofile-active-badge">
                                     <span></span>
                                     Active
                                 </div>
@@ -416,9 +703,9 @@ const MyProfile = () => {
 
                         {/* PERSONAL INFORMATION */}
 
-                        <section className="student-profile-info-card">
+                        <section className="myprofile-info-card">
 
-                            <div className="student-profile-section-header">
+                            <div className="myprofile-section-header">
 
                                 <div>
                                     <p>
@@ -432,9 +719,9 @@ const MyProfile = () => {
 
                             </div>
 
-                            <div className="student-profile-info-grid">
+                            <div className="myprofile-info-grid">
 
-                                <div className="student-profile-info-item">
+                                <div className="myprofile-info-item">
 
                                     <span>
                                         👤 FULL NAME
@@ -447,7 +734,7 @@ const MyProfile = () => {
 
                                 </div>
 
-                                <div className="student-profile-info-item">
+                                <div className="myprofile-info-item">
 
                                     <span>
                                         🆔 STUDENT ID
@@ -460,7 +747,7 @@ const MyProfile = () => {
 
                                 </div>
 
-                                <div className="student-profile-info-item">
+                                <div className="myprofile-info-item">
 
                                     <span>
                                         📧 EMAIL ADDRESS
@@ -473,7 +760,7 @@ const MyProfile = () => {
 
                                 </div>
 
-                                <div className="student-profile-info-item">
+                                <div className="myprofile-info-item">
 
                                     <span>
                                         📱 MOBILE NUMBER
@@ -486,7 +773,7 @@ const MyProfile = () => {
 
                                 </div>
 
-                                <div className="student-profile-info-item">
+                                <div className="myprofile-info-item">
 
                                     <span>
                                         👨‍👩‍👦 PARENT EMAIL
@@ -505,9 +792,9 @@ const MyProfile = () => {
 
                         {/* ACADEMIC INFORMATION */}
 
-                        <section className="student-profile-info-card">
+                        <section className="myprofile-info-card">
 
-                            <div className="student-profile-section-header">
+                            <div className="myprofile-section-header">
 
                                 <div>
                                     <p>
@@ -521,9 +808,9 @@ const MyProfile = () => {
 
                             </div>
 
-                            <div className="student-profile-info-grid">
+                            <div className="myprofile-info-grid">
 
-                                <div className="student-profile-info-item">
+                                <div className="myprofile-info-item">
 
                                     <span>
                                         🏫 COLLEGE
@@ -536,7 +823,7 @@ const MyProfile = () => {
 
                                 </div>
 
-                                <div className="student-profile-info-item">
+                                <div className="myprofile-info-item">
 
                                     <span>
                                         📚 COURSE
@@ -555,9 +842,9 @@ const MyProfile = () => {
 
                         {/* HOSTEL INFORMATION */}
 
-                        <section className="student-profile-info-card">
+                        <section className="myprofile-info-card">
 
-                            <div className="student-profile-section-header">
+                            <div className="myprofile-section-header">
 
                                 <div>
                                     <p>
@@ -571,9 +858,9 @@ const MyProfile = () => {
 
                             </div>
 
-                            <div className="student-profile-info-grid">
+                            <div className="myprofile-info-grid">
 
-                                <div className="student-profile-info-item">
+                                <div className="myprofile-info-item">
 
                                     <span>
                                         🏠 HOSTEL
@@ -586,7 +873,7 @@ const MyProfile = () => {
 
                                 </div>
 
-                                <div className="student-profile-info-item">
+                                <div className="myprofile-info-item">
 
                                     <span>
                                         💰 HOSTEL FEE
@@ -610,7 +897,7 @@ const MyProfile = () => {
                     </>
                 )}
 
-                <footer className="student-profile-footer">
+                <footer className="myprofile-footer">
 
                     <span>
                         © 2026 Hostel Management System
