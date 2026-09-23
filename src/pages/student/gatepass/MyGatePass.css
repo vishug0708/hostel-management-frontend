@@ -445,17 +445,19 @@
 
 @media (max-width: 768px) {
     .student-mobile-header {
-        position: sticky;
+        position: absolute;
         top: 0;
+        left: 0;
         z-index: 1000;
         width: 100%;
-        min-height: 64px;
+        height: 64px;
         display: flex;
         align-items: center;
         justify-content: space-between;
         padding: 10px 16px;
-        background: #ffffff;
-        border-bottom: 1px solid #e5e7eb;
+        background: transparent;
+        border-bottom: none;
+        pointer-events: none;
     }
 
     .student-mobile-left {
@@ -478,6 +480,7 @@
         color: #ffffff;
         font-size: 23px;
         cursor: pointer;
+        pointer-events: auto;
     }
 
     .student-mobile-brand {
@@ -529,6 +532,7 @@
         background: #f8fafc;
         font-size: 19px;
         cursor: pointer;
+        pointer-events: auto;
     }
 
     .student-mobile-profile-btn img {
@@ -567,12 +571,13 @@
         width: 100%;
         min-width: 0;
         margin-left: 0;
-        padding: 24px 16px 35px;
+        padding: 0 16px 35px;
     }
 
     .my-gatepass-topbar {
         align-items: flex-start;
         margin-bottom: 22px;
+        padding-top: 78px;
     }
 
     .my-gatepass-heading {
@@ -695,7 +700,7 @@
     }
 
     .my-gatepass-main {
-        padding: 20px 10px 30px;
+        padding: 0 10px 30px;
     }
 
     .my-gatepass-heading h1 {
