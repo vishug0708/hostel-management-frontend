@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./StudentDashboard.css";
 
@@ -12,10 +12,61 @@ const StudentDashboard = () => {
     const [leaveRequests, setLeaveRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+    const sidebarRef = useRef(null);
+    const mobileMenuButtonRef = useRef(null);
 
     useEffect(() => {
         fetchDashboard();
     }, []);
+
+    useEffect(() => {
+        document.body.classList.toggle(
+            "student-dashboard-menu-open",
+            mobileMenuOpen
+        );
+
+        return () => {
+            document.body.classList.remove(
+                "student-dashboard-menu-open"
+            );
+        };
+    }, [mobileMenuOpen]);
+
+    useEffect(() => {
+        if (!mobileMenuOpen) {
+            return;
+        }
+
+        const handleOutsidePointer = (event) => {
+            const sidebar = sidebarRef.current;
+            const menuButton = mobileMenuButtonRef.current;
+
+            if (
+                sidebar &&
+                !sidebar.contains(event.target) &&
+                menuButton &&
+                !menuButton.contains(event.target)
+            ) {
+                setMobileMenuOpen(false);
+            }
+        };
+
+        document.addEventListener(
+            "pointerdown",
+            handleOutsidePointer,
+            true
+        );
+
+        return () => {
+            document.removeEventListener(
+                "pointerdown",
+                handleOutsidePointer,
+                true
+            );
+        };
+    }, [mobileMenuOpen]);
 
     const fetchDashboard = async () => {
         const token = localStorage.getItem("studentToken");
@@ -90,6 +141,7 @@ const StudentDashboard = () => {
     };
 
     const handleLogout = () => {
+        setMobileMenuOpen(false);
         localStorage.removeItem("studentToken");
         localStorage.removeItem("student");
 
@@ -111,6 +163,23 @@ const StudentDashboard = () => {
             .toUpperCase();
     };
 
+    const getPhotoUrl = () => {
+        if (!student?.photo) {
+            return "";
+        }
+
+        if (student.photo.startsWith("http")) {
+            return student.photo;
+        }
+
+        return `${API_URL}/${student.photo}`;
+    };
+
+    const handleNavigation = (path) => {
+        setMobileMenuOpen(false);
+        navigate(path);
+    };
+
     const getStatusClass = (status) => {
         if (!status) {
             return "";
@@ -125,7 +194,14 @@ const StudentDashboard = () => {
         <div className="student-dashboard-page">
 
             {/* ================= SIDEBAR ================= */}
-            <aside className="student-dashboard-sidebar">
+            <aside
+                ref={sidebarRef}
+                className={`student-dashboard-sidebar ${
+                    mobileMenuOpen
+                        ? "mobile-open"
+                        : ""
+                }`}
+            >
 
                 <div className="student-dashboard-brand">
 
@@ -150,7 +226,7 @@ const StudentDashboard = () => {
                     <button
                         className="active"
                         onClick={() =>
-                            navigate("/student/dashboard")
+                            handleNavigation("/student/dashboard")
                         }
                     >
                         📊 Dashboard
@@ -158,7 +234,7 @@ const StudentDashboard = () => {
 
                     <button
                         onClick={() =>
-                            navigate("/student/profile")
+                            handleNavigation("/student/profile")
                         }
                     >
                         👤 My Profile
@@ -166,7 +242,7 @@ const StudentDashboard = () => {
 
                     <button
                         onClick={() =>
-                            navigate("/student/room")
+                            handleNavigation("/student/room")
                         }
                     >
                         🛏️ My Room
@@ -174,7 +250,7 @@ const StudentDashboard = () => {
 
                     <button
                         onClick={() =>
-                            navigate("/student/leaves")
+                            handleNavigation("/student/leaves")
                         }
                     >
                         📝 My Leave
@@ -182,7 +258,7 @@ const StudentDashboard = () => {
 
                     <button
                         onClick={() =>
-                            navigate("/student/apply-leave")
+                            handleNavigation("/student/apply-leave")
                         }
                     >
                         ➕ Apply Leave
@@ -190,7 +266,7 @@ const StudentDashboard = () => {
 
                     <button
                         onClick={() =>
-                            navigate("/student/gatepass")
+                            handleNavigation("/student/gatepass")
                         }
                     >
                         🚪 Gate Pass
@@ -198,7 +274,7 @@ const StudentDashboard = () => {
 
                     <button
                         onClick={() =>
-                            navigate("/student/complaints")
+                            handleNavigation("/student/complaints")
                         }
                     >
                         🛠️ Complaints
@@ -206,7 +282,7 @@ const StudentDashboard = () => {
 
                     <button
                         onClick={() =>
-                            navigate("/student/fees")
+                            handleNavigation("/student/fees")
                         }
                     >
                         💰 My Fees
@@ -214,7 +290,7 @@ const StudentDashboard = () => {
 
                     <button
                         onClick={() =>
-                            navigate("/student/cricket-box/bookings")
+                            handleNavigation("/student/cricket-box/bookings")
                         }
                     >
                         🏏 Cricket Box
@@ -222,7 +298,7 @@ const StudentDashboard = () => {
 
                     <button
                         onClick={() =>
-                            navigate("/student/notifications")
+                            handleNavigation("/student/notifications")
                         }
                     >
                         🔔 Notifications
@@ -239,8 +315,71 @@ const StudentDashboard = () => {
 
             </aside>
 
+            {mobileMenuOpen && (
+                <div
+                    className="student-dashboard-mobile-overlay"
+                    onPointerDown={() =>
+                        setMobileMenuOpen(false)
+                    }
+                    onClick={() =>
+                        setMobileMenuOpen(false)
+                    }
+                />
+            )}
+
             {/* ================= MAIN ================= */}
             <main className="student-dashboard-main">
+
+                <div className="student-dashboard-mobile-topbar">
+
+                    <button
+                        ref={mobileMenuButtonRef}
+                        type="button"
+                        className="student-dashboard-mobile-menu-btn"
+                        onClick={() =>
+                            setMobileMenuOpen((open) => !open)
+                        }
+                        aria-label={
+                            mobileMenuOpen
+                                ? "Close student menu"
+                                : "Open student menu"
+                        }
+                    >
+                        ☰
+                    </button>
+
+                    <div className="student-dashboard-mobile-brand">
+                        <div className="student-dashboard-mobile-brand-icon">
+                            🏠
+                        </div>
+
+                        <div>
+                            <strong>
+                                Hostel
+                            </strong>
+
+                            <span>
+                                Student Portal
+                            </span>
+                        </div>
+                    </div>
+
+                    <div className="student-dashboard-mobile-photo">
+                        {getPhotoUrl() ? (
+                            <img
+                                src={getPhotoUrl()}
+                                alt="Student"
+                            />
+                        ) : (
+                            <span>
+                                {getInitials(
+                                    student?.name
+                                )}
+                            </span>
+                        )}
+                    </div>
+
+                </div>
 
                 {/* HEADER */}
                 <header className="student-dashboard-header">
@@ -261,12 +400,31 @@ const StudentDashboard = () => {
 
                     </div>
 
-                    <button
-                        className="student-dashboard-refresh"
-                        onClick={fetchDashboard}
-                    >
-                        ↻ Refresh
-                    </button>
+                    <div className="student-dashboard-header-actions">
+
+                        <button
+                            className="student-dashboard-refresh"
+                            onClick={fetchDashboard}
+                        >
+                            ↻ Refresh
+                        </button>
+
+                        <div className="student-dashboard-profile-photo">
+                            {getPhotoUrl() ? (
+                                <img
+                                    src={getPhotoUrl()}
+                                    alt="Student"
+                                />
+                            ) : (
+                                <span>
+                                    {getInitials(
+                                        student?.name
+                                    )}
+                                </span>
+                            )}
+                        </div>
+
+                    </div>
 
                 </header>
 
