@@ -482,8 +482,8 @@ const MyGatePass = () => {
                 </div>
             )}
         </section>
-    </main>
-        </div >
+        </main>
+        </div>
     );
 };
 
