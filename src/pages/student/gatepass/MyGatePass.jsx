@@ -139,747 +139,171 @@ const MyGatePass = () => {
     };
 
     const getGatePassNumber = (gatePass) => {
-        return (
-            gatePass.gate_pass_no ||
-            `GP-${String(gatePass.id).padStart(5, "0")}`
-        );
+    
+    const formatDateForTable = (date) => {
+        if (!date) {
+            return "—";
+        }
+
+        const value = new Date(date);
+
+        if (Number.isNaN(value.getTime())) {
+            return String(date).slice(0, 10);
+        }
+
+        const year = value.getFullYear();
+        const month = String(value.getMonth() + 1).padStart(2, "0");
+        const day = String(value.getDate()).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
     };
 
-    const getStatus = (gatePass) => {
-        const rectorStatus =
-            String(gatePass.rector || "").toLowerCase();
-
-        if (
-            rectorStatus.includes("reject") ||
-            rectorStatus.includes("rejected")
-        ) {
-            return {
-                label: "Rejected",
-                className: "rejected"
-            };
+    const formatTimeForTable = (time) => {
+        if (!time) {
+            return "—";
         }
 
-        if (
-            gatePass.security_entry === "Yes" ||
-            gatePass.security_entry === 1
-        ) {
-            return {
-                label: "Completed",
-                className: "completed"
-            };
-        }
-
-        if (
-            gatePass.security_exit === "Yes" ||
-            gatePass.security_exit === 1
-        ) {
-            return {
-                label: "Outside Hostel",
-                className: "outside"
-            };
-        }
-
-        if (
-            rectorStatus === "approved" ||
-            rectorStatus === "approve"
-        ) {
-            return {
-                label: "Approved",
-                className: "approved"
-            };
-        }
-
-        return {
-            label: "Pending",
-            className: "pending"
-        };
+        return String(time).slice(0, 5);
     };
 
-    const isApproved = (gatePass) => {
-        const rectorStatus =
-            String(gatePass.rector || "").toLowerCase();
-
-        return (
-            rectorStatus === "approved" ||
-            rectorStatus === "approve"
-        );
-    };
-
-    const getExpiryDateTime = (gatePass) => {
-        if (!gatePass.return_date) {
-            return null;
-        }
-
-        if (gatePass.return_time) {
-            return `${gatePass.return_date}T${gatePass.return_time}`;
-        }
-
-        return `${gatePass.return_date}T23:59:59`;
-    };
-
-    const isExpired = (gatePass) => {
-        if (!isApproved(gatePass)) {
-            return false;
-        }
-
-        if (
-            gatePass.security_entry === "Yes" ||
-            gatePass.security_entry === 1
-        ) {
-            return false;
-        }
-
-        const expiry = getExpiryDateTime(gatePass);
-
-        if (!expiry) {
-            return false;
-        }
-
-        return new Date() > new Date(expiry);
-    };
-
-    const getValidity = (gatePass) => {
-        if (isExpired(gatePass)) {
-            return {
-                label: "Expired Gate Pass",
-                className: "expired"
-            };
-        }
-
-        if (isApproved(gatePass)) {
-            return {
-                label: "Valid Gate Pass",
-                className: "valid"
-            };
-        }
-
-        return {
-            label: "Not Active",
-            className: "not-active"
-        };
-    };
-
-    const getQRValue = (gatePass) => {
-        if (!isApproved(gatePass) || !gatePass.qr_code) {
-            return "";
-        }
-
-        return gatePass.qr_code;
-    };
-
-    const handleViewGatePass = (gatePass) => {
-        navigate(`/student/gatepass/view/${gatePass.id}`, {
-            state: {
-                gatePass,
-                student
-            }
-        });
-    };
 
     return (
         <div className="my-gatepass-page">
-            <button
-                type="button"
-                className="student-mobile-menu-button"
-                onClick={() => setMenuOpen(true)}
-                aria-label="Open student menu"
-            >
-                ☰
-            </button>
-
-            <div
-                className={`student-mobile-overlay ${menuOpen ? "show" : ""}`}
-                onClick={() => setMenuOpen(false)}
-            />
-
-            {/* ================= SIDEBAR ================= */}
-
-            <aside className={`student-sidebar ${menuOpen ? "mobile-open" : ""}`}>
-
-                <div className="student-sidebar-brand">
-
-                    <div className="student-brand-icon">
-                        🏠
-                    </div>
-
-                    <div>
-                        <h2>Hostel</h2>
-                        <span>Student Portal</span>
-                    </div>
-
-                    <button
-                        type="button"
-                        className="student-mobile-close"
-                        onClick={() => setMenuOpen(false)}
-                        aria-label="Close student menu"
-                    >
-                        ×
-                    </button>
-
-                </div>
-
-                <nav className="student-sidebar-nav">
-
-                    <button
-                        className="student-nav-item"
-                        onClick={() => handleNavigation("/student/dashboard")}
-                    >
-                        📊
-                        <span>Dashboard</span>
-                    </button>
-
-                    <button
-                        className="student-nav-item"
-                        onClick={() => handleNavigation("/student/profile")}
-                    >
-                        👤
-                        <span>My Profile</span>
-                    </button>
-
-                    <button
-                        className="student-nav-item"
-                        onClick={() => handleNavigation("/student/room")}
-                    >
-                        🛏️
-                        <span>My Room</span>
-                    </button>
-
-                    <button
-                        className="student-nav-item"
-                        onClick={() => handleNavigation("/student/leave")}
-                    >
-                        📄
-                        <span>My Leave</span>
-                    </button>
-
-                    <button
-                        className="student-nav-item active"
-                        onClick={() => handleNavigation("/student/gatepass")}
-                    >
-                        🎫
-                        <span>Gate Pass</span>
-                    </button>
-
-                    <button
-                        className="student-nav-item"
-                        onClick={() => handleNavigation("/student/complaints")}
-                    >
-                        🛠️
-                        <span>Complaints</span>
-                    </button>
-
-                    <button
-                        className="student-nav-item"
-                        onClick={() => handleNavigation("/student/fees")}
-                    >
-                        💰
-                        <span>My Fees</span>
-                    </button>
-
-                    <button
-                        className="student-nav-item"
-                        onClick={() => handleNavigation("/student/notifications")}
-                    >
-                        🔔
-                        <span>Notifications</span>
-                    </button>
-
-                </nav>
-
-                <button
-                    className="student-logout-button"
-                    onClick={handleLogout}
-                >
-                    🚪
-                    <span>Logout</span>
-                </button>
-
-            </aside>
-
-
-            {/* ================= MAIN ================= */}
-
             <main className="my-gatepass-main">
-                <div className="my-mobile-topbar">
-                    <button
-                        type="button"
-                        onClick={() => setMenuOpen(true)}
-                        aria-label="Open student menu"
-                    >
-                        ☰
-                    </button>
-                    <div>
-                        <strong>Hostel</strong>
-                        <span>Student Portal</span>
-                    </div>
-                    <span>🎫</span>
-                </div>
-
-                <div className="my-gatepass-header">
-
-                    <div>
-                        <span className="my-gatepass-eyebrow">
-                            STUDENT PORTAL
-                        </span>
-
-                        <h1>My Gate Pass</h1>
-
-                        <p>
-                            View and manage your hostel gate pass
-                            requests.
-                        </p>
+                <section className="my-gatepass-panel">
+                    <div className="my-gatepass-title">
+                        <span className="my-gatepass-title-icon">📋</span>
+                        <h1>My Gatepasses</h1>
                     </div>
 
-                    <button
-                        className="apply-new-gatepass-button"
-                        onClick={() =>
-                            navigate("/student/gatepass/apply")
-                        }
-                    >
-                        + Apply Gate Pass
-                    </button>
-
-                </div>
-
-
-                {/* ERROR */}
-
-                {error && (
-                    <div className="my-gatepass-alert">
-
-                        <span>⚠️</span>
-
-                        <span>{error}</span>
-
-                        <button
-                            onClick={() => setError("")}
-                        >
-                            ×
-                        </button>
-
-                    </div>
-                )}
-
-
-                {/* LOADING */}
-
-                {loading && (
-                    <div className="my-gatepass-loading">
-                        <div className="gatepass-spinner"></div>
-                        <p>Loading gate passes...</p>
-                    </div>
-                )}
-
-
-                {/* EMPTY */}
-
-                {!loading && !error && gatePasses.length === 0 && (
-                    <div className="my-gatepass-empty">
-
-                        <div className="empty-gatepass-icon">
-                            🎫
+                    {error && (
+                        <div className="my-gatepass-alert">
+                            <span>⚠️</span>
+                            <span>{error}</span>
+                            <button type="button" onClick={() => setError("")}>×</button>
                         </div>
+                    )}
 
-                        <h2>No Gate Pass Found</h2>
+                    {loading && (
+                        <div className="my-gatepass-loading">
+                            <div className="gatepass-spinner"></div>
+                            <p>Loading gate passes...</p>
+                        </div>
+                    )}
 
-                        <p>
-                            You have not applied for any gate pass yet.
-                        </p>
+                    {!loading && !error && gatePasses.length === 0 && (
+                        <div className="my-gatepass-empty">
+                            <div className="empty-gatepass-icon">🎫</div>
+                            <h2>No Gate Pass Found</h2>
+                            <p>You have not applied for any gate pass yet.</p>
+                            <button
+                                type="button"
+                                onClick={() => navigate("/student/gatepass/apply")}
+                            >
+                                Apply Gate Pass
+                            </button>
+                        </div>
+                    )}
 
-                        <button
-                            onClick={() =>
-                                navigate("/student/gatepass/apply")
-                            }
-                        >
-                            Apply Gate Pass
-                        </button>
+                    {!loading && gatePasses.length > 0 && (
+                        <div className="gatepass-table-wrapper">
+                            <table className="gatepass-table">
+                                <thead>
+                                    <tr>
+                                        <th>Exit Date</th>
+                                        <th>Exit Time</th>
+                                        <th>Return Date</th>
+                                        <th>Return Time</th>
+                                        <th>Parent</th>
+                                        <th>Rector</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {gatePasses.map((gatePass) => {
+                                        const rectorStatus = String(gatePass.rector || "").toLowerCase();
+                                        const otpStatus = String(gatePass.otp_verified || "").toLowerCase();
 
-                    </div>
-                )}
+                                        const parentStatus =
+                                            String(gatePass.status || "").toLowerCase() === "withdrawn" ||
+                                            otpStatus.includes("withdrawn")
+                                                ? "Withdrawn"
+                                                : otpStatus === "yes"
+                                                    ? "Approved"
+                                                    : "Pending";
 
+                                        const displayRector =
+                                            rectorStatus.includes("withdrawn")
+                                                ? "Withdrawn by Student"
+                                                : rectorStatus === "approved" || rectorStatus === "approve"
+                                                    ? "Approved"
+                                                    : rectorStatus.includes("reject")
+                                                        ? "Rejected"
+                                                        : gatePass.rector || "Pending";
 
-                {/* GATE PASSES */}
+                                        const parentClass =
+                                            parentStatus === "Approved"
+                                                ? "status-approved"
+                                                : parentStatus === "Withdrawn"
+                                                    ? "status-withdrawn"
+                                                    : "status-pending";
 
-                {!loading && gatePasses.length > 0 && (
-                    <div className="gatepass-list">
+                                        const rectorClass =
+                                            displayRector === "Approved"
+                                                ? "status-approved"
+                                                : displayRector === "Withdrawn by Student" || displayRector === "Rejected"
+                                                    ? "status-withdrawn"
+                                                    : "status-pending";
 
-                        {gatePasses.map((gatePass) => {
+                                        const isWithdrawn =
+                                            parentStatus === "Withdrawn" ||
+                                            displayRector === "Withdrawn by Student" ||
+                                            String(gatePass.status || "").toLowerCase() === "withdrawn";
 
-                            const status = getStatus(gatePass);
-                            const validity = getValidity(gatePass);
-                            const approved = isApproved(gatePass);
-                            const qrValue = getQRValue(gatePass);
-
-                            return (
-                                <section
-                                    className="gatepass-card"
-                                    key={gatePass.id}
-                                >
-
-                                    {/* CARD HEADER */}
-
-                                    <div className="gatepass-card-top">
-
-                                        <div>
-
-                                            <span className="gatepass-small-title">
-                                                GATE PASS
-                                            </span>
-
-                                            <h2>
-                                                {getGatePassNumber(
-                                                    gatePass
-                                                )}
-                                            </h2>
-
-                                        </div>
-
-                                        <div
-                                            className={`gatepass-status ${status.className}`}
-                                        >
-                                            {status.label}
-                                        </div>
-
-                                    </div>
-
-
-                                    {/* STUDENT + DETAILS */}
-
-                                    <div className="gatepass-content">
-
-                                        <div className="gatepass-student-column">
-
-                                            <div className="gatepass-photo">
-
-                                                {getStudentPhoto() ? (
-                                                    <img
-                                                        src={getStudentPhoto()}
-                                                        alt="Student"
-                                                    />
-                                                ) : (
-                                                    <span>
-                                                        👨‍🎓
+                                        return (
+                                            <tr key={gatePass.id}>
+                                                <td>{formatDateForTable(gatePass.out_date)}</td>
+                                                <td>{formatTimeForTable(gatePass.out_time)}</td>
+                                                <td>{formatDateForTable(gatePass.return_date)}</td>
+                                                <td>{formatTimeForTable(gatePass.return_time)}</td>
+                                                <td>
+                                                    <span className={`gatepass-status-badge ${parentClass}`}>
+                                                        {parentStatus}
                                                     </span>
-                                                )}
-
-                                            </div>
-
-                                            <h3>
-                                                {student?.name ||
-                                                    "Student"}
-                                            </h3>
-
-                                            <p>
-                                                {student?.email ||
-                                                    ""}
-                                            </p>
-
-                                        </div>
-
-
-                                        <div className="gatepass-details">
-
-                                            <div className="gatepass-detail-item">
-
-                                                <span>
-                                                    📱 Mobile
-                                                </span>
-
-                                                <strong>
-                                                    {student?.mobile ||
-                                                        "—"}
-                                                </strong>
-
-                                            </div>
-
-                                            <div className="gatepass-detail-item">
-
-                                                <span>
-                                                    📍 Destination
-                                                </span>
-
-                                                <strong>
-                                                    {gatePass.destination ||
-                                                        "—"}
-                                                </strong>
-
-                                            </div>
-
-                                            <div className="gatepass-detail-item full">
-
-                                                <span>
-                                                    📝 Purpose
-                                                </span>
-
-                                                <strong>
-                                                    {gatePass.purpose ||
-                                                        "—"}
-                                                </strong>
-
-                                            </div>
-
-                                            <div className="gatepass-detail-item">
-
-                                                <span>
-                                                    📅 Exit Date
-                                                </span>
-
-                                                <strong>
-                                                    {formatDate(
-                                                        gatePass.out_date
+                                                </td>
+                                                <td>
+                                                    <span className={`gatepass-status-badge ${rectorClass}`}>
+                                                        {displayRector}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    {isWithdrawn ? (
+                                                        <button
+                                                            type="button"
+                                                            className="gatepass-action-button withdrawn"
+                                                            onClick={() => handleViewGatePass(gatePass)}
+                                                        >
+                                                            Withdrawn
+                                                        </button>
+                                                    ) : (
+                                                        <button
+                                                            type="button"
+                                                            className="gatepass-action-button"
+                                                            onClick={() => handleViewGatePass(gatePass)}
+                                                        >
+                                                            View
+                                                        </button>
                                                     )}
-                                                </strong>
-
-                                            </div>
-
-                                            <div className="gatepass-detail-item">
-
-                                                <span>
-                                                    🕐 Exit Time
-                                                </span>
-
-                                                <strong>
-                                                    {gatePass.out_time ||
-                                                        "—"}
-                                                </strong>
-
-                                            </div>
-
-                                            <div className="gatepass-detail-item">
-
-                                                <span>
-                                                    ↩️ Entry Time
-                                                </span>
-
-                                                <strong>
-                                                    {formatDateTime(
-                                                        gatePass.entry_datetime
-                                                    )}
-                                                </strong>
-
-                                            </div>
-
-                                            <div className="gatepass-detail-item">
-
-                                                <span>
-                                                    📆 Return Date
-                                                </span>
-
-                                                <strong>
-                                                    {formatDate(
-                                                        gatePass.return_date
-                                                    )}
-                                                </strong>
-
-                                            </div>
-
-                                            <div className="gatepass-detail-item">
-
-                                                <span>
-                                                    🕐 Return Time
-                                                </span>
-
-                                                <strong>
-                                                    {gatePass.return_time ||
-                                                        "—"}
-                                                </strong>
-
-                                            </div>
-
-                                            <div className="gatepass-detail-item">
-
-                                                <span>
-                                                    📧 Parent Email
-                                                </span>
-
-                                                <strong>
-                                                    {gatePass.parent_email ||
-                                                        student?.parent_email ||
-                                                        "—"}
-                                                </strong>
-
-                                            </div>
-
-                                            <div className="gatepass-detail-item">
-
-                                                <span>
-                                                    👨‍👩‍👧 Parent Verification
-                                                </span>
-
-                                                <strong className={
-                                                    String(gatePass.otp_verified || "").toLowerCase() === "yes"
-                                                        ? "gatepass-approved-text"
-                                                        : "gatepass-pending-text"
-                                                }>
-                                                    {String(gatePass.otp_verified || "").toLowerCase() === "yes"
-                                                        ? "✓ Approved"
-                                                        : "Pending"}
-                                                </strong>
-
-                                            </div>
-
-                                            <div className="gatepass-detail-item">
-
-                                                <span>
-                                                    👨‍🏫 Rector
-                                                </span>
-
-                                                <strong>
-                                                    {gatePass.rector ||
-                                                        "Pending"}
-                                                </strong>
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-
-
-                                    {/* QR SECTION */}
-
-                                    {approved && (
-                                        <div className="gatepass-qr-section">
-
-                                            <div className="gatepass-qr-heading">
-
-                                                <span>
-                                                    QR CODE
-                                                </span>
-
-                                                <p>
-                                                    Scan this QR code at
-                                                    the hostel gate.
-                                                </p>
-
-                                            </div>
-
-                                            {qrValue ? (
-                                                <div className="gatepass-qr-box">
-
-                                                    <QRCodeSVG
-                                                        value={qrValue}
-                                                        size={190}
-                                                        level="H"
-                                                    />
-
-                                                </div>
-                                            ) : (
-                                                <div className="gatepass-no-qr">
-                                                    QR code not generated yet.
-                                                </div>
-                                            )}
-
-                                        </div>
-                                    )}
-
-
-                                    {/* VALIDITY */}
-
-                                    <div
-                                        className={`gatepass-validity ${validity.className}`}
-                                    >
-
-                                        <div>
-
-                                            <span>
-                                                {validity.className ===
-                                                "valid"
-                                                    ? "✓"
-                                                    : "!"}
-                                            </span>
-
-                                            <div>
-
-                                                <strong>
-                                                    {validity.label}
-                                                </strong>
-
-                                                <p>
-                                                    {isExpired(gatePass)
-                                                        ? `Expired on ${formatDate(
-                                                              gatePass.return_date
-                                                          )}`
-                                                        : `Valid until ${formatDate(
-                                                              gatePass.return_date
-                                                          )}`}
-                                                </p>
-
-                                            </div>
-
-                                        </div>
-
-                                        <div className="gatepass-security-status">
-
-                                            <span>
-                                                Exit:{" "}
-                                                {gatePass.security_exit ===
-                                                    "Yes"
-                                                    ? "✓"
-                                                    : "—"}
-                                            </span>
-
-                                            <span>
-                                                Entry:{" "}
-                                                {gatePass.security_entry ===
-                                                    "Yes"
-                                                    ? "✓"
-                                                    : "—"}
-                                            </span>
-
-                                        </div>
-
-                                    </div>
-
-
-                                    {/* TIMESTAMPS */}
-
-                                    <div className="gatepass-times">
-
-                                        <div>
-                                            <span>
-                                                Hostel Exit
-                                            </span>
-
-                                            <strong>
-                                                {formatDateTime(
-                                                    gatePass.exit_datetime
-                                                )}
-                                            </strong>
-                                        </div>
-
-                                        <div>
-                                            <span>
-                                                Hostel Entry
-                                            </span>
-
-                                            <strong>
-                                                {formatDateTime(
-                                                    gatePass.entry_datetime
-                                                )}
-                                            </strong>
-                                        </div>
-
-                                    </div>
-
-                                    <div className="gatepass-view-action">
-                                        <button
-                                            type="button"
-                                            onClick={() => handleViewGatePass(gatePass)}
-                                        >
-                                            👁 View Gate Pass
-                                        </button>
-                                    </div>
-
-                                </section>
-                            );
-                        })}
-
-                    </div>
-                )}
-
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </section>
             </main>
-
         </div>
     );
 };
