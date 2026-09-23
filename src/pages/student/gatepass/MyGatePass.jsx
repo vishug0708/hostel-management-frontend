@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./MyGatePass.css";
 
@@ -13,6 +13,9 @@ const MyGatePass = () => {
     const [error, setError] = useState("");
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+    const sidebarRef = useRef(null);
+    const mobileMenuButtonRef = useRef(null);
+
     useEffect(() => {
         loadStudent();
     }, []);
@@ -26,6 +29,40 @@ const MyGatePass = () => {
         return () => {
             document.body.classList.remove(
                 "student-gatepass-menu-open"
+            );
+        };
+    }, [mobileMenuOpen]);
+
+    useEffect(() => {
+        if (!mobileMenuOpen) {
+            return;
+        }
+
+        const handleOutsidePointer = (event) => {
+            const sidebar = sidebarRef.current;
+            const menuButton = mobileMenuButtonRef.current;
+
+            if (
+                sidebar &&
+                !sidebar.contains(event.target) &&
+                menuButton &&
+                !menuButton.contains(event.target)
+            ) {
+                setMobileMenuOpen(false);
+            }
+        };
+
+        document.addEventListener(
+            "pointerdown",
+            handleOutsidePointer,
+            true
+        );
+
+        return () => {
+            document.removeEventListener(
+                "pointerdown",
+                handleOutsidePointer,
+                true
             );
         };
     }, [mobileMenuOpen]);
@@ -254,12 +291,17 @@ const MyGatePass = () => {
                 <div className="student-mobile-left">
 
                     <button
+                        ref={mobileMenuButtonRef}
                         type="button"
                         className="student-mobile-menu-btn"
                         onClick={() =>
-                            setMobileMenuOpen(true)
+                            setMobileMenuOpen((open) => !open)
                         }
-                        aria-label="Open student menu"
+                        aria-label={
+                            mobileMenuOpen
+                                ? "Close student menu"
+                                : "Open student menu"
+                        }
                     >
                         ☰
                     </button>
@@ -313,6 +355,7 @@ const MyGatePass = () => {
             ========================= */}
 
             <aside
+                ref={sidebarRef}
                 className={`student-sidebar ${
                     mobileMenuOpen
                         ? "mobile-open"
@@ -490,6 +533,9 @@ const MyGatePass = () => {
             {mobileMenuOpen && (
                 <div
                     className="student-mobile-overlay"
+                    onPointerDown={() =>
+                        setMobileMenuOpen(false)
+                    }
                     onClick={() =>
                         setMobileMenuOpen(false)
                     }

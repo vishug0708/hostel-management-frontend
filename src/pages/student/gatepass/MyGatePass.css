@@ -550,6 +550,7 @@
         bottom: 0 !important;
         z-index: 1400 !important;
         width: 270px !important;
+        pointer-events: auto !important;
         height: 100vh !important;
         min-height: 100vh !important;
         margin: 0 !important;
@@ -573,6 +574,7 @@
         inset: 0 !important;
         z-index: 1350 !important;
         display: block !important;
+        pointer-events: auto !important;
         width: 100vw !important;
         height: 100vh !important;
         background: rgba(2, 6, 23, 0.48) !important;
