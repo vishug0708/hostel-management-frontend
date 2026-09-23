@@ -139,7 +139,12 @@ const MyGatePass = () => {
     };
 
     const getGatePassNumber = (gatePass) => {
-    
+        return (
+            gatePass.gate_pass_no ||
+            `GP-${String(gatePass.id).padStart(5, "0")}`
+        );
+    };
+
     const formatDateForTable = (date) => {
         if (!date) {
             return "—";
@@ -166,6 +171,14 @@ const MyGatePass = () => {
         return String(time).slice(0, 5);
     };
 
+    const handleViewGatePass = (gatePass) => {
+        navigate(`/student/gatepass/view/${gatePass.id}`, {
+            state: {
+                gatePass,
+                student
+            }
+        });
+    };
 
     return (
         <div className="my-gatepass-page">
