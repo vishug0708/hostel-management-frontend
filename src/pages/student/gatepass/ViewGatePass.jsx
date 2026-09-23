@@ -213,8 +213,12 @@ const ViewGatePass = () => {
     const approved =
         String(gatePass.rector || "").toLowerCase() === "approved";
 
-    const parentApproved =
-        String(gatePass.otp_verified || "").toLowerCase() === "yes";
+    const parentDecision = String(
+        gatePass.parent_decision || "pending"
+    ).toLowerCase();
+
+    const parentApproved = parentDecision === "approved";
+    const parentRejected = parentDecision === "rejected";
 
     const qrValue =
         approved && gatePass.qr_code
@@ -636,8 +640,8 @@ const ViewGatePass = () => {
                     <section className="viewgatepass-approval-panel">
                         <div className="approval-row">
                             <span>Parent Verification</span>
-                            <strong className={parentApproved ? "view-approved" : "view-pending"}>
-                                {parentApproved ? "✓ Approved" : "⏳ Pending"}
+                            <strong className={parentApproved ? "view-approved" : parentRejected ? "view-rejected" : "view-pending"}>
+                                {parentApproved ? "✓ Approved" : parentRejected ? "✕ Rejected" : "⏳ Pending"}
                             </strong>
                         </div>
 

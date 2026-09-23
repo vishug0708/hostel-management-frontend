@@ -865,3 +865,7 @@
         font-size: 15px;
     }
 }
+
+.view-rejected {
+    color: #b42318;
+}

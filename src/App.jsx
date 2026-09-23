@@ -74,8 +74,16 @@ import MyCricketBookings from "./pages/student/cricketbox/MyCricketBookings";
 import MyGatePass from "./pages/student/gatepass/MyGatePass";
 import ApplyGatePass from "./pages/student/gatepass/ApplyGatePass";
 import ViewGatePass from "./pages/student/gatepass/ViewGatePass";
-import VerifyOtp from "./pages/student/gatepass/VerifyOtp";
 
+
+
+
+// =====================================================
+// PARENT GATE PASS
+// =====================================================
+
+import ParentGatePass from "./pages/parent/gatepass/ParentGatePass";
+import ParentVerifyOtp from "./pages/parent/gatepass/ParentVerifyOtp";
 
 // =====================================================
 // STAFF
@@ -450,11 +458,22 @@ function App() {
                     element={<ViewGatePass />}
                 />
 
+
+
+
+                {/* =========================================
+                    PARENT GATE PASS
+                   ========================================= */}
+
                 <Route
-                    path="/student/gatepass/verify-otp/:gatePassId"
-                    element={<VerifyOtp />}
+                    path="/parent/gatepass/verify-otp/:gatePassId"
+                    element={<ParentVerifyOtp />}
                 />
 
+                <Route
+                    path="/parent/gatepass/:gatePassId"
+                    element={<ParentGatePass />}
+                />
 
 
                 {/* =========================================

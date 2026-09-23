@@ -212,8 +212,8 @@ const MyGatePass = () => {
             gatePass.status || ""
         ).toLowerCase();
 
-        const otpStatus = String(
-            gatePass.otp_verified || ""
+        const parentDecision = String(
+            gatePass.parent_decision || "pending"
         ).toLowerCase();
 
         const rectorStatus = String(
@@ -235,9 +235,10 @@ const MyGatePass = () => {
         }
 
         const parentApproved =
-            otpStatus === "yes" ||
-            otpStatus === "approved" ||
-            otpStatus === "verified";
+            parentDecision === "approved";
+
+        const parentRejected =
+            parentDecision === "rejected";
 
         const rectorApproved =
             rectorStatus === "approved" ||
@@ -246,11 +247,15 @@ const MyGatePass = () => {
         return {
             parent: parentApproved
                 ? "Approved"
-                : "Pending",
+                : parentRejected
+                    ? "Rejected"
+                    : "Pending",
 
             parentClass: parentApproved
                 ? "status-approved"
-                : "status-pending",
+                : parentRejected
+                    ? "status-withdrawn"
+                    : "status-pending",
 
             rector: rectorApproved
                 ? "Approved"

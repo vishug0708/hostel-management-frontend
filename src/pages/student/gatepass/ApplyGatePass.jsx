@@ -220,7 +220,7 @@ const ApplyGatePass = () => {
 
             setSuccess(
                 data.message ||
-                    "Gate pass request submitted successfully. OTP has been sent to your parent."
+                    "Gate pass request submitted successfully. A review link and OTP have been sent to your parent."
             );
 
             setFormData({
@@ -232,14 +232,9 @@ const ApplyGatePass = () => {
                 return_time: ""
             });
 
-            // OTP verification page
-            if (data.gate_pass_id || data.id) {
-                const gatePassId = data.gate_pass_id || data.id;
-
-                setTimeout(() => {
-                    navigate(`/student/gatepass/verify-otp/${gatePassId}`);
-                }, 1000);
-            }
+            setTimeout(() => {
+                navigate("/student/gatepass");
+            }, 1500);
 
         } catch (err) {
             console.error("Apply Gate Pass Error:", err);
