@@ -168,11 +168,24 @@ const StudentDashboard = () => {
             return "";
         }
 
-        if (student.photo.startsWith("http")) {
-            return student.photo;
+        const photo = String(student.photo).trim();
+
+        if (
+            photo.startsWith("data:") ||
+            photo.startsWith("blob:") ||
+            photo.startsWith("http://") ||
+            photo.startsWith("https://")
+        ) {
+            return photo;
         }
 
-        return `${API_URL}/${student.photo}`;
+        const normalizedPhoto = photo.replace(/^\/+/, "");
+
+        if (normalizedPhoto.startsWith("uploads/")) {
+            return `${API_URL}/${normalizedPhoto}`;
+        }
+
+        return `${API_URL}/uploads/students/${normalizedPhoto}`;
     };
 
     const handleNavigation = (path) => {
