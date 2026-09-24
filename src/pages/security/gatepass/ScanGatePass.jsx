@@ -53,7 +53,7 @@ const ScanGatePass = () => {
             oscillator.stop(context.currentTime + 0.2);
 
             window.setTimeout(() => {
-                context.close().catch(() => {});
+                context.close().catch(() => { });
             }, 300);
         } catch (error) {
             console.warn("Gate pass beep failed:", error);
@@ -147,7 +147,7 @@ const ScanGatePass = () => {
                     await stopScanner();
                     await verifyGatePass(String(decodedText).trim());
                 },
-                () => {}
+                () => { }
             );
 
             setScanning(true);
@@ -203,10 +203,18 @@ const ScanGatePass = () => {
                 }
 
                 if (!response.ok) {
+                    if (data.gatePass) {
+                        setGatePass(data.gatePass);
+                    }
+
                     const error = new Error(
                         data.message || `Gate pass verification failed (${response.status}).`
                     );
+
                     error.status = response.status;
+                    error.gatePass = data.gatePass || null;
+                    error.action = data.action || data.gatePass?.action || null;
+
                     throw error;
                 }
 
@@ -250,33 +258,77 @@ const ScanGatePass = () => {
             setGatePass(scannedGatePass);
 
             if (scannedGatePass.rector !== "Approved") {
-                showMessage("Gate pass is not approved by the Rector.", "error");
+                showMessage(
+                    "Gate pass is not approved by the Rector.",
+                    "error"
+                );
+                return;
+            }
+
+            if (scannedGatePass.action === "EXIT") {
+                navigate("/security/gatepass/exit", {
+                    state: {
+                        gatePass: scannedGatePass
+                    }
+                });
+                return;
+            }
+
+            if (scannedGatePass.action === "ENTRY") {
+                navigate("/security/gatepass/entry", {
+                    state: {
+                        gatePass: scannedGatePass
+                    }
+                });
                 return;
             }
 
             if (scannedGatePass.security_exit !== "Yes") {
                 navigate("/security/gatepass/exit", {
-                    state: { gatePass: scannedGatePass }
+                    state: {
+                        gatePass: scannedGatePass
+                    }
                 });
                 return;
             }
 
-            if (scannedGatePass.security_entry !== "Yes") {
+            if (
+                scannedGatePass.security_exit === "Yes" &&
+                scannedGatePass.security_entry !== "Yes"
+            ) {
                 navigate("/security/gatepass/entry", {
-                    state: { gatePass: scannedGatePass }
+                    state: {
+                        gatePass: scannedGatePass
+                    }
                 });
                 return;
             }
+
+            showMessage(
+                "This gate pass is already completed. No further entry or exit is allowed.",
+                "error"
+            );
 
             showMessage("This gate pass is already completed. No further entry or exit is allowed.", "error");
         } catch (error) {
             console.error("Gate pass verification error:", error);
-            setGatePass(null);
+
+            if (error?.gatePass) {
+                setGatePass(error.gatePass);
+            } else {
+                setGatePass(null);
+            }
 
             if (error?.name === "AbortError") {
-                showMessage("Gate pass verification timed out. Please try scanning again.", "error");
+                showMessage(
+                    "Gate pass verification timed out. Please try scanning again.",
+                    "error"
+                );
             } else {
-                showMessage(error.message || "Unable to verify gate pass.", "error");
+                showMessage(
+                    error?.message || "Unable to verify gate pass.",
+                    "error"
+                );
             }
         } finally {
             setLoading(false);
@@ -295,7 +347,7 @@ const ScanGatePass = () => {
             const scanner = scannerRef.current;
 
             if (scanner?.isScanning) {
-                scanner.stop().catch(() => {});
+                scanner.stop().catch(() => { });
             }
         };
     }, []);
