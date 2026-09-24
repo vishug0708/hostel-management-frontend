@@ -131,6 +131,16 @@ const AllowExit = () => {
         });
     };
 
+    const getPhotoUrl = (photo) => {
+        if (!photo) return "";
+        const value = String(photo).trim();
+        if (!value) return "";
+        if (value.startsWith("http://") || value.startsWith("https://") || value.startsWith("data:")) return value;
+        if (value.startsWith("/uploads/")) return `${API_URL}${value}`;
+        if (value.startsWith("uploads/")) return `${API_URL}/${value}`;
+        return `${API_URL}/uploads/students/${value}`;
+    };
+
     return (
         <div className="security-exit-page">
             <aside className="security-exit-sidebar">
@@ -183,7 +193,7 @@ const AllowExit = () => {
                                 <div>✓</div>
                                 <h2>Exit Already Recorded</h2>
                                 <p>This student has already been allowed to leave. The next scan will be handled as hostel entry.</p>
-                                <button onClick={() => navigate(`/security/gatepass/allow-entry/${encodeURIComponent(gatePass.verification_code || id)}`, { state: { gatePass } })}>
+                                <button onClick={() => navigate("/security/gatepass/entry", { state: { gatePass } })}>
                                     Continue to Entry
                                 </button>
                             </div>
@@ -204,7 +214,7 @@ const AllowExit = () => {
                                     </div>
                                     <div className="security-exit-student">
                                         {gatePass.photo ? (
-                                            <img src={`${API_URL}/uploads/students/${gatePass.photo}`} alt={gatePass.name || "Student"} />
+                                            <img src={getPhotoUrl(gatePass.photo)} alt={gatePass.name || "Student"} />
                                         ) : (
                                             <div className="security-exit-photo-placeholder">{gatePass.name?.charAt(0)?.toUpperCase() || "S"}</div>
                                         )}

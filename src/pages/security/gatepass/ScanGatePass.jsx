@@ -170,27 +170,81 @@ const ScanGatePass = () => {
     };
 
     const verifyGatePass = async (qrValue) => {
+        const cleanQrValue = String(qrValue || "").trim();
+
+        if (!cleanQrValue) {
+            showMessage("No QR value was detected.", "error");
+            return;
+        }
+
+        const verifyOnce = async () => {
+            const controller = new AbortController();
+            const timeoutId = window.setTimeout(() => controller.abort(), 25000);
+
+            try {
+                const response = await fetch(`${API_URL}/api/security/gatepass/scan`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        ...(securityToken ? { Authorization: `Bearer ${securityToken}` } : {})
+                    },
+                    body: JSON.stringify({
+                        verification_code: cleanQrValue,
+                        qr_code: cleanQrValue
+                    }),
+                    signal: controller.signal
+                });
+
+                let data = {};
+                try {
+                    data = await response.json();
+                } catch {
+                    data = {};
+                }
+
+                if (!response.ok) {
+                    const error = new Error(
+                        data.message || `Gate pass verification failed (${response.status}).`
+                    );
+                    error.status = response.status;
+                    throw error;
+                }
+
+                const scannedGatePass = data.gatePass || data.data || null;
+
+                if (!scannedGatePass) {
+                    throw new Error("Gate pass verification returned no gate pass data.");
+                }
+
+                return scannedGatePass;
+            } finally {
+                window.clearTimeout(timeoutId);
+            }
+        };
+
         try {
             setLoading(true);
             setMessage("");
             setGatePass(null);
 
-            const response = await fetch(`${API_URL}/api/security/gatepass/scan`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    ...(securityToken ? { Authorization: `Bearer ${securityToken}` } : {})
-                },
-                body: JSON.stringify({
-                    verification_code: qrValue
-                })
-            });
+            let scannedGatePass;
 
-            const data = await response.json();
-            const scannedGatePass = data.gatePass || data.data || null;
+            try {
+                scannedGatePass = await verifyOnce();
+            } catch (firstError) {
+                // Retry only network/time-out/server errors. Do not duplicate
+                // valid 400/403/404 business responses.
+                const retryable =
+                    firstError?.name === "AbortError" ||
+                    !firstError?.status ||
+                    firstError.status >= 500;
 
-            if (!response.ok || !scannedGatePass) {
-                throw new Error(data.message || "Invalid gate pass.");
+                if (!retryable) {
+                    throw firstError;
+                }
+
+                await new Promise((resolve) => window.setTimeout(resolve, 1200));
+                scannedGatePass = await verifyOnce();
             }
 
             setGatePass(scannedGatePass);
@@ -201,14 +255,14 @@ const ScanGatePass = () => {
             }
 
             if (scannedGatePass.security_exit !== "Yes") {
-                navigate(`/security/gatepass/allow-exit/${encodeURIComponent(scannedGatePass.verification_code || qrValue)}`, {
+                navigate("/security/gatepass/exit", {
                     state: { gatePass: scannedGatePass }
                 });
                 return;
             }
 
             if (scannedGatePass.security_entry !== "Yes") {
-                navigate(`/security/gatepass/allow-entry/${encodeURIComponent(scannedGatePass.verification_code || qrValue)}`, {
+                navigate("/security/gatepass/entry", {
                     state: { gatePass: scannedGatePass }
                 });
                 return;
@@ -218,7 +272,12 @@ const ScanGatePass = () => {
         } catch (error) {
             console.error("Gate pass verification error:", error);
             setGatePass(null);
-            showMessage(error.message || "Unable to verify gate pass.", "error");
+
+            if (error?.name === "AbortError") {
+                showMessage("Gate pass verification timed out. Please try scanning again.", "error");
+            } else {
+                showMessage(error.message || "Unable to verify gate pass.", "error");
+            }
         } finally {
             setLoading(false);
             scanLockedRef.current = false;

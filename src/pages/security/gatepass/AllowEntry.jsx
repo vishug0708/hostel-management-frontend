@@ -131,6 +131,16 @@ const AllowEntry = () => {
         });
     };
 
+    const getPhotoUrl = (photo) => {
+        if (!photo) return "";
+        const value = String(photo).trim();
+        if (!value) return "";
+        if (value.startsWith("http://") || value.startsWith("https://") || value.startsWith("data:")) return value;
+        if (value.startsWith("/uploads/")) return `${API_URL}${value}`;
+        if (value.startsWith("uploads/")) return `${API_URL}/${value}`;
+        return `${API_URL}/uploads/students/${value}`;
+    };
+
     return (
         <div className="security-entry-page">
             <aside className="security-entry-sidebar">
@@ -202,7 +212,7 @@ const AllowEntry = () => {
                                     </div>
                                     <div className="security-entry-student">
                                         {gatePass.photo ? (
-                                            <img src={`${API_URL}/uploads/students/${gatePass.photo}`} alt={gatePass.name || "Student"} />
+                                            <img src={getPhotoUrl(gatePass.photo)} alt={gatePass.name || "Student"} />
                                         ) : (
                                             <div className="security-entry-photo-placeholder">{gatePass.name?.charAt(0)?.toUpperCase() || "S"}</div>
                                         )}
