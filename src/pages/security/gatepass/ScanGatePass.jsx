@@ -131,10 +131,10 @@ const ScanGatePass = () => {
             scannerRef.current = scanner;
 
             await scanner.start(
-                selectedCamera.id,
+                { deviceId: { exact: selectedCamera.id } },
                 {
-                    fps: 12,
-                    qrbox: { width: 270, height: 270 },
+                    fps: 15,
+                    qrbox: { width: 280, height: 280 },
                     aspectRatio: 1
                 },
                 async (decodedText) => {
@@ -153,6 +153,14 @@ const ScanGatePass = () => {
             setScanning(true);
         } catch (error) {
             console.error("Gate pass scanner error:", error);
+            try {
+                if (scannerRef.current?.isScanning) {
+                    await scannerRef.current.stop();
+                }
+                await scannerRef.current?.clear();
+            } catch (cleanupError) {
+                console.warn("Scanner cleanup after start failure:", cleanupError);
+            }
             scannerRef.current = null;
             setScanning(false);
             showMessage(error?.message || "Unable to start camera scanner.", "error");

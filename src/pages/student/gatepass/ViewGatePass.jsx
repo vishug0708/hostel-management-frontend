@@ -67,10 +67,42 @@ const ViewGatePass = () => {
 
 
     useEffect(() => {
-        if (gatePass) {
-            return;
-        }
+        const loadStudentProfile = async () => {
+            const savedStudent = localStorage.getItem("student");
+            if (!savedStudent) return;
 
+            try {
+                const studentData = JSON.parse(savedStudent);
+                setStudent((previous) => previous || studentData);
+
+                if (!studentData?.id) return;
+
+                const token = localStorage.getItem("studentToken");
+                const response = await fetch(
+                    `${API_URL}/api/student/profile/${studentData.id}`,
+                    {
+                        headers: {
+                            ...(token
+                                ? { Authorization: `Bearer ${token}` }
+                                : {})
+                        }
+                    }
+                );
+                const data = await response.json();
+                if (response.ok && data.success && data.student) {
+                    const mergedStudent = { ...studentData, ...data.student };
+                    setStudent(mergedStudent);
+                    localStorage.setItem("student", JSON.stringify(mergedStudent));
+                }
+            } catch (profileError) {
+                console.warn("Student profile refresh failed:", profileError);
+            }
+        };
+
+        loadStudentProfile();
+    }, []);
+
+    useEffect(() => {
         const loadGatePass = async () => {
             try {
                 const savedStudent = localStorage.getItem("student");
@@ -81,7 +113,7 @@ const ViewGatePass = () => {
                 }
 
                 const studentData = JSON.parse(savedStudent);
-                setStudent(studentData);
+                setStudent((previous) => previous || studentData);
 
                 const token = localStorage.getItem("studentToken");
                 const response = await fetch(
@@ -119,7 +151,7 @@ const ViewGatePass = () => {
         };
 
         loadGatePass();
-    }, [gatePass, gatePassId, navigate]);
+    }, [gatePassId, navigate]);
 
     const handleNavigation = (path) => {
         setMenuOpen(false);
@@ -164,7 +196,9 @@ const ViewGatePass = () => {
     const photoUrl = photo
         ? photo.startsWith("http")
             ? photo
-            : `${API_URL}/${photo.replace(/^\/+/, "")}`
+            : photo.replace(/^\/+/, "").startsWith("uploads/")
+            ? `${API_URL}/${photo.replace(/^\/+/, "")}`
+            : `${API_URL}/uploads/students/${photo.replace(/^\/+/, "")}`
         : null;
 
     const formatDate = (date) => {
@@ -653,6 +687,7 @@ const ViewGatePass = () => {
                             <strong>
                                 {gatePass.rector_name ||
                                     gatePass.rectorName ||
+                                    gatePass.approved_by_rector_name ||
                                     gatePass.approved_by_name ||
                                     "Hostel Rector"}
                             </strong>
@@ -663,6 +698,7 @@ const ViewGatePass = () => {
                             <strong>
                                 {gatePass.rector_mobile ||
                                     gatePass.rectorMobile ||
+                                    gatePass.approved_by_rector_mobile ||
                                     gatePass.approved_by_mobile ||
                                     "—"}
                             </strong>

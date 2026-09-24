@@ -79,10 +79,34 @@ const MyGatePass = () => {
             }
 
             const studentData = JSON.parse(savedStudent);
+            let currentStudent = studentData;
 
-            setStudent(studentData);
+            const token = localStorage.getItem("studentToken");
+            if (studentData?.id) {
+                try {
+                    const profileResponse = await fetch(
+                        `${API_URL}/api/student/profile/${studentData.id}`,
+                        {
+                            headers: {
+                                ...(token
+                                    ? { Authorization: `Bearer ${token}` }
+                                    : {})
+                            }
+                        }
+                    );
+                    const profileData = await profileResponse.json();
+                    if (profileResponse.ok && profileData.success && profileData.student) {
+                        currentStudent = { ...studentData, ...profileData.student };
+                        localStorage.setItem("student", JSON.stringify(currentStudent));
+                    }
+                } catch (profileError) {
+                    console.warn("Student profile refresh failed:", profileError);
+                }
+            }
 
-            await fetchGatePasses(studentData.id);
+            setStudent(currentStudent);
+
+            await fetchGatePasses(currentStudent.id);
         } catch (err) {
             console.error("Student Session Error:", err);
 

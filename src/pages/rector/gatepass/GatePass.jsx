@@ -81,7 +81,10 @@ const GatePass = () => {
                     headers: {
                         "Content-Type":
                             "application/json"
-                    }
+                    },
+                    body: JSON.stringify({
+                        rector_id: rectorId
+                    })
                 }
             );
 
@@ -765,6 +768,12 @@ const GatePass = () => {
                                                                     pass.return_date
                                                                 )}
                                                             </strong>
+
+                                                            <small>
+                                                                {formatTime(
+                                                                    pass.return_time
+                                                                )}
+                                                            </small>
 
                                                         </div>
 

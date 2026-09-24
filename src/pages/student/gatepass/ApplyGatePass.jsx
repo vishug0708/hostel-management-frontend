@@ -70,19 +70,49 @@ const ApplyGatePass = () => {
 
 
     useEffect(() => {
-        const savedStudent = localStorage.getItem("student");
+        const loadStudentProfile = async () => {
+            const savedStudent = localStorage.getItem("student");
 
-        if (!savedStudent) {
-            setError("Student session not found. Please login again.");
-            return;
-        }
+            if (!savedStudent) {
+                setError("Student session not found. Please login again.");
+                return;
+            }
 
-        try {
-            setStudent(JSON.parse(savedStudent));
-        } catch (err) {
-            console.error("Student session error:", err);
-            setError("Invalid student session. Please login again.");
-        }
+            try {
+                const studentData = JSON.parse(savedStudent);
+                setStudent(studentData);
+
+                if (!studentData?.id) {
+                    return;
+                }
+
+                const token = localStorage.getItem("studentToken");
+                const response = await fetch(
+                    `${API_URL}/api/student/profile/${studentData.id}`,
+                    {
+                        headers: {
+                            ...(token
+                                ? { Authorization: `Bearer ${token}` }
+                                : {})
+                        }
+                    }
+                );
+
+                const data = await response.json();
+
+                if (response.ok && data.success && data.student) {
+                    setStudent(data.student);
+                    localStorage.setItem(
+                        "student",
+                        JSON.stringify({ ...studentData, ...data.student })
+                    );
+                }
+            } catch (err) {
+                console.error("Student profile load error:", err);
+            }
+        };
+
+        loadStudentProfile();
     }, []);
 
     const getProfilePhoto = () => {

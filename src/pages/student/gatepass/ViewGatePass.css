@@ -869,3 +869,11 @@
 .view-rejected {
     color: #b42318;
 }
+
+
+/* Center the gate-pass card relative to the full desktop viewport, not only the area beside the sidebar. */
+@media (min-width: 801px) {
+    .viewgatepass-wrapper {
+        transform: translateX(-137.5px);
+    }
+}
