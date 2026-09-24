@@ -776,6 +776,12 @@
     display: none;
 }
 
+@media (min-width: 801px) {
+    .applygatepass-header {
+        padding-right: 90px;
+    }
+}
+
 .applygatepass-desktop-photo {
     position: absolute;
     top: 24px;

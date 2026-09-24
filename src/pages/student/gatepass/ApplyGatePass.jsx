@@ -583,19 +583,13 @@ const ApplyGatePass = () => {
                             <div className="applygatepass-student-box">
 
                                 <div className="applygatepass-student-avatar">
-                                    {student?.photo ? (
+                                    {profilePhoto ? (
                                         <img
-                                            src={
-                                                student.photo.startsWith(
-                                                    "http"
-                                                )
-                                                    ? student.photo
-                                                    : `${API_URL}/${student.photo.replace(
-                                                          /^\/+/,
-                                                          ""
-                                                      )}`
-                                            }
+                                            src={profilePhoto}
                                             alt="Student"
+                                            onError={(event) => {
+                                                event.currentTarget.style.display = "none";
+                                            }}
                                         />
                                     ) : (
                                         "👨‍🎓"
