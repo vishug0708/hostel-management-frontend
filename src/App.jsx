@@ -74,6 +74,9 @@ import MyCricketBookings from "./pages/student/cricketbox/MyCricketBookings";
 import MyGatePass from "./pages/student/gatepass/MyGatePass";
 import ApplyGatePass from "./pages/student/gatepass/ApplyGatePass";
 import ViewGatePass from "./pages/student/gatepass/ViewGatePass";
+import Complaints from "./pages/student/complaints/Complaints";
+import NewComplaint from "./pages/student/complaints/NewComplaint";
+import ViewComplaint from "./pages/student/complaints/ViewComplaint";
 
 
 
@@ -456,6 +459,21 @@ function App() {
                 <Route
                     path="/student/gatepass/view/:gatePassId"
                     element={<ViewGatePass />}
+                />
+
+                <Route
+                    path="/student/complaints"
+                    element={<Complaints />}
+                />
+
+                <Route
+                    path="/student/complaints/new"
+                    element={<NewComplaint />}
+                />
+
+                <Route
+                    path="/student/complaints/view/:id"
+                    element={<ViewComplaint />}
                 />
 
 
