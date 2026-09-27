@@ -1,934 +1,185 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./NewComplaint.css";
 
-const API_URL = import.meta.env.VITE_API_URL || "";
-
-const categoryStaffMap = {
-    Electrical: "Electrical",
-    Plumbing: "Plumbing",
-    Carpenter: "Carpenter",
-    Cleaning: "Cleaning",
-    IT: "IT",
-    Maintenance: "Maintenance"
-};
-
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const menuItems = [
-    { label: "Dashboard", path: "/student/dashboard" },
-    { label: "My Profile", path: "/student/profile" },
-    { label: "My Room", path: "/student/my-room" },
-    { label: "My Leave", path: "/student/my-leave" },
-    { label: "Apply Leave", path: "/student/apply-leave" },
-    { label: "Gate Pass", path: "/student/gatepass" },
-    { label: "Complaints", path: "/student/complaints" },
-    { label: "My Fees", path: "/student/fees" },
-    { label: "Notifications", path: "/student/notifications" },
-    { label: "Cricket Box", path: "/student/cricketbox" }
+    { label: "Dashboard", icon: "📊", path: "/student/dashboard" },
+    { label: "My Profile", icon: "👤", path: "/student/profile" },
+    { label: "My Room", icon: "🛏️", path: "/student/room" },
+    { label: "My Leave", icon: "📝", path: "/student/leaves" },
+    { label: "Apply Leave", icon: "➕", path: "/student/apply-leave" },
+    { label: "Gate Pass", icon: "🎫", path: "/student/gatepass" },
+    { label: "Complaints", icon: "📩", path: "/student/complaints" },
+    { label: "My Fees", icon: "💰", path: "/student/fees" },
+    { label: "Cricket Box", icon: "🏏", path: "/student/cricket-box/bookings" },
+    { label: "Notifications", icon: "🔔", path: "/student/notifications" }
 ];
+const categories = ["Electrical", "Plumbing", "Carpenter", "Cleaning", "IT", "Maintenance"];
+
+const getPhotoUrl = (photo) => {
+    if (!photo) return "";
+    const value = String(photo).trim();
+    if (value.startsWith("data:") || value.startsWith("blob:") || value.startsWith("http://") || value.startsWith("https://")) return value;
+    const normalized = value.replace(/^\/+/, "");
+    if (normalized.startsWith("uploads/")) return `${API_URL}/${normalized}`;
+    return `${API_URL}/uploads/students/${normalized}`;
+};
 
 const NewComplaint = () => {
     const navigate = useNavigate();
-
-    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const sidebarRef = useRef(null);
+    const menuButtonRef = useRef(null);
     const [student, setStudent] = useState(null);
-
     const [backupStudents, setBackupStudents] = useState([]);
-    const [selectedBackupStudent, setSelectedBackupStudent] = useState(null);
-
-    const [formData, setFormData] = useState({
-        backup_student_id: "",
-        category: "",
-        subject: "",
-        description: ""
-    });
-
+    const [selectedBackup, setSelectedBackup] = useState(null);
+    const [form, setForm] = useState({ backup_student_id: "", category: "", subject: "", description: "" });
     const [attachment, setAttachment] = useState(null);
-
-    const [loadingStudent, setLoadingStudent] = useState(true);
-    const [loadingBackupStudents, setLoadingBackupStudents] = useState(true);
+    const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
+    const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-    const [message, setMessage] = useState("");
-    const [messageType, setMessageType] = useState("");
+    const getToken = () => localStorage.getItem("studentToken") || localStorage.getItem("token");
+    const getStudentId = () => student?.id || student?.student_id || null;
 
     useEffect(() => {
-        const storedStudent =
-            localStorage.getItem("student");
-
-        if (storedStudent) {
-            try {
-                setStudent(JSON.parse(storedStudent));
-            } catch (error) {
-                console.error("Student data parse error:", error);
-            }
+        document.title = "New Complaint | Hostel Management System";
+        const saved = localStorage.getItem("student");
+        if (saved) {
+            try { setStudent(JSON.parse(saved)); } catch { setStudent(null); }
         }
-
-        setLoadingStudent(false);
     }, []);
 
-    const getStudentId = () => {
-        if (student?.id) return student.id;
-
-        if (student?.student_id) return student.student_id;
-
-        return null;
-    };
+    useEffect(() => {
+        document.body.classList.toggle("student-complaint-menu-open", mobileMenuOpen);
+        return () => document.body.classList.remove("student-complaint-menu-open");
+    }, [mobileMenuOpen]);
 
     useEffect(() => {
-        if (!student) return;
+        if (!mobileMenuOpen) return;
+        const outside = (event) => {
+            if (sidebarRef.current && !sidebarRef.current.contains(event.target) && menuButtonRef.current && !menuButtonRef.current.contains(event.target)) setMobileMenuOpen(false);
+        };
+        document.addEventListener("pointerdown", outside, true);
+        return () => document.removeEventListener("pointerdown", outside, true);
+    }, [mobileMenuOpen]);
 
-        const studentId = getStudentId();
-
-        if (!studentId) {
-            setLoadingBackupStudents(false);
-            return;
-        }
-
-        fetchBackupStudents(studentId);
+    useEffect(() => {
+        const id = getStudentId();
+        const token = getToken();
+        if (!id || !token) { setLoading(false); return; }
+        fetch(`${API_URL}/api/student/complaints/backup-students/${id}`, { headers: { Authorization: `Bearer ${token}` } })
+            .then(async (response) => {
+                const data = await response.json();
+                if (response.status === 401) throw new Error("Your student login session has expired. Please login again.");
+                if (!response.ok || !data.success) throw new Error(data.message || "Failed to load backup students.");
+                setBackupStudents(Array.isArray(data.students) ? data.students : []);
+            })
+            .catch((err) => setError(err.message || "Unable to load backup students."))
+            .finally(() => setLoading(false));
     }, [student]);
 
-    const getToken = () => {
-        return (
-            localStorage.getItem("studentToken") ||
-            localStorage.getItem("token")
-        );
-    };
-
-    const getPhotoUrl = (photo) => {
-        if (!photo) return "";
-
-        if (
-            photo.startsWith("http://") ||
-            photo.startsWith("https://")
-        ) {
-            return photo;
-        }
-
-        return `${API_URL}/${photo.replace(/^\/+/, "")}`;
-    };
-
-    const fetchBackupStudents = async (studentId) => {
-        try {
-            setLoadingBackupStudents(true);
-            setMessage("");
-
-            const token = getToken();
-
-            const response = await fetch(
-                `${API_URL}/api/student/complaints/backup-students/${studentId}`,
-                {
-                    headers: token
-                        ? {
-                              Authorization: `Bearer ${token}`
-                          }
-                        : {}
-                }
-            );
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(
-                    data.message ||
-                        "Failed to load backup students."
-                );
-            }
-
-            setBackupStudents(
-                Array.isArray(data.students)
-                    ? data.students
-                    : Array.isArray(data.backupStudents)
-                    ? data.backupStudents
-                    : []
-            );
-        } catch (error) {
-            console.error(
-                "Backup Students Error:",
-                error
-            );
-
-            setBackupStudents([]);
-
-            setMessage(
-                error.message ||
-                    "Unable to load backup students."
-            );
-
-            setMessageType("error");
-        } finally {
-            setLoadingBackupStudents(false);
-        }
-    };
-
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-
-        setFormData((previous) => ({
-            ...previous,
-            [name]: value
-        }));
-
-        if (name === "backup_student_id") {
-            const backupStudent =
-                backupStudents.find(
-                    (item) =>
-                        String(item.id) === String(value)
-                );
-
-            setSelectedBackupStudent(
-                backupStudent || null
-            );
-        }
-
-        setMessage("");
-        setMessageType("");
-    };
-
-    const handleAttachmentChange = (event) => {
-        const file = event.target.files?.[0];
-
-        if (!file) {
-            setAttachment(null);
-            return;
-        }
-
-        const allowedTypes = [
-            "image/jpeg",
-            "image/jpg",
-            "image/png",
-            "image/webp",
-            "application/pdf"
-        ];
-
-        if (!allowedTypes.includes(file.type)) {
-            setAttachment(null);
-            event.target.value = "";
-
-            setMessage(
-                "Only JPG, JPEG, PNG, WEBP and PDF files are allowed."
-            );
-
-            setMessageType("error");
-
-            return;
-        }
-
-        if (file.size > 5 * 1024 * 1024) {
-            setAttachment(null);
-            event.target.value = "";
-
-            setMessage(
-                "Attachment size must be less than 5 MB."
-            );
-
-            setMessageType("error");
-
-            return;
-        }
-
-        setAttachment(file);
-        setMessage("");
-        setMessageType("");
-    };
-
-    const validateForm = () => {
-        if (!formData.backup_student_id) {
-            setMessage(
-                "Please select a backup student."
-            );
-            setMessageType("error");
-            return false;
-        }
-
-        if (!formData.category) {
-            setMessage(
-                "Please select a complaint category."
-            );
-            setMessageType("error");
-            return false;
-        }
-
-        if (!formData.subject.trim()) {
-            setMessage(
-                "Please enter complaint subject."
-            );
-            setMessageType("error");
-            return false;
-        }
-
-        if (!formData.description.trim()) {
-            setMessage(
-                "Please enter complaint description."
-            );
-            setMessageType("error");
-            return false;
-        }
-
-        return true;
-    };
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-
-        if (!validateForm()) {
-            return;
-        }
-
-        const studentId = getStudentId();
-
-        if (!studentId) {
-            setMessage(
-                "Student information not found. Please login again."
-            );
-            setMessageType("error");
-            return;
-        }
-
-        try {
-            setSubmitting(true);
-            setMessage("");
-            setMessageType("");
-
-            const token = getToken();
-
-            const body = new FormData();
-
-            body.append(
-                "student_id",
-                studentId
-            );
-
-            body.append(
-                "backup_student_id",
-                formData.backup_student_id
-            );
-
-            body.append(
-                "category",
-                formData.category
-            );
-
-            body.append(
-                "subject",
-                formData.subject.trim()
-            );
-
-            body.append(
-                "description",
-                formData.description.trim()
-            );
-
-            if (attachment) {
-                body.append(
-                    "attachment",
-                    attachment
-                );
-            }
-
-            const response = await fetch(
-                `${API_URL}/api/student/complaints`,
-                {
-                    method: "POST",
-                    headers: token
-                        ? {
-                              Authorization: `Bearer ${token}`
-                          }
-                        : {},
-                    body
-                }
-            );
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(
-                    data.message ||
-                        "Failed to submit complaint."
-                );
-            }
-
-            setMessage(
-                data.message ||
-                    "Complaint submitted successfully."
-            );
-
-            setMessageType("success");
-
-            setTimeout(() => {
-                navigate("/student/complaints");
-            }, 1200);
-        } catch (error) {
-            console.error(
-                "Submit Complaint Error:",
-                error
-            );
-
-            setMessage(
-                error.message ||
-                    "Failed to submit complaint."
-            );
-
-            setMessageType("error");
-        } finally {
-            setSubmitting(false);
-        }
-    };
+    const navigateTo = (path) => { setMobileMenuOpen(false); navigate(path); };
 
     const handleLogout = () => {
         localStorage.removeItem("studentToken");
         localStorage.removeItem("token");
         localStorage.removeItem("student");
-
-        navigate("/student/login");
+        navigate("/student/login", { replace: true });
     };
 
-    const handleMenuClick = (path) => {
-        setSidebarOpen(false);
-        navigate(path);
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setForm((previous) => ({ ...previous, [name]: value }));
+        if (name === "backup_student_id") setSelectedBackup(backupStudents.find((item) => String(item.id) === String(value)) || null);
+        setError("");
+        setSuccess("");
     };
 
-    if (loadingStudent) {
-        return (
-            <div className="new-complaint-loading">
-                Loading...
-            </div>
-        );
-    }
+    const handleAttachment = (event) => {
+        const file = event.target.files?.[0] || null;
+        if (!file) { setAttachment(null); return; }
+        const allowed = ["image/jpeg", "image/jpg", "image/png", "image/webp", "application/pdf"];
+        if (!allowed.includes(file.type)) { event.target.value = ""; setAttachment(null); setError("Only JPG, JPEG, PNG, WEBP and PDF files are allowed."); return; }
+        if (file.size > 5 * 1024 * 1024) { event.target.value = ""; setAttachment(null); setError("Attachment size must be less than 5 MB."); return; }
+        setAttachment(file);
+        setError("");
+    };
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        setError("");
+        setSuccess("");
+        if (!form.backup_student_id || !form.category || !form.subject.trim() || !form.description.trim()) {
+            setError("Backup student, category, subject and description are required.");
+            return;
+        }
+        const token = getToken();
+        if (!token) { navigate("/student/login", { replace: true }); return; }
+        const body = new FormData();
+        body.append("backup_student_id", form.backup_student_id);
+        body.append("category", form.category);
+        body.append("subject", form.subject.trim());
+        body.append("description", form.description.trim());
+        if (attachment) body.append("attachment", attachment);
+        try {
+            setSubmitting(true);
+            const response = await fetch(`${API_URL}/api/student/complaints`, { method: "POST", headers: { Authorization: `Bearer ${token}` }, body });
+            const data = await response.json();
+            if (response.status === 401) {
+                localStorage.removeItem("studentToken");
+                localStorage.removeItem("token");
+                localStorage.removeItem("student");
+                navigate("/student/login", { replace: true });
+                return;
+            }
+            if (!response.ok || !data.success) throw new Error(data.message || "Failed to submit complaint.");
+            setSuccess(`Complaint ${data.complaint?.complaint_code || ""} submitted successfully.`);
+            setTimeout(() => navigate("/student/complaints"), 900);
+        } catch (err) {
+            setError(err.message || "Unable to submit complaint.");
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    const photo = getPhotoUrl(student?.photo);
+    const initials = String(student?.name || "Student").split(" ").map((part) => part.charAt(0)).join("").substring(0, 2).toUpperCase();
 
     return (
         <div className="student-complaint-page">
-            <aside
-                className={`student-complaint-sidebar ${
-                    sidebarOpen ? "open" : ""
-                }`}
-            >
-                <div className="student-complaint-sidebar-header">
-                    <div className="student-complaint-logo">
-                        HMS
-                    </div>
-
-                    <div>
-                        <h2>Student Panel</h2>
-                        <span>Hostel Management</span>
-                    </div>
-                </div>
-
-                <nav className="student-complaint-nav">
-                    {menuItems.map((item) => (
-                        <button
-                            key={item.path}
-                            type="button"
-                            className={`student-complaint-nav-item ${
-                                item.path ===
-                                "/student/complaints"
-                                    ? "active"
-                                    : ""
-                            }`}
-                            onClick={() =>
-                                handleMenuClick(
-                                    item.path
-                                )
-                            }
-                        >
-                            <span>
-                                {item.label}
-                            </span>
-                        </button>
-                    ))}
-                </nav>
-
-                <button
-                    type="button"
-                    className="student-complaint-logout"
-                    onClick={handleLogout}
-                >
-                    Logout
-                </button>
+            <aside ref={sidebarRef} className={`student-dashboard-sidebar ${mobileMenuOpen ? "mobile-open" : ""}`}>
+                <div className="student-dashboard-brand"><div className="student-dashboard-brand-icon">🏠</div><div><strong>Hostel</strong><span>Student Portal</span></div></div>
+                <nav className="student-dashboard-nav">{menuItems.map((item) => <button key={item.path} className={item.label === "Complaints" ? "active" : ""} onClick={() => navigateTo(item.path)}><span>{item.icon}</span><span>{item.label}</span></button>)}</nav>
+                <button className="student-dashboard-logout" onClick={handleLogout}><span>🚪</span><span>Logout</span></button>
             </aside>
-
-            {sidebarOpen && (
-                <div
-                    className="student-complaint-overlay"
-                    onClick={() =>
-                        setSidebarOpen(false)
-                    }
-                />
-            )}
-
+            {mobileMenuOpen && <div className="student-dashboard-mobile-overlay" onClick={() => setMobileMenuOpen(false)} />}
             <main className="student-complaint-main">
-                <header className="student-complaint-header">
-                    <button
-                        type="button"
-                        className="student-complaint-menu-button"
-                        onClick={() =>
-                            setSidebarOpen(
-                                !sidebarOpen
-                            )
-                        }
-                        aria-label="Toggle menu"
-                    >
-                        ☰
-                    </button>
-
-                    <div className="student-complaint-header-title">
-                        <h1>New Complaint</h1>
-                        <p>
-                            Submit your hostel complaint
-                        </p>
-                    </div>
-
-                    <div className="student-complaint-profile">
-                        {student?.photo ? (
-                            <img
-                                src={getPhotoUrl(
-                                    student.photo
-                                )}
-                                alt={
-                                    student?.name ||
-                                    "Student"
-                                }
-                            />
-                        ) : (
-                            <div className="student-complaint-profile-placeholder">
-                                {student?.name
-                                    ?.charAt(0)
-                                    ?.toUpperCase() ||
-                                    "S"}
-                            </div>
-                        )}
-
-                        <div className="student-complaint-profile-info">
-                            <strong>
-                                {student?.name ||
-                                    "Student"}
-                            </strong>
-                            <span>
-                                Student
-                            </span>
-                        </div>
-                    </div>
-                </header>
-
+                <div className="student-dashboard-mobile-topbar">
+                    <button ref={menuButtonRef} type="button" className="student-dashboard-mobile-menu-btn" onClick={() => setMobileMenuOpen((open) => !open)}>☰</button>
+                    <div className="student-dashboard-mobile-brand"><div className="student-dashboard-mobile-brand-icon">🏠</div><div><strong>Hostel</strong><span>Student Portal</span></div></div>
+                    <div className="student-dashboard-mobile-photo">{photo ? <img src={photo} alt="Student" /> : <span>{initials}</span>}</div>
+                </div>
+                <header className="student-complaint-header"><div><span>HOSTEL SERVICES</span><h1>Raise New Complaint</h1><p>Submit your hostel issue. Staff will be assigned automatically based on category.</p></div><div className="student-complaint-header-profile">{photo ? <img src={photo} alt="Student" /> : <span>{initials}</span>}</div></header>
                 <section className="new-complaint-content">
-                    <div className="new-complaint-top">
-                        <button
-                            type="button"
-                            className="new-complaint-back"
-                            onClick={() =>
-                                navigate(
-                                    "/student/complaints"
-                                )
-                            }
-                        >
-                            ← Back to Complaints
-                        </button>
-                    </div>
-
-                    <div className="new-complaint-card">
-                        <div className="new-complaint-card-header">
-                            <div>
-                                <h2>
-                                    Raise a Complaint
-                                </h2>
-                                <p>
-                                    Please provide accurate
-                                    details about your
-                                    complaint.
-                                </p>
-                            </div>
+                    <button className="new-complaint-back" onClick={() => navigateTo("/student/complaints")}>← Back to Complaints</button>
+                    {error && <div className="new-complaint-message error">⚠️ {error}</div>}
+                    {success && <div className="new-complaint-message success">✓ {success}</div>}
+                    <form className="new-complaint-card" onSubmit={handleSubmit}>
+                        <div className="new-complaint-card-header"><div><span>COMPLAINT DETAILS</span><h2>Raise a Complaint</h2></div></div>
+                        <div className="new-complaint-form-grid">
+                            <div className="new-complaint-field full"><label>Backup Student <b>*</b></label><select name="backup_student_id" value={form.backup_student_id} onChange={handleChange} disabled={loading || submitting}><option value="">Select backup student</option>{backupStudents.map((item) => <option key={item.id} value={item.id}>{item.name} — ID {item.student_id || item.id}</option>)}</select><small>Backup student is mandatory. Their details are fetched automatically.</small></div>
+                            {selectedBackup && <div className="backup-student-card"><div className="backup-photo">{getPhotoUrl(selectedBackup.photo) ? <img src={getPhotoUrl(selectedBackup.photo)} alt={selectedBackup.name} /> : <span>{selectedBackup.name?.charAt(0)?.toUpperCase() || "S"}</span>}</div><div><strong>{selectedBackup.name}</strong><span>ID: {selectedBackup.student_id || selectedBackup.id}</span><span>Mobile: {selectedBackup.mobile || "-"}</span><span>Email: {selectedBackup.email || "-"}</span></div></div>}
+                            <div className="new-complaint-field"><label>Complaint Category <b>*</b></label><select name="category" value={form.category} onChange={handleChange} disabled={submitting}><option value="">Select category</option>{categories.map((item) => <option key={item} value={item}>{item}</option>)}</select></div>
+                            <div className="assignment-info"><span>Automatic Assignment</span><strong>{form.category ? `${form.category} staff` : "Select a category"}</strong><small>System assigns one active staff member automatically.</small></div>
+                            <div className="new-complaint-field full"><label>Subject <b>*</b></label><input name="subject" maxLength="200" value={form.subject} onChange={handleChange} placeholder="Enter complaint subject" disabled={submitting} /></div>
+                            <div className="new-complaint-field full"><label>Description <b>*</b></label><textarea name="description" rows="7" value={form.description} onChange={handleChange} placeholder="Describe your problem clearly..." disabled={submitting} /></div>
+                            <div className="new-complaint-field full"><label>Attachment <span>(Optional)</span></label><input type="file" accept=".jpg,.jpeg,.png,.webp,.pdf" onChange={handleAttachment} disabled={submitting} /><small>JPG, JPEG, PNG, WEBP or PDF. Maximum 5 MB.</small>{attachment && <div className="attachment-name">📎 {attachment.name}</div>}</div>
                         </div>
-
-                        {message && (
-                            <div
-                                className={`new-complaint-message ${messageType}`}
-                            >
-                                {message}
-                            </div>
-                        )}
-
-                        <form
-                            className="new-complaint-form"
-                            onSubmit={handleSubmit}
-                        >
-                            <div className="new-complaint-section">
-                                <h3>
-                                    Complaint Details
-                                </h3>
-
-                                <div className="new-complaint-grid">
-                                    <div className="new-complaint-field">
-                                        <label>
-                                            Complaint Category
-                                            <span>*</span>
-                                        </label>
-
-                                        <select
-                                            name="category"
-                                            value={
-                                                formData.category
-                                            }
-                                            onChange={
-                                                handleChange
-                                            }
-                                        >
-                                            <option value="">
-                                                Select Category
-                                            </option>
-
-                                            <option value="Electrical">
-                                                Electrical
-                                            </option>
-
-                                            <option value="Plumbing">
-                                                Plumbing
-                                            </option>
-
-                                            <option value="Carpenter">
-                                                Carpenter
-                                            </option>
-
-                                            <option value="Cleaning">
-                                                Cleaning
-                                            </option>
-
-                                            <option value="IT">
-                                                IT
-                                            </option>
-
-                                            <option value="Maintenance">
-                                                Maintenance
-                                            </option>
-                                        </select>
-
-                                        {formData.category && (
-                                            <small className="new-complaint-help">
-                                                Automatically
-                                                assigned to{" "}
-                                                {
-                                                    categoryStaffMap[
-                                                        formData
-                                                            .category
-                                                    ]
-                                                }{" "}
-                                                staff.
-                                            </small>
-                                        )}
-                                    </div>
-
-                                    <div className="new-complaint-field">
-                                        <label>
-                                            Backup Student
-                                            <span>*</span>
-                                        </label>
-
-                                        <select
-                                            name="backup_student_id"
-                                            value={
-                                                formData.backup_student_id
-                                            }
-                                            onChange={
-                                                handleChange
-                                            }
-                                            disabled={
-                                                loadingBackupStudents
-                                            }
-                                        >
-                                            <option value="">
-                                                {loadingBackupStudents
-                                                    ? "Loading students..."
-                                                    : "Select Backup Student"}
-                                            </option>
-
-                                            {backupStudents.map(
-                                                (
-                                                    backup
-                                                ) => (
-                                                    <option
-                                                        key={
-                                                            backup.id
-                                                        }
-                                                        value={
-                                                            backup.id
-                                                        }
-                                                    >
-                                                        {backup.name}{" "}
-                                                        -{" "}
-                                                        {backup.email ||
-                                                            backup.mobile ||
-                                                            `ID ${backup.id}`}
-                                                    </option>
-                                                )
-                                            )}
-                                        </select>
-
-                                        <small className="new-complaint-help">
-                                            Backup student
-                                            is mandatory.
-                                        </small>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {selectedBackupStudent && (
-                                <div className="backup-student-card">
-                                    <div className="backup-student-title">
-                                        <h3>
-                                            Backup Student
-                                            Details
-                                        </h3>
-                                        <span>
-                                            Automatically
-                                            fetched
-                                        </span>
-                                    </div>
-
-                                    <div className="backup-student-content">
-                                        <div className="backup-student-photo">
-                                            {selectedBackupStudent.photo ? (
-                                                <img
-                                                    src={getPhotoUrl(
-                                                        selectedBackupStudent.photo
-                                                    )}
-                                                    alt={
-                                                        selectedBackupStudent.name ||
-                                                        "Backup Student"
-                                                    }
-                                                />
-                                            ) : (
-                                                <div className="backup-student-photo-placeholder">
-                                                    {selectedBackupStudent.name
-                                                        ?.charAt(
-                                                            0
-                                                        )
-                                                        ?.toUpperCase() ||
-                                                        "S"}
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        <div className="backup-student-details">
-                                            <div>
-                                                <span>
-                                                    Name
-                                                </span>
-                                                <strong>
-                                                    {
-                                                        selectedBackupStudent.name
-                                                    }
-                                                </strong>
-                                            </div>
-
-                                            <div>
-                                                <span>
-                                                    Student ID
-                                                </span>
-                                                <strong>
-                                                    {selectedBackupStudent.student_id ||
-                                                        selectedBackupStudent.id}
-                                                </strong>
-                                            </div>
-
-                                            <div>
-                                                <span>
-                                                    Mobile
-                                                </span>
-                                                <strong>
-                                                    {selectedBackupStudent.mobile ||
-                                                        "Not available"}
-                                                </strong>
-                                            </div>
-
-                                            <div>
-                                                <span>
-                                                    Email
-                                                </span>
-                                                <strong>
-                                                    {selectedBackupStudent.email ||
-                                                        "Not available"}
-                                                </strong>
-                                            </div>
-
-                                            <div>
-                                                <span>
-                                                    Hostel
-                                                </span>
-                                                <strong>
-                                                    {selectedBackupStudent.hostel ||
-                                                        "Not available"}
-                                                </strong>
-                                            </div>
-
-                                            <div>
-                                                <span>
-                                                    Room
-                                                </span>
-                                                <strong>
-                                                    {selectedBackupStudent.room_no ||
-                                                        selectedBackupStudent.room ||
-                                                        "Not available"}
-                                                </strong>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            <div className="new-complaint-section">
-                                <h3>
-                                    Complaint Information
-                                </h3>
-
-                                <div className="new-complaint-field">
-                                    <label>
-                                        Subject
-                                        <span>*</span>
-                                    </label>
-
-                                    <input
-                                        type="text"
-                                        name="subject"
-                                        value={
-                                            formData.subject
-                                        }
-                                        onChange={
-                                            handleChange
-                                        }
-                                        placeholder="Enter complaint subject"
-                                        maxLength={200}
-                                    />
-
-                                    <small className="new-complaint-counter">
-                                        {
-                                            formData.subject
-                                                .length
-                                        }
-                                        /200
-                                    </small>
-                                </div>
-
-                                <div className="new-complaint-field">
-                                    <label>
-                                        Description
-                                        <span>*</span>
-                                    </label>
-
-                                    <textarea
-                                        name="description"
-                                        value={
-                                            formData.description
-                                        }
-                                        onChange={
-                                            handleChange
-                                        }
-                                        placeholder="Describe your complaint in detail..."
-                                        rows={7}
-                                    />
-
-                                    <small className="new-complaint-help">
-                                        Please include
-                                        relevant details such
-                                        as location, room
-                                        number and issue.
-                                    </small>
-                                </div>
-
-                                <div className="new-complaint-field">
-                                    <label>
-                                        Attachment
-                                    </label>
-
-                                    <input
-                                        type="file"
-                                        accept=".jpg,.jpeg,.png,.webp,.pdf"
-                                        onChange={
-                                            handleAttachmentChange
-                                        }
-                                    />
-
-                                    <small className="new-complaint-help">
-                                        Optional. Maximum
-                                        file size: 5 MB.
-                                    </small>
-
-                                    {attachment && (
-                                        <div className="new-complaint-file">
-                                            <span>
-                                                {attachment.name}
-                                            </span>
-
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    setAttachment(
-                                                        null
-                                                    )
-                                                }
-                                            >
-                                                Remove
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className="new-complaint-workflow">
-                                <div>
-                                    <strong>
-                                        Automatic Staff
-                                        Assignment
-                                    </strong>
-
-                                    <p>
-                                        Your complaint will be
-                                        automatically assigned
-                                        to available staff
-                                        according to the
-                                        selected category.
-                                    </p>
-                                </div>
-
-                                <div>
-                                    <strong>
-                                        Resolution Time
-                                    </strong>
-
-                                    <p>
-                                        The assigned staff will
-                                        provide the expected
-                                        resolution date and
-                                        time.
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="new-complaint-actions">
-                                <button
-                                    type="button"
-                                    className="new-complaint-cancel"
-                                    onClick={() =>
-                                        navigate(
-                                            "/student/complaints"
-                                        )
-                                    }
-                                    disabled={submitting}
-                                >
-                                    Cancel
-                                </button>
-
-                                <button
-                                    type="submit"
-                                    className="new-complaint-submit"
-                                    disabled={
-                                        submitting
-                                    }
-                                >
-                                    {submitting
-                                        ? "Submitting..."
-                                        : "Submit Complaint"}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                        <div className="new-complaint-actions"><button type="button" onClick={() => navigateTo("/student/complaints")} disabled={submitting}>Cancel</button><button type="submit" disabled={submitting}>{submitting ? "Submitting..." : "Submit Complaint"}</button></div>
+                    </form>
                 </section>
             </main>
         </div>
