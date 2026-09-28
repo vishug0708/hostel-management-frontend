@@ -90,6 +90,8 @@ import StaffProfile from "./pages/staff/StaffProfile";
 import StaffCricketDashboard from "./pages/staff/cricketbox/StaffCricketDashboard";
 import StaffCricketQRScanner from "./pages/staff/cricketbox/StaffCricketQRScanner";
 import StaffCricketScanHistory from "./pages/staff/cricketbox/StaffCricketScanHistory";
+import StaffComplaints from "./pages/staff/complaints/Complaints";
+import StaffComplaintDetail from "./pages/staff/complaints/ComplaintDetail";
 
 // =====================================================
 // SECURITY
@@ -335,6 +337,9 @@ function App() {
           path="/staff/cricket-box/history"
           element={<StaffCricketScanHistory />}
         />
+
+        <Route path="/staff/complaints" element={<StaffComplaints />} />
+        <Route path="/staff/complaints/:id" element={<StaffComplaintDetail />} />
 
         {/* =========================================
                     SECURITY DASHBOARD
