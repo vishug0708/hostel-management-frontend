@@ -49,7 +49,8 @@ import RectorCricketBox from "./pages/rector/cricketbox/RectorCricketBox";
 import RectorCricketBookings from "./pages/rector/cricketbox/RectorCricketBookings";
 import RectorCricketBookingDetails from "./pages/rector/cricketbox/RectorCricketBookingDetails";
 import GatePass from "./pages/rector/gatepass/GatePass";
-import Complaints from "./pages/rector/complaints/Complaints";
+import RectorComplaintsPanel from "./pages/rector/complaints/Complaints";
+import RectorComplaint from "./pages/rector/complaints/RectorComplaint";
 
 // =====================================================
 // STUDENTS
@@ -67,7 +68,7 @@ import MyCricketBookings from "./pages/student/cricketbox/MyCricketBookings";
 import MyGatePass from "./pages/student/gatepass/MyGatePass";
 import ApplyGatePass from "./pages/student/gatepass/ApplyGatePass";
 import ViewGatePass from "./pages/student/gatepass/ViewGatePass";
-import Complaints from "./pages/student/complaints/Complaints";
+import StudentComplaints from "./pages/student/complaints/Complaints";
 import NewComplaint from "./pages/student/complaints/NewComplaint";
 import ViewComplaint from "./pages/student/complaints/ViewComplaint";
 
@@ -243,7 +244,9 @@ function App() {
 
         <Route path="/rector/gatepass" element={<GatePass />} />
 
-        <Route path="/rector/complaints" element={<Complaints />} />
+        <Route path="/rector/complaints" element={<RectorComplaintsPanel />} />
+
+        <Route path="/rector/complaints/:id" element={<RectorComplaint />} />
 
         <Route path="/rector/salary" element={<MySalary />} />
 
@@ -289,7 +292,7 @@ function App() {
           element={<ViewGatePass />}
         />
 
-        <Route path="/student/complaints" element={<Complaints />} />
+        <Route path="/student/complaints" element={<StudentComplaints />} />
 
         <Route path="/student/complaints/new" element={<NewComplaint />} />
 
