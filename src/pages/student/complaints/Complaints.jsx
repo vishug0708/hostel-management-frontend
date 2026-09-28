@@ -181,13 +181,6 @@ const Complaints = () => {
                         <h1>My Complaints</h1>
                         <p>Raise a complaint and track its resolution status.</p>
                     </div>
-                    <div className="student-complaints-header-actions">
-                        <button className="student-complaints-refresh" onClick={fetchComplaints}>↻ Refresh</button>
-                        <button className="student-complaints-new-button" onClick={() => navigateTo("/student/complaints/new")}>＋ New Complaint</button>
-                        <div className="student-complaints-profile">
-                            {photo ? <img src={photo} alt="Student" /> : <span>{initials}</span>}
-                        </div>
-                    </div>
                 </header>
 
                 <section className="student-complaints-content">
