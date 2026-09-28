@@ -122,7 +122,7 @@
 .student-complaint-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 25px;
     padding: 32px 35px 25px
 }
@@ -150,17 +150,7 @@
 }
 
 .student-complaint-header-profile {
-    width: 48px;
-    height: 48px;
-    overflow: hidden;
-    border: 2px solid #d8e3eb;
-    border-radius: 50%;
-    background: #e7eef3;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #0f766e;
-    font-weight: 800
+    display: none
 }
 
 .student-complaint-header-profile img {
@@ -298,45 +288,53 @@
 .backup-student-card {
     grid-column: 1/-1;
     display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 14px;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px;
     border: 1px solid #bae6fd;
     border-radius: 10px;
     background: #f0f9ff
 }
 
-.backup-photo {
-    width: 58px;
-    height: 58px;
+.backup-student-photo {
+    width: 64px;
+    height: 64px;
     overflow: hidden;
-    flex: 0 0 58px;
-    border-radius: 50%;
+    flex: 0 0 64px;
+    border-radius: 10px;
     background: #dbeafe;
     color: #1d4ed8;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 800
+    font-weight: 800;
+    font-size: 24px
 }
 
-.backup-photo img {
+.backup-student-photo img {
     width: 100%;
     height: 100%;
     object-fit: cover
 }
 
-.backup-student-card strong {
-    display: block;
-    color: #102a43;
-    font-size: 14px
+.backup-student-details {
+    display: flex;
+    flex-direction: column;
+    flex: 1
 }
 
-.backup-student-card span {
+.backup-student-details strong {
     display: block;
-    margin-top: 3px;
+    color: #102a43;
+    font-size: 14px;
+    margin-bottom: 4px
+}
+
+.backup-student-details span {
+    display: block;
     color: #64748b;
-    font-size: 11px
+    font-size: 12px;
+    margin-top: 2px
 }
 
 .assignment-info {
@@ -611,7 +609,21 @@
     }
 
     .backup-student-card {
-        grid-column: auto
+        grid-column: auto;
+        flex-direction: column;
+        align-items: center;
+        text-align: center
+    }
+
+    .backup-student-photo {
+        width: 80px;
+        height: 80px;
+        flex: 0 0 80px;
+        font-size: 32px
+    }
+
+    .backup-student-details span {
+        margin-top: 3px
     }
 
     .assignment-info {
@@ -648,5 +660,9 @@
         width: 38px !important;
         height: 38px !important;
         flex-basis: 38px !important
+    }
+
+    .student-complaint-header h1 {
+        font-size: 24px
     }
 }
