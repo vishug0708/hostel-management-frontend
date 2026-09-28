@@ -36,7 +36,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 11px;
-  background: #7c3aed;
+  background: #134e4a;
   font-size: 21px;
 }
 
@@ -83,9 +83,9 @@
 }
 
 .rector-nav button.active {
-  background: #6d28d9;
+  background: #134e4a;
   color: #fff;
-  box-shadow: inset 3px 0 0 #a78bfa;
+  box-shadow: inset 3px 0 0 #2d9b95;
 }
 
 .rector-logout {
@@ -130,7 +130,7 @@
 .rector-complaints-header > div span {
   display: block;
   margin-bottom: 8px;
-  color: #7c3aed;
+  color: #134e4a;
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 2px;
@@ -208,8 +208,8 @@
 
 .rector-filter-group input:focus,
 .rector-filter-group select:focus {
-  border-color: #7c3aed;
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.08);
+  border-color: #134e4a;
+  box-shadow: 0 0 0 3px rgba(19, 78, 74, 0.08);
 }
 
 .rector-error-message {
@@ -248,7 +248,7 @@
 
 .rector-stat-card strong {
   display: block;
-  color: #7c3aed;
+  color: #134e4a;
   font-size: 32px;
   font-weight: 800;
 }
@@ -289,7 +289,7 @@
 
 .rector-complaint-code {
   display: block;
-  color: #7c3aed;
+  color: #134e4a;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 1px;
@@ -307,8 +307,8 @@
 .rector-complaint-category {
   display: inline-block;
   padding: 4px 10px;
-  background: #ede9fe;
-  color: #6d28d9;
+  background: #d1f2f0;
+  color: #134e4a;
   font-size: 11px;
   font-weight: 700;
   border-radius: 6px;
@@ -412,7 +412,7 @@
 }
 
 .rector-info-section a {
-  color: #7c3aed;
+  color: #134e4a;
   text-decoration: none;
   font-size: 13px;
   font-weight: 700;
@@ -514,7 +514,7 @@
   width: 48px;
   height: 48px;
   border: 4px solid #dbe4ec;
-  border-top-color: #7c3aed;
+  border-top-color: #134e4a;
   border-radius: 50%;
   animation: rector-spin 0.6s linear infinite;
 }

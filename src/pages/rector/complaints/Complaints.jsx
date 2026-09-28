@@ -5,12 +5,13 @@ import "./Complaints.css";
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const menuItems = [
   { label: "Dashboard", icon: "📊", path: "/rector/dashboard" },
+  { label: "Manage Rooms", icon: "🏠", path: "/rector/rooms" },
+  { label: "Gate Pass", icon: "🚪", path: "/rector/gatepass" },
+  { label: "Leave Requests", icon: "📋", path: "/rector/leave" },
   { label: "Complaints", icon: "📩", path: "/rector/complaints" },
-  { label: "Staff Management", icon: "👥", path: "/rector/staff" },
-  { label: "Students", icon: "🎓", path: "/rector/students" },
-  { label: "Reports", icon: "📊", path: "/rector/reports" },
-  { label: "Settings", icon: "⚙️", path: "/rector/settings" },
-  { label: "Notifications", icon: "🔔", path: "/rector/notifications" },
+  { label: "Cricket Box", icon: "🏏", path: "/rector/cricket-box" },
+  { label: "Attendance", icon: "✅", path: "/rector/attendance" },
+  { label: "Profile", icon: "👤", path: "/rector/profile" },
 ];
 
 const statusColors = {
