@@ -49,8 +49,7 @@ import RectorCricketBox from "./pages/rector/cricketbox/RectorCricketBox";
 import RectorCricketBookings from "./pages/rector/cricketbox/RectorCricketBookings";
 import RectorCricketBookingDetails from "./pages/rector/cricketbox/RectorCricketBookingDetails";
 import GatePass from "./pages/rector/gatepass/GatePass";
-import RectorComplaintsPanel from "./pages/rector/complaints/Complaints";
-import RectorComplaint from "./pages/rector/complaints/RectorComplaint";
+import Complaints from "./pages/student/complaints/Complaints";
 
 // =====================================================
 // STUDENTS
@@ -244,9 +243,7 @@ function App() {
 
         <Route path="/rector/gatepass" element={<GatePass />} />
 
-        <Route path="/rector/complaints" element={<RectorComplaintsPanel />} />
-
-        <Route path="/rector/complaints/:id" element={<RectorComplaint />} />
+        <Route path="/rector/complaints/:id" element={<Complaints />} />
 
         <Route path="/rector/salary" element={<MySalary />} />
 
