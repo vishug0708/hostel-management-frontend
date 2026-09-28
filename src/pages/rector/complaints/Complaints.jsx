@@ -130,8 +130,8 @@ const Complaints = () => {
   }, [mobileMenuOpen]);
 
   useEffect(() => {
-    if (rector) fetchComplaints();
-  }, [rector]);
+    fetchComplaints();
+  }, []);
 
   const fetchComplaints = async () => {
     const token = getToken();
