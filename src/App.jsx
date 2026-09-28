@@ -1,10 +1,4 @@
-import {
-    BrowserRouter,
-    Routes,
-    Route,
-    Navigate
-} from "react-router-dom";
-
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 // =====================================================
 // ADMIN
@@ -41,7 +35,6 @@ import ManageRector from "./pages/admin/rector/ManageRector";
 import EditRector from "./pages/admin/rector/EditRector";
 import SalaryManagement from "./pages/admin/salary/SalaryManagement";
 
-
 // =====================================================
 // RECTOR
 // =====================================================
@@ -56,7 +49,7 @@ import RectorCricketBox from "./pages/rector/cricketbox/RectorCricketBox";
 import RectorCricketBookings from "./pages/rector/cricketbox/RectorCricketBookings";
 import RectorCricketBookingDetails from "./pages/rector/cricketbox/RectorCricketBookingDetails";
 import GatePass from "./pages/rector/gatepass/GatePass";
-
+import RectorComplaints from "./pages/rector/complaints/RectorComplaints";
 
 // =====================================================
 // STUDENTS
@@ -78,9 +71,6 @@ import Complaints from "./pages/student/complaints/Complaints";
 import NewComplaint from "./pages/student/complaints/NewComplaint";
 import ViewComplaint from "./pages/student/complaints/ViewComplaint";
 
-
-
-
 // =====================================================
 // PARENT GATE PASS
 // =====================================================
@@ -101,7 +91,6 @@ import StaffCricketDashboard from "./pages/staff/cricketbox/StaffCricketDashboar
 import StaffCricketQRScanner from "./pages/staff/cricketbox/StaffCricketQRScanner";
 import StaffCricketScanHistory from "./pages/staff/cricketbox/StaffCricketScanHistory";
 
-
 // =====================================================
 // SECURITY
 // =====================================================
@@ -112,9 +101,6 @@ import ScanGatePass from "./pages/security/gatepass/ScanGatePass";
 import AllowExit from "./pages/security/gatepass/AllowExit";
 import AllowEntry from "./pages/security/gatepass/AllowEntry";
 
-
-
-
 import MySalary from "./pages/salary/MySalary";
 
 // =====================================================
@@ -122,444 +108,255 @@ import MySalary from "./pages/salary/MySalary";
 // =====================================================
 
 function ProtectedRoute({ children }) {
+  const token = localStorage.getItem("token");
 
-    const token = localStorage.getItem("token");
+  if (!token) {
+    return <Navigate to="/student/login" replace />;
+  }
 
-    if (!token) {
-        return (
-            <Navigate
-                to="/student/login"
-                replace
-            />
-        );
-    }
-
-    return children;
+  return children;
 }
-
 
 // =====================================================
 // MAIN APP
 // =====================================================
 
 function App() {
-
-    return (
-
-        <BrowserRouter>
-
-            <Routes>
-
-                {/* =========================================
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* =========================================
                     DEFAULT INDEX / HOME PAGE
                    ========================================= */}
 
-                <Route
-                    path="/"
-                    element={<Index />}
-                />
+        <Route path="/" element={<Index />} />
 
-
-                {/* =========================================
+        {/* =========================================
                     ADMIN LOGIN
                     ========================================= */}
 
-                <Route
-                    path="/admin/login"
-                    element={<AdminLogin />}
-                />
+        <Route path="/admin/login" element={<AdminLogin />} />
 
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
 
-                <Route
-                    path="/admin/dashboard"
-                    element={<AdminDashboard />}
-                />
+        <Route path="/admin/profile" element={<AdminProfile />} />
 
+        <Route
+          path="/admin/change-password"
+          element={<AdminChangePassword />}
+        />
 
-                <Route
-                    path="/admin/profile"
-                    element={<AdminProfile />}
-                />
+        <Route path="/admin/students/add" element={<AddStudent />} />
 
-                <Route
-                    path="/admin/change-password"
-                    element={<AdminChangePassword />}
-                />
+        <Route path="/admin/students" element={<ManageStudents />} />
 
-                <Route
-                    path="/admin/students/add"
-                    element={<AddStudent />}
-                />
+        <Route path="/admin/students/edit/:id" element={<EditStudent />} />
 
-                <Route
-                    path="/admin/students"
-                    element={<ManageStudents />}
-                />
+        <Route path="/admin/students/view/:id" element={<ViewStudent />} />
 
-                <Route
-                    path="/admin/students/edit/:id"
-                    element={<EditStudent />}
-                />
+        <Route path="/admin/rooms/add" element={<AddRoom />} />
 
-                <Route
-                    path="/admin/students/view/:id"
-                    element={<ViewStudent />}
-                />
+        <Route path="/admin/rooms" element={<ManageRooms />} />
 
-                <Route
-                    path="/admin/rooms/add"
-                    element={<AddRoom />}
-                />
+        <Route path="/admin/rooms/view/:id" element={<ViewRoom />} />
 
-                <Route
-                    path="/admin/rooms"
-                    element={<ManageRooms />}
-                />
+        <Route path="/admin/rooms/edit/:id" element={<EditRoom />} />
 
-                <Route
-                    path="/admin/rooms/view/:id"
-                    element={<ViewRoom />}
-                />
+        <Route path="/admin/fees" element={<FeesDashboard />} />
 
+        <Route path="/admin/fees/records" element={<FeeRecords />} />
 
-                <Route
-                    path="/admin/rooms/edit/:id"
-                    element={<EditRoom />}
-                />
+        <Route path="/admin/fees/pending" element={<PendingFees />} />
 
-                <Route
-                    path="/admin/fees"
-                    element={<FeesDashboard />}
-                />
+        <Route path="/admin/fees/student/:id" element={<StudentFeeDetails />} />
 
-                <Route
-                    path="/admin/fees/records"
-                    element={<FeeRecords />}
-                />
+        <Route path="/admin/complaints" element={<ViewComplaints />} />
 
-                <Route
-                    path="/admin/fees/pending"
-                    element={<PendingFees />}
-                />
+        <Route path="/admin/cricket-box" element={<ManageGround />} />
 
-                <Route
-                    path="/admin/fees/student/:id"
-                    element={<StudentFeeDetails />}
-                />
+        <Route path="/admin/cricket-box/add" element={<AddGround />} />
 
-                <Route
-                    path="/admin/complaints"
-                    element={<ViewComplaints />}
-                />
+        <Route path="/admin/cricket-box/edit/:id" element={<EditGround />} />
 
-                <Route
-                    path="/admin/cricket-box"
-                    element={<ManageGround />}
-                />
+        <Route
+          path="/admin/cricket-box/booking-history"
+          element={<BookingHistory />}
+        />
 
-                <Route
-                    path="/admin/cricket-box/add"
-                    element={<AddGround />}
-                />
+        <Route path="/admin/cricket-box/reports" element={<Reports />} />
 
-                <Route
-                    path="/admin/cricket-box/edit/:id"
-                    element={<EditGround />}
-                />
+        <Route path="/admin/staff" element={<ManageStaff />} />
 
-                <Route
-                    path="/admin/cricket-box/booking-history"
-                    element={<BookingHistory />}
-                />
+        <Route path="/admin/staff/add" element={<AddStaff />} />
 
-                <Route
-                    path="/admin/cricket-box/reports"
-                    element={<Reports />}
-                />
+        <Route path="/admin/staff/edit/:id" element={<EditStaff />} />
 
-                <Route
-                    path="/admin/staff"
-                    element={<ManageStaff />}
-                />
+        <Route path="/admin/rectors" element={<ManageRector />} />
+        <Route path="/admin/rectors/add" element={<AddRector />} />
+        <Route path="/admin/rectors/edit/:id" element={<EditRector />} />
 
-                <Route
-                    path="/admin/staff/add"
-                    element={<AddStaff />}
-                />
+        <Route path="/admin/salary/staff" element={<SalaryManagement />} />
 
-                <Route
-                    path="/admin/staff/edit/:id"
-                    element={<EditStaff />}
-                />
+        <Route path="/admin/salary/rector" element={<SalaryManagement />} />
 
-                <Route path="/admin/rectors" element={<ManageRector />} />
-                <Route path="/admin/rectors/add" element={<AddRector />} />
-                <Route path="/admin/rectors/edit/:id" element={<EditRector />} />
+        <Route path="/admin/salary/pending" element={<SalaryManagement />} />
 
-                <Route
-                    path="/admin/salary/staff"
-                    element={<SalaryManagement />}
-                />
+        <Route path="/admin/salary/history" element={<SalaryManagement />} />
 
-                <Route
-                    path="/admin/salary/rector"
-                    element={<SalaryManagement />}
-                />
+        <Route path="/admin/salary/slips" element={<SalaryManagement />} />
 
-                <Route
-                    path="/admin/salary/pending"
-                    element={<SalaryManagement />}
-                />
+        <Route
+          path="/admin/salary"
+          element={<Navigate to="/admin/salary/staff" replace />}
+        />
 
-                <Route
-                    path="/admin/salary/history"
-                    element={<SalaryManagement />}
-                />
-
-                <Route
-                    path="/admin/salary/slips"
-                    element={<SalaryManagement />}
-                />
-
-                <Route
-                    path="/admin/salary"
-                    element={
-                        <Navigate
-                            to="/admin/salary/staff"
-                            replace
-                        />
-                    }
-                />
-
-
-                {/* =========================================
+        {/* =========================================
                     RECTOR DASHBOARD
                     ========================================= */}
 
+        <Route path="/rector/login" element={<RectorLogin />} />
 
-                <Route
-                    path="/rector/login"
-                    element={<RectorLogin />}
-                />
+        <Route path="/rector/dashboard" element={<RectorDashboard />} />
 
-                <Route
-                    path="/rector/dashboard"
-                    element={<RectorDashboard />}
-                />
+        <Route path="/rector/rooms" element={<RectorManageRooms />} />
 
-                <Route
-                    path="/rector/rooms"
-                    element={<RectorManageRooms />}
-                />
+        <Route path="/rector/rooms/view/:id" element={<RectorViewRoom />} />
 
-                <Route
-                    path="/rector/rooms/view/:id"
-                    element={<RectorViewRoom />}
-                />
+        <Route path="/rector/rooms/allocation" element={<RoomAllocation />} />
 
-                <Route
-                    path="/rector/rooms/allocation"
-                    element={<RoomAllocation />}
-                />
+        <Route
+          path="/rector/rooms/deallocation"
+          element={<RoomDeallocation />}
+        />
 
-                <Route
-                    path="/rector/rooms/deallocation"
-                    element={<RoomDeallocation />}
-                />
+        <Route path="/rector/cricket-box" element={<RectorCricketBox />} />
 
-                <Route
-                    path="/rector/cricket-box"
-                    element={<RectorCricketBox />}
-                />
+        <Route
+          path="/rector/cricket-box/bookings"
+          element={<RectorCricketBookings />}
+        />
 
-                <Route
-                    path="/rector/cricket-box/bookings"
-                    element={<RectorCricketBookings />}
-                />
+        <Route
+          path="/rector/cricket-box/bookings/:id"
+          element={<RectorCricketBookingDetails />}
+        />
 
-                <Route
-                    path="/rector/cricket-box/bookings/:id"
-                    element={<RectorCricketBookingDetails />}
-                />
+        <Route path="/rector/gatepass" element={<GatePass />} />
 
-                <Route
-                    path="/rector/gatepass"
-                    element={<GatePass />}
-                />
+        <Route path="/rector/complaints" element={<RectorComplaints />} />
 
-                <Route
-                    path="/rector/salary"
-                    element={<MySalary />}
-                />
+        <Route path="/rector/salary" element={<MySalary />} />
 
-
-                {/* =========================================
+        {/* =========================================
                     STUDENT DASHBOARD
                     ========================================= */}
 
+        <Route path="/student/login" element={<StudentLogin />} />
 
-                <Route
-                    path="/student/login"
-                    element={<StudentLogin />}
-                />
+        <Route path="/student/dashboard" element={<StudentDashboard />} />
 
-                <Route
-                    path="/student/dashboard"
-                    element={<StudentDashboard />}
-                />
+        <Route path="/student/profile" element={<MyProfile />} />
 
-                <Route
-                    path="/student/profile"
-                    element={<MyProfile />}
-                />
+        <Route path="/student/profile/edit" element={<EditProfile />} />
 
-                <Route
-                    path="/student/profile/edit"
-                    element={<EditProfile />}
-                />
+        <Route path="/student/room" element={<MyRoom />} />
 
-                <Route path="/student/room" element={<MyRoom />} />
+        <Route path="/student/cricketbox" element={<CricketBox />} />
 
-                <Route
-                    path="/student/cricketbox"
-                    element={<CricketBox />}
-                />
+        <Route path="/student/cricket-box/book" element={<CricketBooking />} />
 
-                <Route
-                    path="/student/cricket-box/book"
-                    element={<CricketBooking />}
-                />
+        <Route
+          path="/student/cricket-box/bookings"
+          element={<MyCricketBookings />}
+        />
 
-                <Route
-                    path="/student/cricket-box/bookings"
-                    element={<MyCricketBookings />}
-                />
+        <Route
+          path="/student/cricket-box/bookings/:id"
+          element={<CricketBookingDetails />}
+        />
 
-                <Route
-                    path="/student/cricket-box/bookings/:id"
-                    element={<CricketBookingDetails />}
-                />
+        <Route
+          path="/student/cricket-box/bookings"
+          element={<MyCricketBookings />}
+        />
 
-                <Route
-                    path="/student/cricket-box/bookings"
-                    element={<MyCricketBookings />}
-                />
+        <Route path="/student/gatepass" element={<MyGatePass />} />
 
+        <Route path="/student/gatepass/apply" element={<ApplyGatePass />} />
 
-                <Route
-                    path="/student/gatepass"
-                    element={<MyGatePass />}
-                />
+        <Route
+          path="/student/gatepass/view/:gatePassId"
+          element={<ViewGatePass />}
+        />
 
-                <Route
-                    path="/student/gatepass/apply"
-                    element={<ApplyGatePass />}
-                />
+        <Route path="/student/complaints" element={<Complaints />} />
 
-                <Route
-                    path="/student/gatepass/view/:gatePassId"
-                    element={<ViewGatePass />}
-                />
+        <Route path="/student/complaints/new" element={<NewComplaint />} />
 
-                <Route
-                    path="/student/complaints"
-                    element={<Complaints />}
-                />
+        <Route
+          path="/student/complaints/view/:id"
+          element={<ViewComplaint />}
+        />
 
-                <Route
-                    path="/student/complaints/new"
-                    element={<NewComplaint />}
-                />
-
-                <Route
-                    path="/student/complaints/view/:id"
-                    element={<ViewComplaint />}
-                />
-
-
-
-
-                {/* =========================================
+        {/* =========================================
                     PARENT GATE PASS
                    ========================================= */}
 
-                <Route
-                    path="/parent/gatepass/verify-otp/:gatePassId"
-                    element={<ParentVerifyOtp />}
-                />
+        <Route
+          path="/parent/gatepass/verify-otp/:gatePassId"
+          element={<ParentVerifyOtp />}
+        />
 
-                <Route
-                    path="/parent/gatepass/:gatePassId"
-                    element={<ParentGatePass />}
-                />
+        <Route
+          path="/parent/gatepass/:gatePassId"
+          element={<ParentGatePass />}
+        />
 
-
-                {/* =========================================
+        {/* =========================================
                     STAFF DASHBOARD
                     ========================================= */}
 
-                <Route path="/staff/login" element={<StaffLogin />} />
-                <Route path="/staff/dashboard" element={<StaffDashboard />} />
-                <Route path="/staff/change-password" element={<StaffChangePassword />} />
-                <Route path="/staff/profile" element={<StaffProfile />} />
+        <Route path="/staff/login" element={<StaffLogin />} />
+        <Route path="/staff/dashboard" element={<StaffDashboard />} />
+        <Route
+          path="/staff/change-password"
+          element={<StaffChangePassword />}
+        />
+        <Route path="/staff/profile" element={<StaffProfile />} />
 
-                <Route
-                    path="/staff/salary"
-                    element={<MySalary />}
-                />
+        <Route path="/staff/salary" element={<MySalary />} />
 
+        <Route path="/staff/cricket-box" element={<StaffCricketDashboard />} />
+        <Route
+          path="/staff/cricket-box/scan"
+          element={<StaffCricketQRScanner />}
+        />
+        <Route
+          path="/staff/cricket-box/history"
+          element={<StaffCricketScanHistory />}
+        />
 
-                <Route path="/staff/cricket-box" element={<StaffCricketDashboard />} />
-                <Route path="/staff/cricket-box/scan" element={<StaffCricketQRScanner />} />
-                <Route path="/staff/cricket-box/history" element={<StaffCricketScanHistory />} />
-
-
-
-                {/* =========================================
+        {/* =========================================
                     SECURITY DASHBOARD
                     ========================================= */}
 
-                <Route
-                    path="/security/login"
-                    element={<SecurityLogin />}
-                />
+        <Route path="/security/login" element={<SecurityLogin />} />
 
-                <Route
-                    path="/security/dashboard"
-                    element={<SecurityDashboard />}
-                />
+        <Route path="/security/dashboard" element={<SecurityDashboard />} />
 
-                <Route
-                    path="/security/gatepass/scan"
-                    element={<ScanGatePass />}
-                />
+        <Route path="/security/gatepass/scan" element={<ScanGatePass />} />
 
-                <Route path="/security/gatepass/exit" element={<AllowExit />} />
-                <Route path="/security/gatepass/entry" element={<AllowEntry />} />
+        <Route path="/security/gatepass/exit" element={<AllowExit />} />
+        <Route path="/security/gatepass/entry" element={<AllowEntry />} />
 
-
-
-
-                {/* =========================================
+        {/* =========================================
                     UNKNOWN URL
                    ========================================= */}
 
-                <Route
-                    path="*"
-                    element={
-                        <Navigate
-                            to="/"
-                            replace
-                        />
-                    }
-                />
-
-            </Routes>
-
-        </BrowserRouter>
-
-    );
-
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;
