@@ -381,7 +381,7 @@
 .student-complaints-table-wrap table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 900px
+    min-width: 1100px
 }
 
 .student-complaints-table-wrap th {
@@ -423,6 +423,72 @@
     display: block;
     margin-top: 5px;
     color: #94a3b8
+}
+
+.staff-info {
+    display: flex;
+    align-items: center;
+    gap: 10px
+}
+
+.staff-photo {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0
+}
+
+.staff-info div {
+    display: flex;
+    flex-direction: column
+}
+
+.staff-info strong {
+    display: block;
+    color: #102a43;
+    font-size: 13px;
+    margin: 0
+}
+
+.staff-info span {
+    display: block;
+    margin-top: 3px;
+    color: #64748b;
+    font-size: 12px
+}
+
+.backup-student-info {
+    display: flex;
+    align-items: center;
+    gap: 10px
+}
+
+.backup-photo {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0
+}
+
+.backup-student-info div {
+    display: flex;
+    flex-direction: column
+}
+
+.backup-student-info strong {
+    display: block;
+    color: #102a43;
+    font-size: 13px;
+    margin: 0
+}
+
+.backup-student-info span {
+    display: block;
+    margin-top: 3px;
+    color: #64748b;
+    font-size: 12px
 }
 
 .student-complaint-status {
@@ -564,6 +630,10 @@
     .student-complaints-content {
         padding-left: 25px;
         padding-right: 25px
+    }
+
+    .student-complaints-table-wrap table {
+        min-width: 1000px
     }
 }
 

@@ -213,13 +213,30 @@ const Complaints = () => {
                             <div className="student-complaints-list">
                                 <div className="student-complaints-table-wrap">
                                     <table>
-                                        <thead><tr><th>Complaint</th><th>Category</th><th>Assigned Staff</th><th>Expected Resolution</th><th>Status</th><th>Action</th></tr></thead>
+                                        <thead><tr><th>Complaint</th><th>Category</th><th>Assigned Staff</th><th>Backup Student</th><th>Expected Resolution</th><th>Status</th><th>Action</th></tr></thead>
                                         <tbody>
                                             {complaints.map((complaint) => (
                                                 <tr key={complaint.id}>
                                                     <td><strong>{complaint.complaint_code || `#${complaint.id}`}</strong><span>{complaint.subject}</span><small>{formatDate(complaint.created_at)}</small></td>
                                                     <td>{complaint.category || "-"}</td>
-                                                    <td><strong>{complaint.assigned_staff_name || "Not assigned"}</strong><span>{complaint.assigned_staff_role || "-"}</span></td>
+                                                    <td>
+                                                        <div className="staff-info">
+                                                            {complaint.assigned_staff_photo && <img src={getPhotoUrl(complaint.assigned_staff_photo)} alt="Staff" className="staff-photo" />}
+                                                            <div>
+                                                                <strong>{complaint.assigned_staff_name || "Not assigned"}</strong>
+                                                                <span>{complaint.assigned_staff_mobile || "-"}</span>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div className="backup-student-info">
+                                                            {complaint.backup_student_photo && <img src={getPhotoUrl(complaint.backup_student_photo)} alt="Backup" className="backup-photo" />}
+                                                            <div>
+                                                                <strong>{complaint.backup_student_name || "-"}</strong>
+                                                                <span>{complaint.backup_student_mobile || "-"}</span>
+                                                            </div>
+                                                        </div>
+                                                    </td>
                                                     <td>{complaint.expected_resolution_at ? formatDate(complaint.expected_resolution_at) : "Not set"}</td>
                                                     <td><span className={`student-complaint-status ${getStatusClass(complaint.status)}`}>{complaint.status || "Submitted"}</span></td>
                                                     <td><button className="student-complaints-view-button" onClick={() => navigateTo(`/student/complaints/view/${complaint.id}`)}>View</button></td>
@@ -235,6 +252,8 @@ const Complaints = () => {
                                             <h3>{complaint.subject}</h3>
                                             <p>{complaint.category || "-"}</p>
                                             <div><span>Assigned Staff</span><strong>{complaint.assigned_staff_name || "Not assigned"}</strong></div>
+                                            <div><span>Mobile</span><strong>{complaint.assigned_staff_mobile || "-"}</strong></div>
+                                            <div><span>Backup Student</span><strong>{complaint.backup_student_name || "-"}</strong></div>
                                             <div><span>Expected Resolution</span><strong>{complaint.expected_resolution_at ? formatDate(complaint.expected_resolution_at) : "Not set"}</strong></div>
                                             <button onClick={() => navigateTo(`/student/complaints/view/${complaint.id}`)}>View Complaint</button>
                                         </article>
