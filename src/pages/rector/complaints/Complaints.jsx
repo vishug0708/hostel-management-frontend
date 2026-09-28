@@ -146,7 +146,7 @@ const Complaints = () => {
       const response = await fetch(`${API_URL}/api/rector/complaints`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      const data = await response.json();
+
       if (response.status === 401) {
         localStorage.removeItem("rectorToken");
         localStorage.removeItem("token");
@@ -154,7 +154,13 @@ const Complaints = () => {
         navigate("/rector/login", { replace: true });
         return;
       }
-      if (!response.ok || !data.success)
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: Failed to load complaints.`);
+      }
+
+      const data = await response.json();
+      if (!data.success)
         throw new Error(data.message || "Failed to load complaints.");
       setComplaints(Array.isArray(data.complaints) ? data.complaints : []);
     } catch (err) {
