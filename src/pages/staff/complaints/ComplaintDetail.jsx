@@ -58,13 +58,23 @@ const ComplaintDetail = () => {
   const [expectedDate, setExpectedDate] = useState("");
   const [resolutionNote, setResolutionNote] = useState("");
   const [otp, setOtp] = useState("");
-  const [step, setStep] = useState("detail"); // detail, otp
+  const [step, setStep] = useState("detail");
+  const [staff, setStaff] = useState(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const getToken = () =>
     localStorage.getItem("staffToken") || localStorage.getItem("token");
 
   useEffect(() => {
     if (id) fetchComplaintDetail();
+    const saved = localStorage.getItem("staff");
+    if (saved) {
+      try {
+        setStaff(JSON.parse(saved));
+      } catch {
+        setStaff(null);
+      }
+    }
   }, [id]);
 
   const fetchComplaintDetail = async () => {
@@ -236,6 +246,17 @@ const ComplaintDetail = () => {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("staffToken");
+    localStorage.removeItem("token");
+    localStorage.removeItem("staff");
+    navigate("/staff/login", { replace: true });
+  };
+
+  const closeMobileMenu = () => setMobileMenuOpen(false);
+
+  const profilePhoto = getPhotoUrl(staff?.photo);
+
   if (loading)
     return (
       <div className="staff-detail-loading">
@@ -248,7 +269,63 @@ const ComplaintDetail = () => {
 
   return (
     <div className="staff-detail-page">
-      <header className="staff-detail-header">
+      <aside className={`staff-detail-sidebar ${mobileMenuOpen ? "mobile-open" : ""}`}>
+        <div className="staff-detail-brand">
+          <div className="staff-detail-brand-icon">🏠</div>
+          <div>
+            <strong>Hostel</strong>
+            <span>Staff Panel</span>
+          </div>
+        </div>
+
+        <nav className="staff-detail-nav">
+          <button className="staff-detail-nav-item" onClick={() => { closeMobileMenu(); navigate("/staff/dashboard"); }}>
+            <span>📊</span>Dashboard
+          </button>
+          <button className="staff-detail-nav-item" onClick={() => { closeMobileMenu(); navigate("/staff/profile"); }}>
+            <span>👤</span>My Profile
+          </button>
+          <button className="staff-detail-nav-item" onClick={() => { closeMobileMenu(); navigate("/staff/attendance"); }}>
+            <span>📅</span>Attendance
+          </button>
+          <button className="staff-detail-nav-item active" onClick={() => { closeMobileMenu(); navigate("/staff/complaints"); }}>
+            <span>📝</span>Complaints
+          </button>
+          <button className="staff-detail-nav-item" onClick={() => { closeMobileMenu(); navigate("/staff/announcements"); }}>
+            <span>📢</span>Announcements
+          </button>
+          <button className="staff-detail-nav-item" onClick={() => { closeMobileMenu(); navigate("/staff/change-password"); }}>
+            <span>🔐</span>Change Password
+          </button>
+        </nav>
+
+        <button className="staff-detail-logout" onClick={handleLogout}>
+          <span>🚪</span>Logout
+        </button>
+      </aside>
+
+      {mobileMenuOpen && (
+        <div className="staff-detail-overlay" onClick={closeMobileMenu} />
+      )}
+
+      <main className="staff-detail-main">
+        <div className="staff-detail-mobile-header">
+          <button className="staff-detail-hamburger" onClick={() => setMobileMenuOpen(true)} aria-label="Open menu">
+            ☰
+          </button>
+          <div className="staff-detail-mobile-brand">
+            <div className="staff-detail-brand-icon">🏠</div>
+            <div>
+              <strong>Hostel</strong>
+              <span>Staff Panel</span>
+            </div>
+          </div>
+          <button className="staff-detail-mobile-profile" onClick={() => navigate("/staff/profile")}>
+            {profilePhoto ? <img src={profilePhoto} alt="Staff profile" /> : "👤"}
+          </button>
+        </div>
+
+        <header className="staff-detail-header">
         <button onClick={() => navigate("/staff/complaints")} className="staff-back-btn">
           ← Back
         </button>
@@ -256,15 +333,20 @@ const ComplaintDetail = () => {
           <h1>{complaint.subject}</h1>
           <p>{complaint.complaint_code}</p>
         </div>
-        <span
-          className="staff-detail-status"
-          style={{
-            background: statusColors[status] || "#fff",
-            color: statusTextColors[status] || "#000",
-          }}
-        >
-          {status}
-        </span>
+        <div style={{ display: "flex", gap: "15px", alignItems: "center" }}>
+          <span
+            className="staff-detail-status"
+            style={{
+              background: statusColors[status] || "#fff",
+              color: statusTextColors[status] || "#000",
+            }}
+          >
+            {status}
+          </span>
+          <button className="staff-detail-header-profile" onClick={() => navigate("/staff/profile")}>
+            {profilePhoto ? <img src={profilePhoto} alt="Staff profile" /> : "👤"}
+          </button>
+        </div>
       </header>
 
       <section className="staff-detail-content">
@@ -428,6 +510,7 @@ const ComplaintDetail = () => {
           </div>
         )}
       </section>
+    </main>
     </div>
   );
 };
