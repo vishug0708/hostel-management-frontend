@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./RectorComplaints.css";
+import "./Complaints.css";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const menuItems = [
@@ -59,7 +59,7 @@ const formatDateTime = (value) => {
   });
 };
 
-const RectorComplaints = () => {
+const Complaints = () => {
   const navigate = useNavigate();
   const sidebarRef = useRef(null);
   const menuButtonRef = useRef(null);
@@ -308,9 +308,6 @@ const RectorComplaints = () => {
                 ))}
               </select>
             </div>
-            <button className="rector-refresh-btn" onClick={fetchComplaints}>
-              🔄 Refresh
-            </button>
           </div>
 
           {error && <div className="rector-error-message">⚠️ {error}</div>}
@@ -552,4 +549,4 @@ const RectorComplaints = () => {
   );
 };
 
-export default RectorComplaints;
+export default Complaints;
