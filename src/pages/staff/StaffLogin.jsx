@@ -1,114 +1,161 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./StaffLogin.css";
+
+const API_URL =
+    import.meta.env.VITE_API_URL ||
+    "http://localhost:5000";
 
 function StaffLogin() {
     const navigate = useNavigate();
 
-    const [staffId, setStaffId] = useState("");
-    const [password, setPassword] = useState("");
+    const [form, setForm] = useState({
+        staff_id: "",
+        password: ""
+    });
 
     const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState("");
     const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
 
-    const handleLogin = async (e) => {
+    useEffect(() => {
+        const token = localStorage.getItem("staffToken");
+
+        if (token) {
+            navigate("/staff/dashboard", {
+                replace: true
+            });
+        }
+    }, [navigate]);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+
+        setForm((previous) => ({
+            ...previous,
+            [name]: value
+        }));
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        setMessage("");
         setError("");
+        setSuccess("");
+
+        const staffId = form.staff_id.trim();
+        const password = form.password;
 
         if (!staffId || !password) {
-            setError("Please enter Staff ID and password.");
+            setError(
+                "Please enter Staff ID and password."
+            );
             return;
         }
 
         try {
             setLoading(true);
 
+            console.log(
+                "Staff Login API:",
+                `${API_URL}/api/staff/auth/login`
+            );
+
             const response = await fetch(
-                `${import.meta.env.VITE_API_URL}/api/staff/auth/login`,
+                `${API_URL}/api/staff/auth/login`,
                 {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        staff_id: staffId.trim(),
+                        staff_id: staffId,
                         password: password
                     })
                 }
             );
 
-            const data = await response.json();
+            const contentType =
+                response.headers.get("content-type") || "";
 
-            console.log("Staff Login Response:", data);
+            let data;
+
+            if (contentType.includes("application/json")) {
+                data = await response.json();
+            } else {
+                const text = await response.text();
+
+                console.error(
+                    "Staff Login Non-JSON Response:",
+                    text
+                );
+
+                throw new Error(
+                    `Backend returned ${response.status} instead of JSON.`
+                );
+            }
+
+            console.log(
+                "Staff Login Status:",
+                response.status
+            );
+
+            console.log(
+                "Staff Login Response:",
+                data
+            );
 
             if (!response.ok || !data.success) {
-                setError(
+                throw new Error(
                     data.message ||
                     "Invalid Staff ID or password."
                 );
-                return;
             }
 
-            /*
-             * IMPORTANT:
-             * Staff authentication is stored in sessionStorage
-             * so different browser tabs can maintain separate
-             * staff login sessions.
-             */
+            if (!data.token) {
+                throw new Error(
+                    "Login successful but JWT token was not received from backend."
+                );
+            }
 
-            sessionStorage.setItem(
+            localStorage.setItem(
                 "staffToken",
                 data.token
             );
 
-            sessionStorage.setItem(
+            localStorage.setItem(
                 "staff",
-                JSON.stringify(data.staff)
+                JSON.stringify(data.staff || {})
             );
 
-            /*
-             * Remove old localStorage Staff session values.
-             * This prevents an old Staff login from interfering
-             * with the new sessionStorage-based login.
-             */
-
-            localStorage.removeItem("staffToken");
-            localStorage.removeItem("staff");
-            localStorage.removeItem("admin");
-
-            if (
-                data.staff &&
-                String(data.staff.role || "").trim().toLowerCase() ===
-                "cricketbox qr handler"
-            ) {
-                setMessage(
-                    "CricketBox QR Handler login successful! Redirecting..."
+            if (data.staff?.photo) {
+                localStorage.setItem(
+                    "staffPhoto",
+                    data.staff.photo
                 );
+            }
 
-                navigate("/staff/cricket-box", {
-                    replace: true
-                });
-            } else {
-                setMessage(
-                    "Staff login successful! Redirecting..."
-                );
+            setSuccess(
+                "Staff login successful! Redirecting..."
+            );
 
+            setTimeout(() => {
                 navigate("/staff/dashboard", {
                     replace: true
                 });
-            }
-        } catch (error) {
+            }, 300);
+
+        } catch (err) {
             console.error(
                 "Staff Login Error:",
-                error
+                err
             );
 
             setError(
-                "Cannot connect to backend server."
+                err.message ||
+                "Unable to login."
             );
+
         } finally {
             setLoading(false);
         }
@@ -116,9 +163,11 @@ function StaffLogin() {
 
     return (
         <div className="staff-login-page">
+
             <div className="staff-login-card">
 
                 <div className="staff-login-header">
+
                     <div className="staff-login-icon">
                         👨‍💼
                     </div>
@@ -130,45 +179,50 @@ function StaffLogin() {
                     <p>
                         Hostel Management System
                     </p>
+
                 </div>
 
                 <form
                     className="staff-login-form"
-                    onSubmit={handleLogin}
+                    onSubmit={handleSubmit}
                 >
 
                     <div className="staff-form-group">
+
                         <label htmlFor="staff-id">
                             Staff ID
                         </label>
 
                         <input
                             id="staff-id"
+                            name="staff_id"
                             type="text"
                             placeholder="Enter Staff ID"
-                            value={staffId}
-                            onChange={(e) =>
-                                setStaffId(e.target.value)
-                            }
+                            value={form.staff_id}
+                            onChange={handleChange}
                             autoComplete="username"
+                            disabled={loading}
                         />
+
                     </div>
 
                     <div className="staff-form-group">
+
                         <label htmlFor="staff-password">
                             Password
                         </label>
 
                         <input
                             id="staff-password"
+                            name="password"
                             type="password"
                             placeholder="Enter your password"
-                            value={password}
-                            onChange={(e) =>
-                                setPassword(e.target.value)
-                            }
+                            value={form.password}
+                            onChange={handleChange}
                             autoComplete="current-password"
+                            disabled={loading}
                         />
+
                     </div>
 
                     <button
@@ -182,9 +236,9 @@ function StaffLogin() {
                         }
                     </button>
 
-                    {message && (
+                    {success && (
                         <div className="staff-login-message success-message">
-                            {message}
+                            {success}
                         </div>
                     )}
 
@@ -195,13 +249,17 @@ function StaffLogin() {
                     )}
 
                     <div className="admin-back-home">
+
                         <Link to="/">
                             ← Back to Home
                         </Link>
+
                     </div>
 
                 </form>
+
             </div>
+
         </div>
     );
 }
