@@ -7,7 +7,12 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const getPhotoUrl = (photo) => {
   if (!photo) return "";
   const value = String(photo).trim();
-  if (value.startsWith("data:") || value.startsWith("blob:") || value.startsWith("http")) return value;
+  if (
+    value.startsWith("data:") ||
+    value.startsWith("blob:") ||
+    value.startsWith("http")
+  )
+    return value;
   const normalized = value.replace(/^\/+/, "");
   if (normalized.startsWith("uploads/")) return `${API_URL}/${normalized}`;
   return `${API_URL}/uploads/staff/${normalized}`;
@@ -27,7 +32,9 @@ const formatDateTime = (value) => {
 };
 
 const statusClass = (status) =>
-  String(status || "Submitted").toLowerCase().replace(/\s+/g, "-");
+  String(status || "Submitted")
+    .toLowerCase()
+    .replace(/\s+/g, "-");
 
 const Complaints = () => {
   const navigate = useNavigate();
@@ -39,8 +46,15 @@ const Complaints = () => {
   const [error, setError] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const getToken = () =>
-    localStorage.getItem("staffToken") || localStorage.getItem("token");
+  const getToken = () => {
+    const staffToken = localStorage.getItem("staffToken");
+
+    if (staffToken) {
+      return staffToken;
+    }
+
+    return localStorage.getItem("token");
+  };
 
   useEffect(() => {
     const saved = localStorage.getItem("staff");
@@ -56,39 +70,135 @@ const Complaints = () => {
 
   const fetchComplaints = async () => {
     const token = getToken();
+
+    console.log("========== STAFF COMPLAINT DEBUG ==========");
+    console.log("API URL:", API_URL);
+    console.log("Staff token exists:", Boolean(token));
+
     if (!token) {
-      navigate("/staff/login", { replace: true });
-      return;
+        console.error("Staff token not found.");
+
+        setError("Staff session not found.");
+        setLoading(false);
+
+        return;
     }
 
     try {
-      setLoading(true);
-      const response = await fetch(`${API_URL}/api/staff/complaints`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await response.json();
+        setLoading(true);
+        setError("");
 
-      if (response.status === 401) {
-        localStorage.removeItem("staffToken");
-        localStorage.removeItem("token");
-        localStorage.removeItem("staff");
-        navigate("/staff/login", { replace: true });
-        return;
-      }
+        const endpoint =
+            `${API_URL}/api/staff/complaints`;
 
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || "Failed to load complaints.");
-      }
+        console.log(
+            "Staff Complaint API:",
+            endpoint
+        );
 
-      setComplaints(Array.isArray(data.complaints) ? data.complaints : []);
-      setError("");
-    } catch (err) {
-      console.error("Fetch Staff Complaints Error:", err);
-      setError(err.message || "Unable to load complaints.");
+        const response = await fetch(
+            endpoint,
+            {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            }
+        );
+
+        console.log(
+            "Staff Complaint HTTP Status:",
+            response.status
+        );
+
+        const rawText = await response.text();
+
+        console.log(
+            "Staff Complaint Raw Response:",
+            rawText
+        );
+
+        let data;
+
+        try {
+            data = JSON.parse(rawText);
+        } catch (parseError) {
+            console.error(
+                "Staff Complaint JSON Parse Error:",
+                parseError
+            );
+
+            throw new Error(
+                `Backend returned invalid JSON. HTTP ${response.status}`
+            );
+        }
+
+        console.log(
+            "Staff Complaint Response:",
+            data
+        );
+
+        if (response.status === 401) {
+            localStorage.removeItem(
+                "staffToken"
+            );
+
+            localStorage.removeItem(
+                "staff"
+            );
+
+            navigate(
+                "/staff/login",
+                {
+                    replace: true
+                }
+            );
+
+            return;
+        }
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.message ||
+                `Failed to load complaints. HTTP ${response.status}`
+            );
+        }
+
+        const assignedComplaints =
+            Array.isArray(data.complaints)
+                ? data.complaints
+                : [];
+
+        console.log(
+            "Assigned complaints:",
+            assignedComplaints
+        );
+
+        console.log(
+            "Assigned complaint count:",
+            assignedComplaints.length
+        );
+
+        setComplaints(
+            assignedComplaints
+        );
+
+    } catch (error) {
+        console.error(
+            "Fetch Staff Complaints Error:",
+            error
+        );
+
+        setError(
+            error.message ||
+            "Unable to load complaints."
+        );
+
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
 
   const logout = () => {
     localStorage.removeItem("staffToken");
@@ -99,14 +209,19 @@ const Complaints = () => {
   };
 
   const filtered = complaints.filter((item) => {
-    const statusMatch =
-      filterStatus === "All" || item.status === filterStatus;
+    const statusMatch = filterStatus === "All" || item.status === filterStatus;
     const q = searchTerm.toLowerCase().trim();
     const searchMatch =
       !q ||
-      String(item.complaint_code || "").toLowerCase().includes(q) ||
-      String(item.subject || "").toLowerCase().includes(q) ||
-      String(item.student_name || "").toLowerCase().includes(q);
+      String(item.complaint_code || "")
+        .toLowerCase()
+        .includes(q) ||
+      String(item.subject || "")
+        .toLowerCase()
+        .includes(q) ||
+      String(item.student_name || "")
+        .toLowerCase()
+        .includes(q);
     return statusMatch && searchMatch;
   });
 
@@ -114,7 +229,9 @@ const Complaints = () => {
 
   return (
     <div className="staff-complaints-page">
-      <aside className={`staff-complaints-sidebar ${mobileMenuOpen ? "mobile-open" : ""}`}>
+      <aside
+        className={`staff-complaints-sidebar ${mobileMenuOpen ? "mobile-open" : ""}`}
+      >
         <div className="staff-complaints-brand">
           <div className="staff-complaints-brand-icon">🏠</div>
           <div>
@@ -124,27 +241,72 @@ const Complaints = () => {
         </div>
 
         <nav className="staff-complaints-nav">
-          <button className="staff-complaints-nav-item" onClick={() => navigate("/staff/dashboard")}><span>📊</span>Dashboard</button>
-          <button className="staff-complaints-nav-item" onClick={() => navigate("/staff/profile")}><span>👤</span>My Profile</button>
-          <button className="staff-complaints-nav-item" onClick={() => navigate("/staff/attendance")}><span>📅</span>Attendance</button>
-          <button className="staff-complaints-nav-item active" onClick={() => navigate("/staff/complaints")}><span>📝</span>Complaints</button>
-          <button className="staff-complaints-nav-item" onClick={() => navigate("/staff/announcements")}><span>📢</span>Announcements</button>
-          <button className="staff-complaints-nav-item" onClick={() => navigate("/staff/change-password")}><span>🔐</span>Change Password</button>
+          <button
+            className="staff-complaints-nav-item"
+            onClick={() => navigate("/staff/dashboard")}
+          >
+            <span>📊</span>Dashboard
+          </button>
+          <button
+            className="staff-complaints-nav-item"
+            onClick={() => navigate("/staff/profile")}
+          >
+            <span>👤</span>My Profile
+          </button>
+          <button
+            className="staff-complaints-nav-item"
+            onClick={() => navigate("/staff/attendance")}
+          >
+            <span>📅</span>Attendance
+          </button>
+          <button
+            className="staff-complaints-nav-item active"
+            onClick={() => navigate("/staff/complaints")}
+          >
+            <span>📝</span>Complaints
+          </button>
+          <button
+            className="staff-complaints-nav-item"
+            onClick={() => navigate("/staff/announcements")}
+          >
+            <span>📢</span>Announcements
+          </button>
+          <button
+            className="staff-complaints-nav-item"
+            onClick={() => navigate("/staff/change-password")}
+          >
+            <span>🔐</span>Change Password
+          </button>
         </nav>
 
-        <button className="staff-complaints-logout" onClick={logout}><span>🚪</span>Logout</button>
+        <button className="staff-complaints-logout" onClick={logout}>
+          <span>🚪</span>Logout
+        </button>
       </aside>
 
-      {mobileMenuOpen && <div className="staff-complaints-overlay" onClick={() => setMobileMenuOpen(false)} />}
+      {mobileMenuOpen && (
+        <div
+          className="staff-complaints-overlay"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
 
       <main className="staff-complaints-main">
         <header className="staff-complaints-mobile-header">
-          <button className="staff-complaints-hamburger" onClick={() => setMobileMenuOpen(true)}>☰</button>
+          <button
+            className="staff-complaints-hamburger"
+            onClick={() => setMobileMenuOpen(true)}
+          >
+            ☰
+          </button>
           <div className="staff-complaints-mobile-title">
             <strong>Hostel Staff Panel</strong>
             <span>My Complaints</span>
           </div>
-          <button className="staff-complaints-mobile-profile" onClick={() => navigate("/staff/profile")}>
+          <button
+            className="staff-complaints-mobile-profile"
+            onClick={() => navigate("/staff/profile")}
+          >
             {photo ? <img src={photo} alt="Staff" /> : "👤"}
           </button>
         </header>
@@ -153,9 +315,14 @@ const Complaints = () => {
           <div>
             <span>HOSTEL SERVICES</span>
             <h1>My Complaints</h1>
-            <p>Work only on complaints automatically assigned to your staff role.</p>
+            <p>
+              Work only on complaints automatically assigned to your staff role.
+            </p>
           </div>
-          <button className="staff-complaints-profile" onClick={() => navigate("/staff/profile")}>
+          <button
+            className="staff-complaints-profile"
+            onClick={() => navigate("/staff/profile")}
+          >
             {photo ? <img src={photo} alt="Staff" /> : "👤"}
           </button>
         </header>
@@ -168,7 +335,10 @@ const Complaints = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+            >
               <option value="All">All Status</option>
               <option value="Assigned">Assigned</option>
               <option value="In Progress">In Progress</option>
@@ -181,7 +351,10 @@ const Complaints = () => {
           {error && <div className="staff-complaints-error">⚠️ {error}</div>}
 
           {loading ? (
-            <div className="staff-complaints-loading"><div className="staff-complaints-loader" /><p>Loading complaints...</p></div>
+            <div className="staff-complaints-loading">
+              <div className="staff-complaints-loader" />
+              <p>Loading complaints...</p>
+            </div>
           ) : filtered.length === 0 ? (
             <div className="staff-complaints-empty">
               <div>📋</div>
@@ -197,16 +370,40 @@ const Complaints = () => {
                       <strong>{complaint.complaint_code}</strong>
                       <span>{complaint.category}</span>
                     </div>
-                    <span className={`staff-complaint-status status-${statusClass(complaint.status)}`}>{complaint.status}</span>
+                    <span
+                      className={`staff-complaint-status status-${statusClass(complaint.status)}`}
+                    >
+                      {complaint.status}
+                    </span>
                   </div>
                   <h3>{complaint.subject}</h3>
-                  <p className="staff-complaint-description">{complaint.description}</p>
+                  <p className="staff-complaint-description">
+                    {complaint.description}
+                  </p>
                   <div className="staff-complaint-meta">
-                    <div><span>Student</span><strong>{complaint.student_name || "-"}</strong></div>
-                    <div><span>Room</span><strong>{complaint.student_room || "-"}</strong></div>
-                    <div><span>Expected Resolution</span><strong>{formatDateTime(complaint.expected_resolution_at)}</strong></div>
+                    <div>
+                      <span>Student</span>
+                      <strong>{complaint.student_name || "-"}</strong>
+                    </div>
+                    <div>
+                      <span>Room</span>
+                      <strong>{complaint.student_room || "-"}</strong>
+                    </div>
+                    <div>
+                      <span>Expected Resolution</span>
+                      <strong>
+                        {formatDateTime(complaint.expected_resolution_at)}
+                      </strong>
+                    </div>
                   </div>
-                  <button className="staff-view-btn" onClick={() => navigate(`/staff/complaints/${complaint.id}`)}>Open Complaint</button>
+                  <button
+                    className="staff-view-btn"
+                    onClick={() =>
+                      navigate(`/staff/complaints/${complaint.id}`)
+                    }
+                  >
+                    Open Complaint
+                  </button>
                 </article>
               ))}
             </div>
