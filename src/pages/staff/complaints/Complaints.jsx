@@ -50,11 +50,6 @@ const Complaints = () => {
     const staffId = sessionStorage.getItem("currentStaffId");
     return sessionStorage.getItem(`staffToken_${staffId}`) || sessionStorage.getItem("staffToken");
   };
-      return staffToken;
-    }
-
-    return localStorage.getItem("token");
-  };
 
   useEffect(() => {
     const saved = localStorage.getItem("staff");
