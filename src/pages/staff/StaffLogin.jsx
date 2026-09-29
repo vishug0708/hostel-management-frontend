@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import "./StaffLogin.css";
 
 function StaffLogin() {
-
     const navigate = useNavigate();
 
     const [staffId, setStaffId] = useState("");
@@ -13,51 +12,27 @@ function StaffLogin() {
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
 
-
-    // =====================================================
-    // ADMIN LOGIN
-    // =====================================================
-
     const handleLogin = async (e) => {
-
         e.preventDefault();
 
         setMessage("");
         setError("");
 
-
-        // =================================================
-        // VALIDATION
-        // =================================================
-
         if (!staffId || !password) {
-
-            setError(
-                "Please enter Staff ID and password."
-            );
-
+            setError("Please enter Staff ID and password.");
             return;
         }
 
-
         try {
-
             setLoading(true);
-
-
-            // =================================================
-            // API REQUEST
-            // =================================================
 
             const response = await fetch(
                 `${import.meta.env.VITE_API_URL}/api/staff/auth/login`,
                 {
                     method: "POST",
-
                     headers: {
                         "Content-Type": "application/json"
                     },
-
                     body: JSON.stringify({
                         staff_id: staffId.trim(),
                         password: password
@@ -65,42 +40,44 @@ function StaffLogin() {
                 }
             );
 
-
             const data = await response.json();
-
 
             console.log("Staff Login Response:", data);
 
-
-            // =================================================
-            // LOGIN FAILED
-            // =================================================
-
             if (!response.ok || !data.success) {
-
                 setError(
                     data.message ||
                     "Invalid Staff ID or password."
                 );
-
                 return;
             }
 
+            /*
+             * IMPORTANT:
+             * Staff authentication is stored in sessionStorage
+             * so different browser tabs can maintain separate
+             * staff login sessions.
+             */
 
-            localStorage.setItem(
+            sessionStorage.setItem(
                 "staffToken",
                 data.token
             );
 
-            localStorage.setItem(
-                "admin",
-                JSON.stringify(data.staff)
-            );
-
-            localStorage.setItem(
+            sessionStorage.setItem(
                 "staff",
                 JSON.stringify(data.staff)
             );
+
+            /*
+             * Remove old localStorage Staff session values.
+             * This prevents an old Staff login from interfering
+             * with the new sessionStorage-based login.
+             */
+
+            localStorage.removeItem("staffToken");
+            localStorage.removeItem("staff");
+            localStorage.removeItem("admin");
 
             if (
                 data.staff &&
@@ -123,42 +100,25 @@ function StaffLogin() {
                     replace: true
                 });
             }
-
-
         } catch (error) {
-
             console.error(
                 "Staff Login Error:",
                 error
             );
 
-
             setError(
                 "Cannot connect to backend server."
             );
-
         } finally {
-
             setLoading(false);
-
         }
-
     };
 
-
     return (
-
         <div className="staff-login-page">
-
             <div className="staff-login-card">
 
-
-                {/* =================================================
-                    HEADER
-                ================================================= */}
-
                 <div className="staff-login-header">
-
                     <div className="staff-login-icon">
                         👨‍💼
                     </div>
@@ -170,24 +130,14 @@ function StaffLogin() {
                     <p>
                         Hostel Management System
                     </p>
-
                 </div>
-
-
-                {/* =================================================
-                    LOGIN FORM
-                ================================================= */}
 
                 <form
                     className="staff-login-form"
                     onSubmit={handleLogin}
                 >
 
-
-                    {/* EMAIL */}
-
                     <div className="staff-form-group">
-
                         <label htmlFor="staff-id">
                             Staff ID
                         </label>
@@ -202,20 +152,15 @@ function StaffLogin() {
                             }
                             autoComplete="username"
                         />
-
                     </div>
 
-
-                    {/* PASSWORD */}
-
                     <div className="staff-form-group">
-
-                        <label htmlFor="admin-password">
+                        <label htmlFor="staff-password">
                             Password
                         </label>
 
                         <input
-                            id="admin-password"
+                            id="staff-password"
                             type="password"
                             placeholder="Enter your password"
                             value={password}
@@ -224,66 +169,41 @@ function StaffLogin() {
                             }
                             autoComplete="current-password"
                         />
-
                     </div>
-
-
-                    {/* LOGIN BUTTON */}
 
                     <button
                         type="submit"
                         className="staff-login-button"
                         disabled={loading}
                     >
-
                         {loading
                             ? "Signing In..."
                             : "Sign In"
                         }
-
                     </button>
 
-
-                    {/* SUCCESS MESSAGE */}
-
                     {message && (
-
                         <div className="staff-login-message success-message">
                             {message}
                         </div>
-
                     )}
 
-
-                    {/* ERROR MESSAGE */}
-
                     {error && (
-
                         <div className="staff-login-message error-message">
                             {error}
                         </div>
-
                     )}
 
-
-                    {/* BACK TO HOME */}
-
                     <div className="admin-back-home">
-
                         <Link to="/">
                             ← Back to Home
                         </Link>
-
                     </div>
 
                 </form>
-
             </div>
-
         </div>
-
     );
-
 }
 
 export default StaffLogin;
