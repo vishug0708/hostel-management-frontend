@@ -65,8 +65,10 @@ const ComplaintDetail = () => {
   const [busy, setBusy] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const getToken = () =>
-    localStorage.getItem("staffToken") || localStorage.getItem("token");
+  const getToken = () => {
+    const staffId = sessionStorage.getItem("currentStaffId");
+    return sessionStorage.getItem(`staffToken_${staffId}`) || sessionStorage.getItem("staffToken");
+  };
 
   useEffect(() => {
     const saved = localStorage.getItem("staff");

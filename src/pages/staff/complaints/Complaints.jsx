@@ -47,9 +47,9 @@ const Complaints = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const getToken = () => {
-    const staffToken = localStorage.getItem("staffToken");
-
-    if (staffToken) {
+    const staffId = sessionStorage.getItem("currentStaffId");
+    return sessionStorage.getItem(`staffToken_${staffId}`) || sessionStorage.getItem("staffToken");
+  };
       return staffToken;
     }
 
