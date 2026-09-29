@@ -93,14 +93,12 @@ function StaffLogin() {
         );
       }
 
-      sessionStorage.setItem(`staffToken_${data.staff.id}`, data.token);
-      sessionStorage.setItem(`staff_${data.staff.id}`, JSON.stringify(data.staff || {}));
+      sessionStorage.setItem("staffToken", data.token);
+      sessionStorage.setItem("staff", JSON.stringify(data.staff || {}));
 
       if (data.staff?.photo) {
-        sessionStorage.setItem(`staffPhoto_${data.staff.id}`, data.staff.photo);
+        sessionStorage.setItem("staffPhoto", data.staff.photo);
       }
-
-      sessionStorage.setItem("currentStaffId", data.staff.id);
 
       setSuccess("Staff login successful! Redirecting...");
 
