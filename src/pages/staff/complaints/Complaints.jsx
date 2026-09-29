@@ -7,36 +7,14 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const getPhotoUrl = (photo) => {
   if (!photo) return "";
   const value = String(photo).trim();
-  if (
-    value.startsWith("data:") ||
-    value.startsWith("blob:") ||
-    value.startsWith("http://") ||
-    value.startsWith("https://")
-  )
-    return value;
+  if (value.startsWith("data:") || value.startsWith("blob:") || value.startsWith("http")) return value;
   const normalized = value.replace(/^\/+/, "");
   if (normalized.startsWith("uploads/")) return `${API_URL}/${normalized}`;
   return `${API_URL}/uploads/staff/${normalized}`;
 };
 
-const statusColors = {
-  Assigned: "#f0fdf4",
-  "In Progress": "#fef3c7",
-  "Resolution Pending": "#fce7f3",
-  "OTP Verification": "#f3e8ff",
-  Closed: "#ecfdf5",
-};
-
-const statusTextColors = {
-  Assigned: "#166534",
-  "In Progress": "#92400e",
-  "Resolution Pending": "#be185d",
-  "OTP Verification": "#7e22ce",
-  Closed: "#047857",
-};
-
 const formatDateTime = (value) => {
-  if (!value) return "Not available";
+  if (!value) return "Not set";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return String(value);
   return date.toLocaleString("en-IN", {
@@ -48,30 +26,23 @@ const formatDateTime = (value) => {
   });
 };
 
+const statusClass = (status) =>
+  String(status || "Submitted").toLowerCase().replace(/\s+/g, "-");
+
 const Complaints = () => {
   const navigate = useNavigate();
   const [staff, setStaff] = useState(null);
   const [complaints, setComplaints] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const statusList = [
-    "All",
-    "Assigned",
-    "In Progress",
-    "Resolution Pending",
-    "OTP Verification",
-    "Closed",
-  ];
 
   const getToken = () =>
     localStorage.getItem("staffToken") || localStorage.getItem("token");
 
   useEffect(() => {
-    document.title = "My Complaints | Staff Panel";
     const saved = localStorage.getItem("staff");
     if (saved) {
       try {
@@ -80,25 +51,22 @@ const Complaints = () => {
         setStaff(null);
       }
     }
-  }, []);
-
-  useEffect(() => {
     fetchComplaints();
   }, []);
 
   const fetchComplaints = async () => {
     const token = getToken();
     if (!token) {
-      setError("Staff session not found.");
-      setLoading(false);
+      navigate("/staff/login", { replace: true });
       return;
     }
+
     try {
       setLoading(true);
-      setError("");
       const response = await fetch(`${API_URL}/api/staff/complaints`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      const data = await response.json();
 
       if (response.status === 401) {
         localStorage.removeItem("staffToken");
@@ -108,53 +76,41 @@ const Complaints = () => {
         return;
       }
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: Failed to load complaints.`);
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Failed to load complaints.");
       }
 
-      const data = await response.json();
-      if (!data.success)
-        throw new Error(data.message || "Failed to load complaints.");
       setComplaints(Array.isArray(data.complaints) ? data.complaints : []);
+      setError("");
     } catch (err) {
-      console.error("Fetch Complaints Error:", err);
+      console.error("Fetch Staff Complaints Error:", err);
       setError(err.message || "Unable to load complaints.");
     } finally {
       setLoading(false);
     }
   };
 
-  const filteredComplaints = complaints.filter((complaint) => {
-    const statusMatch =
-      filterStatus === "All" || complaint.status === filterStatus;
-    const searchMatch =
-      searchTerm === "" ||
-      complaint.complaint_code
-        ?.toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      complaint.subject?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      complaint.student_name?.toLowerCase().includes(searchTerm.toLowerCase());
-    return statusMatch && searchMatch;
-  });
-
-  const handleLogout = () => {
+  const logout = () => {
     localStorage.removeItem("staffToken");
     localStorage.removeItem("token");
     localStorage.removeItem("staff");
+    localStorage.removeItem("staffPhoto");
     navigate("/staff/login", { replace: true });
   };
 
-  const closeMobileMenu = () => setMobileMenuOpen(false);
+  const filtered = complaints.filter((item) => {
+    const statusMatch =
+      filterStatus === "All" || item.status === filterStatus;
+    const q = searchTerm.toLowerCase().trim();
+    const searchMatch =
+      !q ||
+      String(item.complaint_code || "").toLowerCase().includes(q) ||
+      String(item.subject || "").toLowerCase().includes(q) ||
+      String(item.student_name || "").toLowerCase().includes(q);
+    return statusMatch && searchMatch;
+  });
 
-  const profilePhoto = getPhotoUrl(staff?.photo);
-
-  if (loading)
-    return (
-      <div className="staff-complaints-loading">
-        <div className="staff-complaints-loader" />
-        <p>Loading complaints...</p>
-      </div>
-    );
+  const photo = getPhotoUrl(staff?.photo);
 
   return (
     <div className="staff-complaints-page">
@@ -168,220 +124,90 @@ const Complaints = () => {
         </div>
 
         <nav className="staff-complaints-nav">
-          <button className="staff-complaints-nav-item" onClick={() => { closeMobileMenu(); navigate("/staff/dashboard"); }}>
-            <span>📊</span>Dashboard
-          </button>
-          <button className="staff-complaints-nav-item" onClick={() => { closeMobileMenu(); navigate("/staff/profile"); }}>
-            <span>👤</span>My Profile
-          </button>
-          <button className="staff-complaints-nav-item" onClick={() => { closeMobileMenu(); navigate("/staff/attendance"); }}>
-            <span>📅</span>Attendance
-          </button>
-          <button className="staff-complaints-nav-item active" onClick={() => { closeMobileMenu(); navigate("/staff/complaints"); }}>
-            <span>📝</span>Complaints
-          </button>
-          <button className="staff-complaints-nav-item" onClick={() => { closeMobileMenu(); navigate("/staff/announcements"); }}>
-            <span>📢</span>Announcements
-          </button>
-          <button className="staff-complaints-nav-item" onClick={() => { closeMobileMenu(); navigate("/staff/change-password"); }}>
-            <span>🔐</span>Change Password
-          </button>
+          <button className="staff-complaints-nav-item" onClick={() => navigate("/staff/dashboard")}><span>📊</span>Dashboard</button>
+          <button className="staff-complaints-nav-item" onClick={() => navigate("/staff/profile")}><span>👤</span>My Profile</button>
+          <button className="staff-complaints-nav-item" onClick={() => navigate("/staff/attendance")}><span>📅</span>Attendance</button>
+          <button className="staff-complaints-nav-item active" onClick={() => navigate("/staff/complaints")}><span>📝</span>Complaints</button>
+          <button className="staff-complaints-nav-item" onClick={() => navigate("/staff/announcements")}><span>📢</span>Announcements</button>
+          <button className="staff-complaints-nav-item" onClick={() => navigate("/staff/change-password")}><span>🔐</span>Change Password</button>
         </nav>
 
-        <button className="staff-complaints-logout" onClick={handleLogout}>
-          <span>🚪</span>Logout
-        </button>
+        <button className="staff-complaints-logout" onClick={logout}><span>🚪</span>Logout</button>
       </aside>
 
-      {mobileMenuOpen && (
-        <div className="staff-complaints-overlay" onClick={closeMobileMenu} />
-      )}
+      {mobileMenuOpen && <div className="staff-complaints-overlay" onClick={() => setMobileMenuOpen(false)} />}
 
       <main className="staff-complaints-main">
-        <div className="staff-complaints-mobile-header">
-          <button className="staff-complaints-hamburger" onClick={() => setMobileMenuOpen(true)} aria-label="Open menu">
-            ☰
-          </button>
-          <div className="staff-complaints-mobile-brand">
-            <div className="staff-complaints-brand-icon">🏠</div>
-            <div>
-              <strong>Hostel</strong>
-              <span>Staff Panel</span>
-            </div>
+        <header className="staff-complaints-mobile-header">
+          <button className="staff-complaints-hamburger" onClick={() => setMobileMenuOpen(true)}>☰</button>
+          <div className="staff-complaints-mobile-title">
+            <strong>Hostel Staff Panel</strong>
+            <span>My Complaints</span>
           </div>
           <button className="staff-complaints-mobile-profile" onClick={() => navigate("/staff/profile")}>
-            {profilePhoto ? <img src={profilePhoto} alt="Staff profile" /> : "👤"}
+            {photo ? <img src={photo} alt="Staff" /> : "👤"}
           </button>
-        </div>
+        </header>
 
         <header className="staff-complaints-header">
           <div>
-            <span>MY ASSIGNED</span>
-            <h1>Complaints</h1>
-            <p>Manage and resolve assigned complaints</p>
+            <span>HOSTEL SERVICES</span>
+            <h1>My Complaints</h1>
+            <p>Work only on complaints automatically assigned to your staff role.</p>
           </div>
-          <button className="staff-complaints-header-profile" onClick={() => navigate("/staff/profile")}>
-            {profilePhoto ? <img src={profilePhoto} alt="Staff profile" /> : "👤"}
+          <button className="staff-complaints-profile" onClick={() => navigate("/staff/profile")}>
+            {photo ? <img src={photo} alt="Staff" /> : "👤"}
           </button>
         </header>
 
         <section className="staff-complaints-content">
-          <div className="staff-filters-bar">
-            <div className="staff-filter-group">
-              <label>Search</label>
-              <input
-                type="text"
-                placeholder="Complaint code, subject, or student name..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <div className="staff-filter-group">
-              <label>Status</label>
-              <select
-                value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
-              >
-                {statusList.map((status) => (
-                  <option key={status} value={status}>
-                    {status}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <button className="staff-refresh-btn" onClick={fetchComplaints}>
-              🔄 Refresh
-            </button>
+          <div className="staff-complaints-toolbar">
+            <input
+              type="search"
+              placeholder="Search complaint, subject or student..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
+              <option value="All">All Status</option>
+              <option value="Assigned">Assigned</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Resolution Pending">Resolution Pending</option>
+              <option value="OTP Verification">OTP Verification</option>
+              <option value="Closed">Closed</option>
+            </select>
           </div>
 
-          {error && <div className="staff-error-message">⚠️ {error}</div>}
+          {error && <div className="staff-complaints-error">⚠️ {error}</div>}
 
-          <div className="staff-stats">
-            <div className="staff-stat-card">
-              <span>Total</span>
-              <strong>{complaints.length}</strong>
+          {loading ? (
+            <div className="staff-complaints-loading"><div className="staff-complaints-loader" /><p>Loading complaints...</p></div>
+          ) : filtered.length === 0 ? (
+            <div className="staff-complaints-empty">
+              <div>📋</div>
+              <h3>No complaints found</h3>
+              <p>There are no complaints matching the selected filter.</p>
             </div>
-            <div className="staff-stat-card">
-              <span>Pending</span>
-              <strong>
-                {
-                  complaints.filter(
-                    (c) => c.status === "Assigned" || c.status === "In Progress",
-                  ).length
-                }
-              </strong>
-            </div>
-            <div className="staff-stat-card">
-              <span>Resolution Pending</span>
-              <strong>
-                {complaints.filter((c) => c.status === "Resolution Pending").length}
-              </strong>
-            </div>
-            <div className="staff-stat-card">
-              <span>Closed</span>
-              <strong>
-                {complaints.filter((c) => c.status === "Closed").length}
-              </strong>
-            </div>
-          </div>
-
-          {filteredComplaints.length === 0 ? (
-            <div className="staff-no-data">No complaints found.</div>
           ) : (
             <div className="staff-complaints-list">
-              {filteredComplaints.map((complaint) => (
-                <div key={complaint.id} className="staff-complaint-card">
-                  <div className="staff-complaint-header">
-                    <div className="staff-complaint-title">
-                      <span className="staff-complaint-code">
-                        {complaint.complaint_code}
-                      </span>
-                      <h3>{complaint.subject}</h3>
-                      <span className="staff-complaint-category">
-                        {complaint.category}
-                      </span>
+              {filtered.map((complaint) => (
+                <article className="staff-complaint-card" key={complaint.id}>
+                  <div className="staff-complaint-top">
+                    <div>
+                      <strong>{complaint.complaint_code}</strong>
+                      <span>{complaint.category}</span>
                     </div>
-                    <span
-                      className="staff-complaint-status"
-                      style={{
-                        background: statusColors[complaint.status] || "#fff",
-                        color: statusTextColors[complaint.status] || "#000",
-                      }}
-                    >
-                      {complaint.status}
-                    </span>
+                    <span className={`staff-complaint-status status-${statusClass(complaint.status)}`}>{complaint.status}</span>
                   </div>
-
-                  <div className="staff-complaint-body">
-                    <div className="staff-info-section">
-                      <h4>Student Information</h4>
-                      <div className="staff-info-grid">
-                        <div className="staff-student-photo">
-                          {getPhotoUrl(complaint.student_photo) ? (
-                            <img
-                              src={getPhotoUrl(complaint.student_photo)}
-                              alt={complaint.student_name}
-                            />
-                          ) : (
-                            <span>
-                              {complaint.student_name?.charAt(0)?.toUpperCase() ||
-                                "S"}
-                            </span>
-                          )}
-                        </div>
-                        <div className="staff-info-details">
-                          <div>
-                            <span>Name</span>
-                            <strong>{complaint.student_name || "-"}</strong>
-                          </div>
-                          <div>
-                            <span>Room</span>
-                            <strong>{complaint.student_room || "-"}</strong>
-                          </div>
-                          <div>
-                            <span>Email</span>
-                            <strong>{complaint.student_email || "-"}</strong>
-                          </div>
-                          <div>
-                            <span>Phone</span>
-                            <strong>{complaint.student_phone || "-"}</strong>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="staff-info-section">
-                      <h4>Complaint Details</h4>
-                      <div>
-                        <span>Description</span>
-                        <p>{complaint.description || "-"}</p>
-                      </div>
-                      <div>
-                        <span>Submitted</span>
-                        <strong>{formatDateTime(complaint.created_at)}</strong>
-                      </div>
-                      {complaint.expected_resolution_at && (
-                        <div>
-                          <span>Expected Resolution</span>
-                          <strong>
-                            {formatDateTime(complaint.expected_resolution_at)}
-                          </strong>
-                        </div>
-                      )}
-                    </div>
+                  <h3>{complaint.subject}</h3>
+                  <p className="staff-complaint-description">{complaint.description}</p>
+                  <div className="staff-complaint-meta">
+                    <div><span>Student</span><strong>{complaint.student_name || "-"}</strong></div>
+                    <div><span>Room</span><strong>{complaint.student_room || "-"}</strong></div>
+                    <div><span>Expected Resolution</span><strong>{formatDateTime(complaint.expected_resolution_at)}</strong></div>
                   </div>
-
-                  <div className="staff-complaint-footer">
-                    <button
-                      onClick={() =>
-                        navigate(`/staff/complaints/${complaint.id}`)
-                      }
-                      className="staff-view-btn"
-                    >
-                      View Details
-                    </button>
-                  </div>
-                </div>
+                  <button className="staff-view-btn" onClick={() => navigate(`/staff/complaints/${complaint.id}`)}>Open Complaint</button>
+                </article>
               ))}
             </div>
           )}

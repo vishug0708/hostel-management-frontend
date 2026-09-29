@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./Complaints.css";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 const menuItems = [
   { label: "Dashboard", icon: "📊", path: "/rector/dashboard" },
   { label: "Manage Rooms", icon: "🏠", path: "/rector/rooms" },
@@ -14,51 +15,14 @@ const menuItems = [
   { label: "Profile", icon: "👤", path: "/rector/profile" },
 ];
 
-const statusColors = {
-  Submitted: "#f0f9ff",
-  Assigned: "#f0fdf4",
-  "In Progress": "#fef3c7",
-  "Resolution Pending": "#fce7f3",
-  "OTP Verification": "#f3e8ff",
-  Closed: "#ecfdf5",
-};
-
-const statusTextColors = {
-  Submitted: "#0c4a6e",
-  Assigned: "#166534",
-  "In Progress": "#92400e",
-  "Resolution Pending": "#be185d",
-  "OTP Verification": "#7e22ce",
-  Closed: "#047857",
-};
-
-const getPhotoUrl = (photo) => {
-  if (!photo) return "";
-  const value = String(photo).trim();
-  if (
-    value.startsWith("data:") ||
-    value.startsWith("blob:") ||
-    value.startsWith("http://") ||
-    value.startsWith("https://")
-  )
-    return value;
-  const normalized = value.replace(/^\/+/, "");
-  if (normalized.startsWith("uploads/")) return `${API_URL}/${normalized}`;
-  return `${API_URL}/uploads/students/${normalized}`;
-};
-
 const formatDateTime = (value) => {
-  if (!value) return "Not available";
+  if (!value) return "Not set";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return String(value);
-  return date.toLocaleString("en-IN", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  return date.toLocaleString("en-IN", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
 };
+
+const statusClass = (status) => String(status || "Submitted").toLowerCase().replace(/\s+/g, "-");
 
 const Complaints = () => {
   const navigate = useNavigate();
@@ -66,87 +30,36 @@ const Complaints = () => {
   const menuButtonRef = useRef(null);
   const [rector, setRector] = useState(null);
   const [complaints, setComplaints] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [filterStatus, setFilterStatus] = useState("All");
   const [filterCategory, setFilterCategory] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const statusList = [
-    "All",
-    "Submitted",
-    "Assigned",
-    "In Progress",
-    "Resolution Pending",
-    "OTP Verification",
-    "Closed",
-  ];
-  const categoryList = [
-    "All",
-    "Electrical",
-    "Plumbing",
-    "Carpenter",
-    "Cleaning",
-    "IT",
-    "Maintenance",
-  ];
-
-  const getToken = () =>
-    localStorage.getItem("rectorToken") || localStorage.getItem("token");
+  const getToken = () => localStorage.getItem("rectorToken") || localStorage.getItem("token");
 
   useEffect(() => {
-    document.title = "Complaints | Rector Panel";
     const saved = localStorage.getItem("rector");
     if (saved) {
-      try {
-        setRector(JSON.parse(saved));
-      } catch {
-        setRector(null);
-      }
+      try { setRector(JSON.parse(saved)); } catch { setRector(null); }
     }
-  }, []);
-
-  useEffect(() => {
-    document.body.classList.toggle(
-      "rector-complaints-menu-open",
-      mobileMenuOpen,
-    );
-    return () => document.body.classList.remove("rector-complaints-menu-open");
-  }, [mobileMenuOpen]);
-
-  useEffect(() => {
-    if (!mobileMenuOpen) return;
-    const outside = (event) => {
-      if (
-        sidebarRef.current &&
-        !sidebarRef.current.contains(event.target) &&
-        menuButtonRef.current &&
-        !menuButtonRef.current.contains(event.target)
-      )
-        setMobileMenuOpen(false);
-    };
-    document.addEventListener("pointerdown", outside, true);
-    return () => document.removeEventListener("pointerdown", outside, true);
-  }, [mobileMenuOpen]);
-
-  useEffect(() => {
     fetchComplaints();
   }, []);
 
   const fetchComplaints = async () => {
     const token = getToken();
     if (!token) {
-      setError("Rector session not found.");
-      setLoading(false);
+      navigate("/rector/login", { replace: true });
       return;
     }
+
     try {
       setLoading(true);
-      setError("");
       const response = await fetch(`${API_URL}/api/rector/complaints`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      const data = await response.json();
 
       if (response.status === 401) {
         localStorage.removeItem("rectorToken");
@@ -156,397 +69,114 @@ const Complaints = () => {
         return;
       }
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: Failed to load complaints.`);
-      }
-
-      const data = await response.json();
-      if (!data.success)
-        throw new Error(data.message || "Failed to load complaints.");
+      if (!response.ok || !data.success) throw new Error(data.message || "Failed to load complaints.");
       setComplaints(Array.isArray(data.complaints) ? data.complaints : []);
+      setError("");
     } catch (err) {
-      console.error("Fetch Complaints Error:", err);
       setError(err.message || "Unable to load complaints.");
     } finally {
       setLoading(false);
     }
   };
 
-  const filteredComplaints = complaints.filter((complaint) => {
-    const statusMatch =
-      filterStatus === "All" || complaint.status === filterStatus;
-    const categoryMatch =
-      filterCategory === "All" || complaint.category === filterCategory;
-    const searchMatch =
-      searchTerm === "" ||
-      complaint.complaint_code
-        ?.toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      complaint.subject?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      complaint.student_name?.toLowerCase().includes(searchTerm.toLowerCase());
+  const filtered = complaints.filter((c) => {
+    const statusMatch = filterStatus === "All" || c.status === filterStatus;
+    const categoryMatch = filterCategory === "All" || c.category === filterCategory;
+    const q = searchTerm.toLowerCase().trim();
+    const searchMatch = !q ||
+      String(c.complaint_code || "").toLowerCase().includes(q) ||
+      String(c.student_name || "").toLowerCase().includes(q) ||
+      String(c.subject || "").toLowerCase().includes(q) ||
+      String(c.assigned_staff_name || "").toLowerCase().includes(q);
     return statusMatch && categoryMatch && searchMatch;
   });
 
-  const navigateTo = (path) => {
-    setMobileMenuOpen(false);
-    navigate(path);
-  };
-  const handleLogout = () => {
+  const logout = () => {
     localStorage.removeItem("rectorToken");
     localStorage.removeItem("token");
     localStorage.removeItem("rector");
     navigate("/rector/login", { replace: true });
   };
 
-  const photo = getPhotoUrl(rector?.photo);
-  const initials = String(rector?.name || "Rector")
-    .split(" ")
-    .map((part) => part.charAt(0))
-    .join("")
-    .substring(0, 2)
-    .toUpperCase();
+  const photo = rector?.photo
+    ? (String(rector.photo).startsWith("http") ? rector.photo : `${API_URL}/uploads/rectors/${String(rector.photo).replace(/^\/+/, "")}`)
+    : "";
 
-  if (loading)
-    return (
-      <div className="rector-complaints-loading">
-        <div className="rector-complaints-loader" />
-        <p>Loading complaints...</p>
-      </div>
-    );
+  const categories = ["All", ...Array.from(new Set(complaints.map((c) => c.category).filter(Boolean)))];
 
   return (
     <div className="rector-complaints-page">
-      <aside
-        ref={sidebarRef}
-        className={`rector-sidebar ${mobileMenuOpen ? "mobile-open" : ""}`}
-      >
-        <div className="rector-brand">
-          <div className="rector-brand-icon">🏠</div>
-          <div>
-            <strong>Hostel</strong>
-            <span>Rector Panel</span>
-          </div>
-        </div>
+      <aside ref={sidebarRef} className={`rector-sidebar ${mobileMenuOpen ? "mobile-open" : ""}`}>
+        <div className="rector-brand"><div className="rector-brand-icon">🏠</div><div><strong>Hostel</strong><span>Rector Panel</span></div></div>
         <nav className="rector-nav">
-          {menuItems.map((item) => (
-            <button
-              key={item.path}
-              className={item.label === "Complaints" ? "active" : ""}
-              onClick={() => navigateTo(item.path)}
-            >
-              <span>{item.icon}</span>
-              <span>{item.label}</span>
-            </button>
-          ))}
+          {menuItems.map((item) => <button key={item.path} className={item.label === "Complaints" ? "active" : ""} onClick={() => navigate(item.path)}><span>{item.icon}</span><span>{item.label}</span></button>)}
         </nav>
-        <button className="rector-logout" onClick={handleLogout}>
-          <span>🚪</span>
-          <span>Logout</span>
-        </button>
+        <button className="rector-logout" onClick={logout}><span>🚪</span><span>Logout</span></button>
       </aside>
-      {mobileMenuOpen && (
-        <div
-          className="rector-mobile-overlay"
-          onClick={() => setMobileMenuOpen(false)}
-        />
-      )}
+
+      {mobileMenuOpen && <div className="rector-overlay" onClick={() => setMobileMenuOpen(false)} />}
+
       <main className="rector-complaints-main">
-        <div className="rector-mobile-topbar">
-          <button
-            ref={menuButtonRef}
-            type="button"
-            className="rector-mobile-menu-btn"
-            onClick={() => setMobileMenuOpen((open) => !open)}
-          >
-            ☰
-          </button>
-          <div className="rector-mobile-brand">
-            <div className="rector-mobile-brand-icon">🏠</div>
-            <div>
-              <strong>Hostel</strong>
-              <span>Rector</span>
-            </div>
-          </div>
-          <div className="rector-mobile-photo">
-            {photo ? <img src={photo} alt="Rector" /> : <span>{initials}</span>}
-          </div>
-        </div>
-        <header className="rector-complaints-header">
-          <div>
-            <span>MONITORING</span>
-            <h1>Complaints Management</h1>
-            <p>Monitor and track all hostel complaints across students.</p>
-          </div>
+        <header className="rector-mobile-topbar">
+          <button className="rector-mobile-menu-btn" onClick={() => setMobileMenuOpen(true)}>☰</button>
+          <div><strong>Hostel Rector Panel</strong><span>Complaints Monitoring</span></div>
+          <div className="rector-mobile-photo">{photo ? <img src={photo} alt="Rector" /> : "👤"}</div>
         </header>
+
+        <header className="rector-complaints-header">
+          <div><span>HOSTEL MONITORING</span><h1>Complaints</h1><p>Monitoring only. Rector cannot change status, resolve, close or verify OTP.</p></div>
+          <button className="rector-header-profile" onClick={() => navigate("/rector/profile")}>{photo ? <img src={photo} alt="Rector" /> : "👤"}</button>
+        </header>
+
         <section className="rector-complaints-content">
-          <div className="rector-filters-bar">
-            <div className="rector-filter-group">
-              <label>Search</label>
-              <input
-                type="text"
-                placeholder="Complaint code, subject, or student name..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <div className="rector-filter-group">
-              <label>Status</label>
-              <select
-                value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
-              >
-                {statusList.map((status) => (
-                  <option key={status} value={status}>
-                    {status}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="rector-filter-group">
-              <label>Category</label>
-              <select
-                value={filterCategory}
-                onChange={(e) => setFilterCategory(e.target.value)}
-              >
-                {categoryList.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
-            </div>
+          {error && <div className="rector-error">⚠️ {error}<button onClick={fetchComplaints}>Retry</button></div>}
+
+          <div className="rector-stat-grid">
+            <div><span>Total</span><strong>{complaints.length}</strong></div>
+            <div><span>Open</span><strong>{complaints.filter((c) => c.status !== "Closed").length}</strong></div>
+            <div><span>OTP Verification</span><strong>{complaints.filter((c) => c.status === "OTP Verification").length}</strong></div>
+            <div><span>Closed</span><strong>{complaints.filter((c) => c.status === "Closed").length}</strong></div>
           </div>
 
-          {error && <div className="rector-error-message">⚠️ {error}</div>}
-
-          <div className="rector-stats">
-            <div className="rector-stat-card">
-              <span>Total</span>
-              <strong>{complaints.length}</strong>
-            </div>
-            <div className="rector-stat-card">
-              <span>Pending</span>
-              <strong>
-                {
-                  complaints.filter(
-                    (c) => c.status === "Submitted" || c.status === "Assigned",
-                  ).length
-                }
-              </strong>
-            </div>
-            <div className="rector-stat-card">
-              <span>In Progress</span>
-              <strong>
-                {
-                  complaints.filter(
-                    (c) =>
-                      c.status === "In Progress" ||
-                      c.status === "Resolution Pending",
-                  ).length
-                }
-              </strong>
-            </div>
-            <div className="rector-stat-card">
-              <span>Closed</span>
-              <strong>
-                {complaints.filter((c) => c.status === "Closed").length}
-              </strong>
-            </div>
+          <div className="rector-filter-bar">
+            <input type="search" placeholder="Search complaint, student or staff..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+            <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
+              <option value="All">All Status</option>
+              <option value="Submitted">Submitted</option>
+              <option value="Assigned">Assigned</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Resolution Pending">Resolution Pending</option>
+              <option value="OTP Verification">OTP Verification</option>
+              <option value="Closed">Closed</option>
+            </select>
+            <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}>
+              {categories.map((category) => <option key={category} value={category}>{category === "All" ? "All Categories" : category}</option>)}
+            </select>
           </div>
 
-          {filteredComplaints.length === 0 ? (
-            <div className="rector-no-data">No complaints found.</div>
+          {loading ? (
+            <div className="rector-loading">Loading complaints...</div>
+          ) : filtered.length === 0 ? (
+            <div className="rector-empty">No complaints found.</div>
           ) : (
-            <div className="rector-complaints-list">
-              {filteredComplaints.map((complaint) => (
-                <div key={complaint.id} className="rector-complaint-card">
-                  <div className="rector-complaint-header">
-                    <div className="rector-complaint-title">
-                      <span className="rector-complaint-code">
-                        {complaint.complaint_code}
-                      </span>
-                      <h3>{complaint.subject}</h3>
-                      <span className="rector-complaint-category">
-                        {complaint.category}
-                      </span>
-                    </div>
-                    <span
-                      className="rector-complaint-status"
-                      style={{
-                        background: statusColors[complaint.status] || "#fff",
-                        color: statusTextColors[complaint.status] || "#000",
-                      }}
-                    >
-                      {complaint.status}
-                    </span>
+            <div className="rector-complaint-list">
+              {filtered.map((c) => (
+                <article className="rector-complaint-card" key={c.id}>
+                  <div className="rector-complaint-card-top">
+                    <div><strong>{c.complaint_code}</strong><span>{c.category}</span></div>
+                    <span className={`rector-status status-${statusClass(c.status)}`}>{c.status}</span>
                   </div>
-
-                  <div className="rector-complaint-body">
-                    <div className="rector-info-section">
-                      <h4>Student Information</h4>
-                      <div className="rector-info-grid">
-                        <div className="rector-info-item">
-                          <div className="rector-student-photo">
-                            {getPhotoUrl(complaint.student_photo) ? (
-                              <img
-                                src={getPhotoUrl(complaint.student_photo)}
-                                alt={complaint.student_name}
-                              />
-                            ) : (
-                              <span>
-                                {complaint.student_name
-                                  ?.charAt(0)
-                                  ?.toUpperCase() || "S"}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                        <div className="rector-info-details">
-                          <div>
-                            <span>Name</span>
-                            <strong>{complaint.student_name || "-"}</strong>
-                          </div>
-                          <div>
-                            <span>ID</span>
-                            <strong>{complaint.student_id || "-"}</strong>
-                          </div>
-                          <div>
-                            <span>Room</span>
-                            <strong>{complaint.student_room || "-"}</strong>
-                          </div>
-                          <div>
-                            <span>Email</span>
-                            <strong>{complaint.student_email || "-"}</strong>
-                          </div>
-                          <div>
-                            <span>Phone</span>
-                            <strong>{complaint.student_phone || "-"}</strong>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="rector-info-section">
-                      <h4>Complaint Details</h4>
-                      <div>
-                        <span>Description</span>
-                        <p>{complaint.description || "-"}</p>
-                      </div>
-                      <div>
-                        <span>Submitted</span>
-                        <strong>{formatDateTime(complaint.created_at)}</strong>
-                      </div>
-                      {complaint.attachment && (
-                        <div>
-                          <span>Attachment</span>
-                          <a
-                            href={getPhotoUrl(complaint.attachment)}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            View File
-                          </a>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="rector-info-section">
-                      <h4>Assigned Staff</h4>
-                      <div className="rector-staff-box">
-                        <div className="rector-staff-photo">
-                          {getPhotoUrl(complaint.assigned_staff_photo) ? (
-                            <img
-                              src={getPhotoUrl(complaint.assigned_staff_photo)}
-                              alt={complaint.assigned_staff_name}
-                            />
-                          ) : (
-                            <span>
-                              {complaint.assigned_staff_name
-                                ?.charAt(0)
-                                ?.toUpperCase() || "S"}
-                            </span>
-                          )}
-                        </div>
-                        <div className="rector-staff-info">
-                          <div>
-                            <span>Name</span>
-                            <strong>
-                              {complaint.assigned_staff_name || "Not assigned"}
-                            </strong>
-                          </div>
-                          <div>
-                            <span>Role</span>
-                            <strong>
-                              {complaint.assigned_staff_role || "-"}
-                            </strong>
-                          </div>
-                          <div>
-                            <span>Email</span>
-                            <strong>
-                              {complaint.assigned_staff_email || "-"}
-                            </strong>
-                          </div>
-                          <div>
-                            <span>Phone</span>
-                            <strong>
-                              {complaint.assigned_staff_mobile || "-"}
-                            </strong>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {complaint.status !== "Submitted" && (
-                      <div className="rector-info-section">
-                        <h4>Resolution Information</h4>
-                        <div>
-                          <span>Expected Resolution</span>
-                          <strong>
-                            {formatDateTime(complaint.expected_resolution_at) ||
-                              "Not set"}
-                          </strong>
-                        </div>
-                        <div>
-                          <span>Resolution Note</span>
-                          <p>
-                            {complaint.resolution_note || "Not yet recorded"}
-                          </p>
-                        </div>
-                        {complaint.otp_verified === "Yes" && (
-                          <div>
-                            <span>OTP Verified</span>
-                            <strong>✓ Yes</strong>
-                          </div>
-                        )}
-                        {complaint.closed_at && (
-                          <div>
-                            <span>Closed At</span>
-                            <strong>
-                              {formatDateTime(complaint.closed_at)}
-                            </strong>
-                          </div>
-                        )}
-                        {complaint.rating && (
-                          <div>
-                            <span>Rating</span>
-                            <strong>{complaint.rating}/5</strong>
-                          </div>
-                        )}
-                      </div>
-                    )}
+                  <h3>{c.subject}</h3>
+                  <div className="rector-complaint-grid">
+                    <div><span>Student</span><strong>{c.student_name || "-"}</strong></div>
+                    <div><span>Room</span><strong>{c.student_room || "-"}</strong></div>
+                    <div><span>Assigned Staff</span><strong>{c.assigned_staff_name || "-"}</strong></div>
+                    <div><span>Staff Mobile</span><strong>{c.assigned_staff_mobile || "-"}</strong></div>
+                    <div><span>Expected Resolution</span><strong>{formatDateTime(c.expected_resolution_at)}</strong></div>
+                    <div><span>Rating</span><strong>{c.rating ? `${c.rating}/5` : "Not rated"}</strong></div>
                   </div>
-
-                  <div className="rector-complaint-footer">
-                    <button
-                      onClick={() =>
-                        navigate(`/rector/complaints/${complaint.id}`)
-                      }
-                      className="rector-view-btn"
-                    >
-                      View Details
-                    </button>
-                  </div>
-                </div>
+                  <button className="rector-view-btn" onClick={() => navigate(`/rector/complaints/${c.id}`)}>View Details</button>
+                </article>
               ))}
             </div>
           )}

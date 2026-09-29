@@ -104,6 +104,7 @@ import AllowExit from "./pages/security/gatepass/AllowExit";
 import AllowEntry from "./pages/security/gatepass/AllowEntry";
 
 import MySalary from "./pages/salary/MySalary";
+import ComplaintRating from "./pages/complaints/ComplaintRating";
 
 // =====================================================
 // PROTECTED ROUTE
@@ -353,6 +354,10 @@ function App() {
 
         <Route path="/security/gatepass/exit" element={<AllowExit />} />
         <Route path="/security/gatepass/entry" element={<AllowEntry />} />
+
+
+
+        <Route path="/complaint-rating/:token" element={<ComplaintRating />} />
 
         {/* =========================================
                     UNKNOWN URL
