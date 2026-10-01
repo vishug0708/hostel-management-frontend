@@ -17,12 +17,13 @@ function StaffLogin() {
   const [success, setSuccess] = useState("");
 
   useEffect(() => {
-    const staffId = sessionStorage.getItem("currentStaffId");
-    const token = staffId
-      ? sessionStorage.getItem(`staffToken_${staffId}`)
+    const currentStaffId = sessionStorage.getItem("currentStaffId");
+
+    const existingToken = currentStaffId
+      ? sessionStorage.getItem(`staffToken_${currentStaffId}`)
       : sessionStorage.getItem("staffToken");
 
-    if (token) {
+    if (existingToken) {
       navigate("/staff/dashboard", {
         replace: true,
       });
@@ -44,10 +45,10 @@ function StaffLogin() {
     setError("");
     setSuccess("");
 
-    const staffId = form.staff_id.trim();
+    const loginStaffId = form.staff_id.trim();
     const password = form.password;
 
-    if (!staffId || !password) {
+    if (!loginStaffId || !password) {
       setError("Please enter Staff ID and password.");
       return;
     }
@@ -55,64 +56,106 @@ function StaffLogin() {
     try {
       setLoading(true);
 
-      console.log("Staff Login API:", `${API_URL}/api/staff/auth/login`);
+      console.log(
+        "Staff Login API:",
+        `${API_URL}/api/staff/auth/login`
+      );
 
-      const response = await fetch(`${API_URL}/api/staff/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          staff_id: staffId,
-          password: password,
-        }),
-      });
+      const response = await fetch(
+        `${API_URL}/api/staff/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            staff_id: loginStaffId,
+            password: password,
+          }),
+        }
+      );
 
-      const contentType = response.headers.get("content-type") || "";
+      const contentType =
+        response.headers.get("content-type") || "";
 
       let data;
 
       if (contentType.includes("application/json")) {
         data = await response.json();
       } else {
-        const text = await response.text();
+        const responseText = await response.text();
 
-        console.error("Staff Login Non-JSON Response:", text);
+        console.error(
+          "Staff Login Non-JSON Response:",
+          responseText
+        );
 
-        throw new Error(`Backend returned ${response.status} instead of JSON.`);
+        throw new Error(
+          `Backend returned ${response.status} instead of JSON.`
+        );
       }
 
       console.log("Staff Login Status:", response.status);
-
       console.log("Staff Login Response:", data);
 
       if (!response.ok || !data.success) {
-        throw new Error(data.message || "Invalid Staff ID or password.");
+        throw new Error(
+          data.message || "Invalid Staff ID or password."
+        );
       }
 
       if (!data.token) {
         throw new Error(
-          "Login successful but JWT token was not received from backend.",
+          "Login successful but JWT token was not received from backend."
         );
       }
 
-      const staffId = data.staff?.id;
-      if (staffId) {
-        sessionStorage.setItem(`staffToken_${staffId}`, data.token);
-        sessionStorage.setItem(`staff_${staffId}`, JSON.stringify(data.staff || {}));
-        sessionStorage.setItem("currentStaffId", staffId);
+      const loggedInStaffId = data.staff?.id;
+
+      if (loggedInStaffId) {
+        sessionStorage.setItem(
+          `staffToken_${loggedInStaffId}`,
+          data.token
+        );
+
+        sessionStorage.setItem(
+          `staff_${loggedInStaffId}`,
+          JSON.stringify(data.staff || {})
+        );
+
+        sessionStorage.setItem(
+          "currentStaffId",
+          loggedInStaffId
+        );
+
         if (data.staff?.photo) {
-          sessionStorage.setItem(`staffPhoto_${staffId}`, data.staff.photo);
+          sessionStorage.setItem(
+            `staffPhoto_${loggedInStaffId}`,
+            data.staff.photo
+          );
         }
       } else {
-        sessionStorage.setItem("staffToken", data.token);
-        sessionStorage.setItem("staff", JSON.stringify(data.staff || {}));
+        sessionStorage.setItem(
+          "staffToken",
+          data.token
+        );
+
+        sessionStorage.setItem(
+          "staff",
+          JSON.stringify(data.staff || {})
+        );
+
         if (data.staff?.photo) {
-          sessionStorage.setItem("staffPhoto", data.staff.photo);
+          sessionStorage.setItem(
+            "staffPhoto",
+            data.staff.photo
+          );
         }
       }
 
-      setSuccess("Staff login successful! Redirecting...");
+      setSuccess(
+        "Staff login successful! Redirecting..."
+      );
 
       setTimeout(() => {
         navigate("/staff/dashboard", {
@@ -121,7 +164,6 @@ function StaffLogin() {
       }, 300);
     } catch (err) {
       console.error("Staff Login Error:", err);
-
       setError(err.message || "Unable to login.");
     } finally {
       setLoading(false);
@@ -139,9 +181,14 @@ function StaffLogin() {
           <p>Hostel Management System</p>
         </div>
 
-        <form className="staff-login-form" onSubmit={handleSubmit}>
+        <form
+          className="staff-login-form"
+          onSubmit={handleSubmit}
+        >
           <div className="staff-form-group">
-            <label htmlFor="staff-id">Staff ID</label>
+            <label htmlFor="staff-id">
+              Staff ID
+            </label>
 
             <input
               id="staff-id"
@@ -156,7 +203,9 @@ function StaffLogin() {
           </div>
 
           <div className="staff-form-group">
-            <label htmlFor="staff-password">Password</label>
+            <label htmlFor="staff-password">
+              Password
+            </label>
 
             <input
               id="staff-password"
@@ -179,15 +228,21 @@ function StaffLogin() {
           </button>
 
           {success && (
-            <div className="staff-login-message success-message">{success}</div>
+            <div className="staff-login-message success-message">
+              {success}
+            </div>
           )}
 
           {error && (
-            <div className="staff-login-message error-message">{error}</div>
+            <div className="staff-login-message error-message">
+              {error}
+            </div>
           )}
 
           <div className="admin-back-home">
-            <Link to="/">← Back to Home</Link>
+            <Link to="/">
+              ← Back to Home
+            </Link>
           </div>
         </form>
       </div>
