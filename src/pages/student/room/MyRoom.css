@@ -519,9 +519,15 @@
 
 @media (max-width: 700px) {
     .myroom-main {
-        width: 100%;
-        margin-left: 0;
+        width: 100% !important;
+        margin-left: 0 !important;
         min-height: 100vh;
+    }
+
+    .myroom-layout {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
     }
 
     .myroom-mobile-header {

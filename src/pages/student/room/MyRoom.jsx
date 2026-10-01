@@ -313,11 +313,9 @@ const MyRoom = () => {
                                                 {student.photo ? (
                                                     <img
                                                         src={
-                                                            student.photo.startsWith(
-                                                                "http"
-                                                            )
+                                                            student.photo.startsWith("http")
                                                                 ? student.photo
-                                                                : `http://localhost:5000/${student.photo}`
+                                                                : `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/${String(student.photo).replace(/^\/+/, "")}`
                                                         }
                                                         alt={student.name}
                                                     />
