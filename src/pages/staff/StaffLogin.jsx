@@ -17,7 +17,10 @@ function StaffLogin() {
   const [success, setSuccess] = useState("");
 
   useEffect(() => {
-    const token = sessionStorage.getItem("staffToken");
+    const staffId = sessionStorage.getItem("currentStaffId");
+    const token = staffId
+      ? sessionStorage.getItem(`staffToken_${staffId}`)
+      : sessionStorage.getItem("staffToken");
 
     if (token) {
       navigate("/staff/dashboard", {
@@ -93,11 +96,20 @@ function StaffLogin() {
         );
       }
 
-      sessionStorage.setItem("staffToken", data.token);
-      sessionStorage.setItem("staff", JSON.stringify(data.staff || {}));
-
-      if (data.staff?.photo) {
-        sessionStorage.setItem("staffPhoto", data.staff.photo);
+      const staffId = data.staff?.id;
+      if (staffId) {
+        sessionStorage.setItem(`staffToken_${staffId}`, data.token);
+        sessionStorage.setItem(`staff_${staffId}`, JSON.stringify(data.staff || {}));
+        sessionStorage.setItem("currentStaffId", staffId);
+        if (data.staff?.photo) {
+          sessionStorage.setItem(`staffPhoto_${staffId}`, data.staff.photo);
+        }
+      } else {
+        sessionStorage.setItem("staffToken", data.token);
+        sessionStorage.setItem("staff", JSON.stringify(data.staff || {}));
+        if (data.staff?.photo) {
+          sessionStorage.setItem("staffPhoto", data.staff.photo);
+        }
       }
 
       setSuccess("Staff login successful! Redirecting...");

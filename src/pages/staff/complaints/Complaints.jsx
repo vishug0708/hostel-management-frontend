@@ -52,7 +52,7 @@ const Complaints = () => {
   };
 
   useEffect(() => {
-    const saved = localStorage.getItem("staff");
+    const saved = sessionStorage.getItem("staff") || localStorage.getItem("staff");
     if (saved) {
       try {
         setStaff(JSON.parse(saved));
@@ -196,6 +196,14 @@ const Complaints = () => {
 };
 
   const logout = () => {
+    const staffId = sessionStorage.getItem("currentStaffId");
+    if (staffId) {
+      sessionStorage.removeItem(`staffToken_${staffId}`);
+      sessionStorage.removeItem(`staff_${staffId}`);
+      sessionStorage.removeItem(`staffPhoto_${staffId}`);
+    }
+    sessionStorage.removeItem("currentStaffId");
+    sessionStorage.removeItem("staffToken");
     localStorage.removeItem("staffToken");
     localStorage.removeItem("token");
     localStorage.removeItem("staff");

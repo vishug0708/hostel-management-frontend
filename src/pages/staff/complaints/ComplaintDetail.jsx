@@ -71,7 +71,7 @@ const ComplaintDetail = () => {
   };
 
   useEffect(() => {
-    const saved = localStorage.getItem("staff");
+    const saved = sessionStorage.getItem("staff") || localStorage.getItem("staff");
     if (saved) {
       try {
         setStaff(JSON.parse(saved));
@@ -98,6 +98,14 @@ const ComplaintDetail = () => {
       const data = await response.json();
 
       if (response.status === 401) {
+        const staffId = sessionStorage.getItem("currentStaffId");
+        if (staffId) {
+          sessionStorage.removeItem(`staffToken_${staffId}`);
+          sessionStorage.removeItem(`staff_${staffId}`);
+          sessionStorage.removeItem(`staffPhoto_${staffId}`);
+        }
+        sessionStorage.removeItem("currentStaffId");
+        sessionStorage.removeItem("staffToken");
         localStorage.removeItem("staffToken");
         localStorage.removeItem("token");
         localStorage.removeItem("staff");
@@ -133,6 +141,14 @@ const ComplaintDetail = () => {
     });
     const data = await response.json();
     if (response.status === 401) {
+      const staffId = sessionStorage.getItem("currentStaffId");
+      if (staffId) {
+        sessionStorage.removeItem(`staffToken_${staffId}`);
+        sessionStorage.removeItem(`staff_${staffId}`);
+        sessionStorage.removeItem(`staffPhoto_${staffId}`);
+      }
+      sessionStorage.removeItem("currentStaffId");
+      sessionStorage.removeItem("staffToken");
       localStorage.removeItem("staffToken");
       localStorage.removeItem("token");
       localStorage.removeItem("staff");
@@ -242,6 +258,14 @@ const ComplaintDetail = () => {
   };
 
   const logout = () => {
+    const staffId = sessionStorage.getItem("currentStaffId");
+    if (staffId) {
+      sessionStorage.removeItem(`staffToken_${staffId}`);
+      sessionStorage.removeItem(`staff_${staffId}`);
+      sessionStorage.removeItem(`staffPhoto_${staffId}`);
+    }
+    sessionStorage.removeItem("currentStaffId");
+    sessionStorage.removeItem("staffToken");
     localStorage.removeItem("staffToken");
     localStorage.removeItem("token");
     localStorage.removeItem("staff");
