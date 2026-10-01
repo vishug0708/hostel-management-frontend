@@ -1176,3 +1176,382 @@
         pointer-events: auto;
     }
 }
+
+
+/* =========================================================
+   FINAL RESPONSIVE STANDARD
+   Mobile: <= 767px
+   Tablet / Small Laptop: 768px - 1023px
+   Desktop / Large Screen: >= 1024px
+   ========================================================= */
+
+/* Desktop / Large Screens: 1024px and above */
+@media (min-width: 1024px) {
+  .myroom-layout {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .myroom-main {
+    width: calc(100% - 255px);
+    max-width: none;
+    margin-left: 255px;
+    padding: 45px 38px;
+    min-height: 100vh;
+    box-sizing: border-box;
+  }
+
+  .myroom-mobile-header {
+    display: none !important;
+  }
+
+  .myroom-desktop-photo {
+    display: block;
+  }
+}
+
+/* Tablet / Small Laptops: 768px to 1023px */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .myroom-layout {
+    display: block !important;
+    width: 100% !important;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  .myroom-main {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    padding: 92px 24px 32px !important;
+    min-height: 100vh;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  .myroom-mobile-header {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    height: 68px;
+    min-height: 68px;
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 16px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid #dbe6ee;
+    box-shadow: 0 3px 12px rgba(15,42,60,0.08);
+    z-index: 3000 !important;
+  }
+
+  .myroom-mobile-left {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .myroom-mobile-menu {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    position: relative;
+    z-index: 3001;
+    pointer-events: auto;
+  }
+
+  .myroom-mobile-brand {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .myroom-mobile-brand-icon {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: #0d8b84;
+    font-size: 20px;
+  }
+
+  .myroom-mobile-brand strong {
+    display: block;
+    color: #102a43;
+    font-size: 16px;
+    line-height: 1.1;
+  }
+
+  .myroom-mobile-brand span {
+    display: block;
+    margin-top: 2px;
+    color: #607d98;
+    font-size: 10px;
+  }
+
+  .myroom-mobile-photo {
+    display: flex !important;
+    flex: 0 0 46px !important;
+    width: 46px !important;
+    height: 46px !important;
+    margin-left: auto;
+    position: relative;
+    z-index: 3001;
+  }
+
+  .myroom-desktop-photo {
+    display: none !important;
+  }
+
+  .room-info-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .roommates-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Mobile Portrait: 767px and below */
+@media (max-width: 767px) {
+  .myroom-layout {
+    display: block !important;
+    width: 100% !important;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  .myroom-main {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    padding: 84px 12px 24px !important;
+    min-height: 100vh;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  .myroom-mobile-header {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    height: 64px;
+    min-height: 64px;
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 10px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 1px solid #dbe6ee;
+    box-shadow: 0 3px 12px rgba(15,42,60,0.08);
+    z-index: 3000 !important;
+  }
+
+  .myroom-mobile-left {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .myroom-mobile-menu {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    position: relative;
+    z-index: 3001;
+    pointer-events: auto;
+  }
+
+  .myroom-mobile-brand {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .myroom-mobile-brand-icon {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: #0d8b84;
+    font-size: 20px;
+  }
+
+  .myroom-mobile-brand strong,
+  .myroom-mobile-brand span {
+    white-space: nowrap;
+  }
+
+  .myroom-mobile-brand strong {
+    display: block;
+    color: #102a43;
+    font-size: 16px;
+    line-height: 1.1;
+  }
+
+  .myroom-mobile-brand span {
+    display: block;
+    margin-top: 2px;
+    color: #607d98;
+    font-size: 10px;
+  }
+
+  .myroom-mobile-photo {
+    display: flex !important;
+    flex: 0 0 44px !important;
+    width: 44px !important;
+    height: 44px !important;
+    margin-left: auto;
+    position: relative;
+    z-index: 3001;
+  }
+
+  .myroom-desktop-photo {
+    display: none !important;
+  }
+
+  .myroom-header {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 0 20px;
+  }
+
+  .myroom-header h1 {
+    font-size: clamp(27px, 7vw, 34px);
+  }
+
+  .page-description {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .room-summary-card,
+  .roommates-card,
+  .room-alert,
+  .room-loading,
+  .no-room-card {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .room-card-header {
+    padding: 18px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .room-card-header h2 {
+    font-size: 23px;
+  }
+
+  .allocated-badge {
+    margin-left: 0;
+  }
+
+  .room-info-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .room-info-item {
+    width: 100%;
+    border-right: 0 !important;
+    border-bottom: 1px solid #dbe6ee;
+    box-sizing: border-box;
+  }
+
+  .room-info-item:last-child {
+    border-bottom: 0;
+  }
+
+  .roommates-header {
+    padding: 18px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .roommate-count {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  .roommates-list {
+    width: 100%;
+    padding: 12px;
+    grid-template-columns: 1fr !important;
+    box-sizing: border-box;
+  }
+
+  .roommate-card {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    gap: 12px;
+  }
+
+  .roommate-photo {
+    width: 62px;
+    height: 62px;
+    flex: 0 0 62px;
+  }
+
+  .roommate-details {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .roommate-details h3 {
+    font-size: 17px;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  .myroom-detail-row {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    margin-top: 6px;
+    font-size: 12px;
+  }
+
+  .myroom-detail-row span {
+    width: 48px;
+    flex: 0 0 48px;
+  }
+
+  .myroom-detail-row strong {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+}

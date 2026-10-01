@@ -6,11 +6,11 @@ const menuItems = [
   { label: "Dashboard", icon: "📊", path: "/student/dashboard" },
   { label: "My Profile", icon: "👤", path: "/student/profile" },
   { label: "My Room", icon: "🛏️", path: "/student/room" },
-  { label: "My Fees", icon: "💰", path: "/student/fees" },
   { label: "My Leave", icon: "📝", path: "/student/leaves" },
   { label: "Apply Leave", icon: "➕", path: "/student/apply-leave" },
   { label: "Gate Pass", icon: "🎫", path: "/student/gatepass" },
   { label: "Complaints", icon: "📩", path: "/student/complaints" },
+  { label: "My Fees", icon: "💰", path: "/student/fees" },
   { label: "Notifications", icon: "🔔", path: "/student/notifications" },
   { label: "Cricket Box", icon: "🏏", path: "/student/cricket-box/bookings" }
 ];
