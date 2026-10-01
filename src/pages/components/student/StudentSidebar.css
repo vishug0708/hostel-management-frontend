@@ -1,202 +1,157 @@
 .student-sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 255px;
-  height: 100vh;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  padding: 22px 15px;
-  background: #0f172a;
-  color: #fff;
-  z-index: 1400;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 255px;
+    height: 100vh;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    padding: 22px 15px;
+    background: #0f172a;
+    color: #fff;
+    z-index: 1400;
 }
 
 .student-sidebar-brand {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  padding: 5px 10px 25px;
-  border-bottom: 1px solid #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 5px 10px 25px;
+    border-bottom: 1px solid #1e293b;
 }
 
 .student-sidebar-brand-icon {
-  width: 43px;
-  height: 43px;
-  flex: 0 0 43px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 11px;
-  background: #0f766e;
-  font-size: 21px;
+    width: 43px;
+    height: 43px;
+    flex: 0 0 43px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    background: #0f766e;
+    font-size: 21px;
 }
 
 .student-sidebar-brand strong {
-  display: block;
-  font-size: 17px;
+    display: block;
+    font-size: 17px;
 }
 
 .student-sidebar-brand span {
-  display: block;
-  margin-top: 3px;
-  color: #94a3b8;
-  font-size: 11px;
+    display: block;
+    margin-top: 3px;
+    color: #94a3b8;
+    font-size: 11px;
 }
 
 .student-sidebar-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  margin-top: 25px;
-  overflow-y: auto;
-  flex: 1;
-  min-height: 0;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 25px;
+    overflow-y: auto;
 }
 
 .student-sidebar-nav-item {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 13px;
-  border: none;
-  border-radius: 9px;
-  background: transparent;
-  color: #94a3b8;
-  text-align: left;
-  font-size: 13px;
-  cursor: pointer;
-  transition: 0.2s ease;
-  position: relative;
-  z-index: 5002;
+    width: 100%;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 13px;
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+    color: #94a3b8;
+    text-align: left;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.2s ease;
 }
 
 .student-sidebar-nav-item:hover {
-  background: #1e293b;
-  color: #fff;
-  transform: translateX(2px);
+    background: #1e293b;
+    color: #fff;
+    transform: translateX(2px);
 }
 
 .student-sidebar-nav-item.active {
-  background: #134e4a;
-  color: #fff;
-  box-shadow: inset 3px 0 0 #2dd4bf;
+    background: #134e4a;
+    color: #fff;
+    box-shadow: inset 3px 0 0 #2dd4bf;
 }
 
 .student-sidebar-nav-icon {
-  width: 19px;
-  min-width: 19px;
-  text-align: center;
+    width: 19px;
+    min-width: 19px;
+    text-align: center;
 }
 
 .student-sidebar-logout {
-  width: 100%;
-  flex: 0 0 auto;
-  margin-top: 12px;
-  padding: 12px 13px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border: 1px solid #334155;
-  border-radius: 9px;
-  background: transparent;
-  color: #fca5a5;
-  font-size: 13px;
-  cursor: pointer;
-  transition: 0.2s ease;
-  position: relative;
-  z-index: 5002;
+    width: 100%;
+    flex: 0 0 auto;
+    margin-top: 12px;
+    padding: 12px 13px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid #334155;
+    border-radius: 9px;
+    background: transparent;
+    color: #fca5a5;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.2s ease;
 }
 
 .student-sidebar-logout:hover {
-  background: #7f1d1d;
-  color: #fff;
+    background: #7f1d1d;
+    color: #fff;
 }
 
 .student-sidebar-overlay {
-  display: none;
+    display: none;
 }
 
-/* Mobile Portrait: 767px and below */
-@media (max-width: 767px) {
-  .student-sidebar {
-    width: min(280px, 88vw);
-    max-width: 88vw;
-    height: 100vh;
-    padding: 18px 14px;
-    overflow-y: auto;
-    transform: translate3d(-105%, 0, 0);
-    transition: transform 0.25s ease;
-    box-shadow: 12px 0 35px rgba(15, 23, 42, 0.35);
-    z-index: 5000 !important;
-  }
+@media (max-width: 1023px) {
+    .student-sidebar {
+        width: min(280px, 88vw);
+        max-width: 88vw;
+        height: 100vh;
+        padding: 18px 14px;
+        overflow-y: auto;
+        transform: translate3d(-105%, 0, 0);
+        transition: transform 0.25s ease;
+        box-shadow: 12px 0 35px rgba(15, 23, 42, 0.35);
+        z-index: 5000;
+    }
 
-  .student-sidebar.mobile-open {
-    transform: translate3d(0, 0, 0);
-  }
+    .student-sidebar.mobile-open {
+        transform: translate3d(0, 0, 0);
+    }
 
-  .student-sidebar-overlay {
-    position: fixed;
-    inset: 0;
-    display: block;
-    background: rgba(15, 23, 42, 0.52);
-    z-index: 4900 !important;
-  }
+    .student-sidebar-overlay {
+        position: fixed;
+        inset: 0;
+        display: block;
+        background: rgba(15, 23, 42, 0.52);
+        z-index: 4900;
+    }
 
-  .student-sidebar-brand {
-    padding: 4px 9px 20px;
-  }
+    .student-sidebar-brand {
+        padding: 4px 9px 20px;
+    }
 
-  .student-sidebar-nav {
-    margin-top: 20px;
-    overflow-y: auto;
-  }
-
-  .student-sidebar-nav-item {
-    min-height: 44px;
-  }
+    .student-sidebar-nav {
+        margin-top: 20px;
+    }
 }
 
-/* Tablets / Small Laptops: 768px to 1023px */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .student-sidebar {
-    width: min(290px, 42vw);
-    max-width: 42vw;
-    height: 100vh;
-    padding: 20px 15px;
-    overflow-y: auto;
-    transform: translate3d(-105%, 0, 0);
-    transition: transform 0.25s ease;
-    box-shadow: 12px 0 35px rgba(15, 23, 42, 0.35);
-    z-index: 5000 !important;
-  }
-
-  .student-sidebar.mobile-open {
-    transform: translate3d(0, 0, 0);
-  }
-
-  .student-sidebar-overlay {
-    position: fixed;
-    inset: 0;
-    display: block;
-    background: rgba(15, 23, 42, 0.52);
-    z-index: 4900 !important;
-  }
-
-  .student-sidebar-nav {
-    margin-top: 22px;
-  }
-}
-
-/* Desktops / Large Screens: 1024px and above */
 @media (min-width: 1024px) {
-  .student-sidebar {
-    transform: none;
-  }
-
-  .student-sidebar-overlay {
-    display: none !important;
-  }
+    .student-sidebar {
+        transform: none;
+    }
 }
