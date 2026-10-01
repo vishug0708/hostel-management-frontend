@@ -140,6 +140,9 @@ const ViewComplaint = () => {
 
         <header className="view-complaint-header">
           <div><span>HOSTEL SERVICES</span><h1>Complaint Details</h1><p>Track assigned staff, expected resolution and the complete resolution workflow.</p></div>
+          <button type="button" className="view-complaint-header-profile" onClick={() => navigateTo("/student/profile")} aria-label="Open student profile">
+            {photo ? <img src={photo} alt="Student" /> : "👤"}
+          </button>
         </header>
 
         <section className="view-complaint-content">

@@ -209,6 +209,9 @@ const NewComplaint = () => {
 
         <header className="student-complaint-header">
           <div><span>HOSTEL SERVICES</span><h1>New Complaint</h1><p>Backup student is mandatory and staff is assigned automatically by complaint category.</p></div>
+          <button type="button" className="student-complaint-header-profile" onClick={() => navigateTo("/student/profile")} aria-label="Open student profile">
+            {photo ? <img src={photo} alt="Student" /> : initials}
+          </button>
         </header>
 
         <section className="student-complaint-content">

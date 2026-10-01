@@ -154,9 +154,9 @@ const Complaints = () => {
             <h1>My Complaints</h1>
             <p>Raise a complaint, track the assigned staff and follow the resolution.</p>
           </div>
-          <div className="student-complaints-profile">
+          <button type="button" className="student-complaints-profile" onClick={() => navigateTo("/student/profile")} aria-label="Open student profile">
             {photo ? <img src={photo} alt="Student" /> : initials}
-          </div>
+          </button>
         </header>
 
         <section className="student-complaints-content">
