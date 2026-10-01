@@ -17,12 +17,24 @@ const menuItems = [
   { label: "Cricket Box", icon: "🏏", path: "/student/cricket-box/bookings" },
 ];
 
-const categories = ["Electrical", "Plumbing", "Carpenter", "Cleaning", "IT", "Maintenance"];
+const categories = [
+  "Electrical",
+  "Plumbing",
+  "Carpenter",
+  "Cleaning",
+  "IT",
+  "Maintenance",
+];
 
 const getPhotoUrl = (photo) => {
   if (!photo) return "";
   const value = String(photo).trim();
-  if (value.startsWith("data:") || value.startsWith("blob:") || value.startsWith("http")) return value;
+  if (
+    value.startsWith("data:") ||
+    value.startsWith("blob:") ||
+    value.startsWith("http")
+  )
+    return value;
   const normalized = value.replace(/^\/+/, "");
   if (normalized.startsWith("uploads/")) return `${API_URL}/${normalized}`;
   return `${API_URL}/uploads/students/${normalized}`;
@@ -35,19 +47,29 @@ const NewComplaint = () => {
   const [student, setStudent] = useState(null);
   const [backupStudents, setBackupStudents] = useState([]);
   const [selectedBackup, setSelectedBackup] = useState(null);
-  const [form, setForm] = useState({ backup_student_id: "", category: "", subject: "", description: "" });
+  const [form, setForm] = useState({
+    backup_student_id: "",
+    category: "",
+    subject: "",
+    description: "",
+  });
   const [attachment, setAttachment] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const getToken = () => localStorage.getItem("studentToken") || localStorage.getItem("token");
+  const getToken = () =>
+    localStorage.getItem("studentToken") || localStorage.getItem("token");
 
   useEffect(() => {
     const saved = localStorage.getItem("student");
     if (saved) {
-      try { setStudent(JSON.parse(saved)); } catch { setStudent(null); }
+      try {
+        setStudent(JSON.parse(saved));
+      } catch {
+        setStudent(null);
+      }
     }
   }, []);
 
@@ -71,16 +93,25 @@ const NewComplaint = () => {
           navigate("/student/login", { replace: true });
           return;
         }
-        if (!response.ok || !data.success) throw new Error(data.message || "Failed to load backup students.");
+        if (!response.ok || !data.success)
+          throw new Error(data.message || "Failed to load backup students.");
         setBackupStudents(Array.isArray(data.students) ? data.students : []);
       })
-      .catch((err) => setError(err.message || "Unable to load backup students."))
+      .catch((err) =>
+        setError(err.message || "Unable to load backup students."),
+      )
       .finally(() => setLoading(false));
   }, [student]);
 
   useEffect(() => {
     const outside = (event) => {
-      if (mobileMenuOpen && sidebarRef.current && !sidebarRef.current.contains(event.target) && menuButtonRef.current && !menuButtonRef.current.contains(event.target)) {
+      if (
+        mobileMenuOpen &&
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target) &&
+        menuButtonRef.current &&
+        !menuButtonRef.current.contains(event.target)
+      ) {
         setMobileMenuOpen(false);
       }
     };
@@ -104,7 +135,10 @@ const NewComplaint = () => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
     if (name === "backup_student_id") {
-      setSelectedBackup(backupStudents.find((item) => String(item.id) === String(value)) || null);
+      setSelectedBackup(
+        backupStudents.find((item) => String(item.id) === String(value)) ||
+          null,
+      );
     }
     setError("");
   };
@@ -116,7 +150,13 @@ const NewComplaint = () => {
       return;
     }
 
-    const allowed = ["image/jpeg", "image/jpg", "image/png", "image/webp", "application/pdf"];
+    const allowed = [
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
+      "image/webp",
+      "application/pdf",
+    ];
     if (!allowed.includes(file.type)) {
       e.target.value = "";
       setAttachment(null);
@@ -139,8 +179,15 @@ const NewComplaint = () => {
     e.preventDefault();
     setError("");
 
-    if (!form.backup_student_id || !form.category || !form.subject.trim() || !form.description.trim()) {
-      setError("Backup student, category, subject and description are required.");
+    if (
+      !form.backup_student_id ||
+      !form.category ||
+      !form.subject.trim() ||
+      !form.description.trim()
+    ) {
+      setError(
+        "Backup student, category, subject and description are required.",
+      );
       return;
     }
 
@@ -174,9 +221,12 @@ const NewComplaint = () => {
         return;
       }
 
-      if (!response.ok || !data.success) throw new Error(data.message || "Failed to submit complaint.");
+      if (!response.ok || !data.success)
+        throw new Error(data.message || "Failed to submit complaint.");
 
-      alert(`Complaint ${data.complaint?.complaint_code || ""} submitted successfully.`);
+      alert(
+        `Complaint ${data.complaint?.complaint_code || ""} submitted successfully.`,
+      );
       navigate("/student/complaints", { replace: true });
     } catch (err) {
       setError(err.message || "Unable to submit complaint.");
@@ -186,30 +236,84 @@ const NewComplaint = () => {
   };
 
   const photo = getPhotoUrl(student?.photo);
-  const initials = String(student?.name || "Student").split(" ").map((p) => p[0]).join("").slice(0, 2).toUpperCase();
+  const initials = String(student?.name || "Student")
+    .split(" ")
+    .map((p) => p[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
 
   return (
     <div className="student-complaint-page">
-      <aside ref={sidebarRef} className={`student-dashboard-sidebar ${mobileMenuOpen ? "mobile-open" : ""}`}>
-        <div className="student-dashboard-brand"><div className="student-dashboard-brand-icon">🏠</div><div><strong>Hostel</strong><span>Student Portal</span></div></div>
+      <aside
+        ref={sidebarRef}
+        className={`student-dashboard-sidebar ${mobileMenuOpen ? "mobile-open" : ""}`}
+      >
+        <div className="student-dashboard-brand">
+          <div className="student-dashboard-brand-icon">🏠</div>
+          <div>
+            <strong>Hostel</strong>
+            <span>Student Portal</span>
+          </div>
+        </div>
         <nav className="student-dashboard-nav">
-          {menuItems.map((item) => <button key={item.path} className={item.label === "Complaints" ? "active" : ""} onClick={() => navigateTo(item.path)}><span>{item.icon}</span><span>{item.label}</span></button>)}
+          {menuItems.map((item) => (
+            <button
+              key={item.path}
+              className={item.label === "Complaints" ? "active" : ""}
+              onClick={() => navigateTo(item.path)}
+            >
+              <span>{item.icon}</span>
+              <span>{item.label}</span>
+            </button>
+          ))}
         </nav>
-        <button className="student-dashboard-logout" onClick={logout}><span>🚪</span><span>Logout</span></button>
+        <button className="student-dashboard-logout" onClick={logout}>
+          <span>🚪</span>
+          <span>Logout</span>
+        </button>
       </aside>
 
-      {mobileMenuOpen && <div className="student-dashboard-mobile-overlay" onClick={() => setMobileMenuOpen(false)} />}
+      {mobileMenuOpen && (
+        <div
+          className="student-dashboard-mobile-overlay"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
 
       <main className="student-complaint-main">
         <header className="student-dashboard-mobile-topbar">
-          <button ref={menuButtonRef} className="student-dashboard-mobile-menu-btn" onClick={() => setMobileMenuOpen(true)}>☰</button>
-          <div className="student-dashboard-mobile-brand"><strong>Hostel Student Panel</strong><span>New Complaint</span></div>
-          <div className="student-dashboard-mobile-photo">{photo ? <img src={photo} alt="Student" /> : initials}</div>
+          <button
+            ref={menuButtonRef}
+            className="student-dashboard-mobile-menu-btn"
+            onClick={() => setMobileMenuOpen(true)}
+          >
+            ☰
+          </button>
+          <div className="student-dashboard-mobile-brand">
+            <strong>Hostel Student Panel</strong>
+            <span>New Complaint</span>
+          </div>
+          <div className="student-dashboard-mobile-photo">
+            {photo ? <img src={photo} alt="Student" /> : initials}
+          </div>
         </header>
 
         <header className="student-complaint-header">
-          <div><span>HOSTEL SERVICES</span><h1>New Complaint</h1><p>Backup student is mandatory and staff is assigned automatically by complaint category.</p></div>
-          <button type="button" className="student-complaint-header-profile" onClick={() => navigateTo("/student/profile")} aria-label="Open student profile">
+          <div>
+            <span>HOSTEL SERVICES</span>
+            <h1>New Complaint</h1>
+            <p>
+              Backup student is mandatory and staff is assigned automatically by
+              complaint category.
+            </p>
+          </div>
+          <button
+            type="button"
+            className="student-complaint-header-profile"
+            onClick={() => navigateTo("/student/profile")}
+            aria-label="Open student profile"
+          >
             {photo ? <img src={photo} alt="Student" /> : initials}
           </button>
         </header>
@@ -218,59 +322,160 @@ const NewComplaint = () => {
           {error && <div className="student-complaint-error">⚠️ {error}</div>}
 
           {loading ? (
-            <div className="student-complaint-loading">Loading backup students...</div>
+            <div className="student-complaint-loading">
+              Loading backup students...
+            </div>
           ) : (
             <form className="student-complaint-form" onSubmit={submit}>
               <section className="student-complaint-card">
-                <div className="student-complaint-card-heading"><span>1</span><div><h2>Backup Student</h2><p>Select one backup student. Their details are loaded automatically.</p></div></div>
+                <div className="student-complaint-card-heading">
+                  <span>1</span>
+                  <div>
+                    <h2>Backup Student</h2>
+                    <p>
+                      Select one backup student. Their details are loaded
+                      automatically.
+                    </p>
+                  </div>
+                </div>
 
-                <label className="student-complaint-label">Backup Student <span>*</span></label>
-                <select name="backup_student_id" value={form.backup_student_id} onChange={handleChange} required>
+                <label className="student-complaint-label">
+                  Backup Student <span>*</span>
+                </label>
+                <select
+                  name="backup_student_id"
+                  value={form.backup_student_id}
+                  onChange={handleChange}
+                  required
+                >
                   <option value="">Select backup student</option>
-                  {backupStudents.map((item) => <option key={item.id} value={item.id}>{item.name} — ID {item.student_id ?? item.id}</option>)}
+                  {backupStudents.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.name} — ID {item.student_id ?? item.id}
+                    </option>
+                  ))}
                 </select>
 
                 {selectedBackup && (
                   <div className="backup-student-preview">
                     <div className="backup-student-photo">
-                      {getPhotoUrl(selectedBackup.photo) ? <img src={getPhotoUrl(selectedBackup.photo)} alt={selectedBackup.name} /> : selectedBackup.name?.charAt(0)?.toUpperCase()}
+                      {getPhotoUrl(selectedBackup.photo) ? (
+                        <img
+                          src={getPhotoUrl(selectedBackup.photo)}
+                          alt={selectedBackup.name}
+                        />
+                      ) : (
+                        selectedBackup.name?.charAt(0)?.toUpperCase()
+                      )}
                     </div>
                     <div className="backup-student-details">
                       <strong>{selectedBackup.name}</strong>
-                      <span>ID: {selectedBackup.student_id ?? selectedBackup.id}</span>
+                      <span>
+                        ID: {selectedBackup.student_id ?? selectedBackup.id}
+                      </span>
                       <span>📱 {selectedBackup.mobile || "-"}</span>
                       <span>✉️ {selectedBackup.email || "-"}</span>
-                      <span>🏠 {selectedBackup.room_no ? `${selectedBackup.block || ""}${selectedBackup.room_no}` : selectedBackup.hostel || "Hostel details unavailable"}</span>
+                      <span>
+                        🏠{" "}
+                        {selectedBackup.room_no
+                          ? `${selectedBackup.block || ""}${selectedBackup.room_no}`
+                          : selectedBackup.hostel ||
+                            "Hostel details unavailable"}
+                      </span>
                     </div>
                   </div>
                 )}
 
-                {backupStudents.length === 0 && <div className="student-complaint-warning">No other student is available as a backup student.</div>}
+                {backupStudents.length === 0 && (
+                  <div className="student-complaint-warning">
+                    No other student is available as a backup student.
+                  </div>
+                )}
               </section>
 
               <section className="student-complaint-card">
-                <div className="student-complaint-card-heading"><span>2</span><div><h2>Complaint Details</h2><p>Choose the field/category. The system will automatically select an active staff member with the lowest open complaint load.</p></div></div>
+                <div className="student-complaint-card-heading">
+                  <span>2</span>
+                  <div>
+                    <h2>Complaint Details</h2>
+                    <p>
+                      Choose the field/category. The system will automatically
+                      select an active staff member with the lowest open
+                      complaint load.
+                    </p>
+                  </div>
+                </div>
 
-                <label className="student-complaint-label">Category <span>*</span></label>
-                <select name="category" value={form.category} onChange={handleChange} required>
+                <label className="student-complaint-label">
+                  Category <span>*</span>
+                </label>
+                <select
+                  name="category"
+                  value={form.category}
+                  onChange={handleChange}
+                  required
+                >
                   <option value="">Select category</option>
-                  {categories.map((category) => <option key={category} value={category}>{category}</option>)}
+                  {categories.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))}
                 </select>
 
-                <label className="student-complaint-label">Subject <span>*</span></label>
-                <input name="subject" value={form.subject} onChange={handleChange} maxLength={200} placeholder="Short complaint subject" required />
+                <label className="student-complaint-label">
+                  Subject <span>*</span>
+                </label>
+                <input
+                  type="text"
+                  name="subject"
+                  value={form.subject}
+                  onChange={handleChange}
+                  maxLength={200}
+                  placeholder="Short complaint subject"
+                  required
+                />
 
-                <label className="student-complaint-label">Description <span>*</span></label>
-                <textarea name="description" value={form.description} onChange={handleChange} rows={7} placeholder="Explain the issue clearly..." required />
+                <label className="student-complaint-label">
+                  Description <span>*</span>
+                </label>
+                <textarea
+                  name="description"
+                  value={form.description}
+                  onChange={handleChange}
+                  rows={7}
+                  placeholder="Explain the issue clearly..."
+                  required
+                />
 
                 <label className="student-complaint-label">Attachment</label>
-                <input type="file" accept=".jpg,.jpeg,.png,.webp,.pdf" onChange={handleAttachment} />
-                {attachment && <div className="student-complaint-file">Selected: {attachment.name}</div>}
+                <input
+                  type="file"
+                  accept=".jpg,.jpeg,.png,.webp,.pdf"
+                  onChange={handleAttachment}
+                />
+                {attachment && (
+                  <div className="student-complaint-file">
+                    Selected: {attachment.name}
+                  </div>
+                )}
               </section>
 
               <div className="student-complaint-form-actions">
-                <button type="button" className="student-complaint-secondary-btn" onClick={() => navigateTo("/student/complaints")}>Cancel</button>
-                <button type="submit" className="student-complaint-submit-btn" disabled={submitting || backupStudents.length === 0}>{submitting ? "Submitting..." : "Submit Complaint"}</button>
+                <button
+                  type="button"
+                  className="student-complaint-secondary-btn"
+                  onClick={() => navigateTo("/student/complaints")}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="student-complaint-submit-btn"
+                  disabled={submitting || backupStudents.length === 0}
+                >
+                  {submitting ? "Submitting..." : "Submit Complaint"}
+                </button>
               </div>
             </form>
           )}
