@@ -126,6 +126,7 @@
     transform: translateX(-105%);
     transition: transform 0.25s ease;
     box-shadow: 12px 0 35px rgba(15, 23, 42, 0.25);
+    z-index: 2200;
   }
 
   .student-sidebar.mobile-open {
@@ -137,7 +138,7 @@
     inset: 0;
     display: block;
     background: rgba(15, 23, 42, 0.48);
-    z-index: 1350;
+    z-index: 2100;
   }
 
   .student-sidebar-nav {
@@ -147,6 +148,13 @@
 
   .student-sidebar-nav-item {
     min-height: 44px;
+    position: relative;
+    z-index: 2201;
+  }
+
+  .student-sidebar-logout {
+    position: relative;
+    z-index: 2201;
   }
 }
 

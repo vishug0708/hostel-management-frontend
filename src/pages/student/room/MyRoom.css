@@ -934,7 +934,7 @@
         align-items: center;
         justify-content: space-between;
         gap: 12px;
-        z-index: 2000;
+        z-index: 1700;
         background: #ffffff;
         border-bottom: 1px solid #dbe6ee;
         box-shadow: 0 3px 12px rgba(15,42,60,0.08);
@@ -1159,5 +1159,20 @@
 
     .myroom-detail-row {
         font-size: 11px;
+    }
+}
+
+
+/* Drawer stacking fix: keep the mobile top bar above the off-canvas sidebar. */
+@media (max-width: 1024px) {
+    .myroom-mobile-header {
+        z-index: 3000 !important;
+    }
+
+    .myroom-mobile-menu,
+    .myroom-mobile-photo {
+        position: relative;
+        z-index: 3001;
+        pointer-events: auto;
     }
 }
