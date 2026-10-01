@@ -112,18 +112,14 @@
   display: none;
 }
 
-@media (max-width: 850px) {
-  .student-sidebar {
-    width: 220px;
-  }
-}
-
-@media (max-width: 700px) {
+/* Tablet + mobile: sidebar becomes off-canvas. */
+@media (max-width: 1024px) {
   .student-sidebar {
     top: 0;
     left: 0;
     bottom: 0;
-    width: 258px;
+    width: 270px;
+    max-width: 86vw;
     height: 100vh;
     padding: 22px 15px;
     overflow-y: auto;

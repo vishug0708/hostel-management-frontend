@@ -197,15 +197,7 @@ const MyRoom = () => {
                             View your room and roommate details.
                         </p>
                     </div>
-
-                    <button
-                        className="refresh-btn"
-                        onClick={fetchRoom}
-                        disabled={loading}
-                    >
-                        ↻ Refresh
-                    </button>
-                </div>
+</div>
 
                 {error && (
                     <div className="room-alert">
